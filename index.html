@@ -3,13 +3,144 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Simple JavaScript Project</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Book Chapter Connections</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    svg {
+      display: block;
+      margin: auto;
+    }
+    .node text {
+      pointer-events: none;
+      font-size: 12px;
+      fill: #333;
+    }
+    .tooltip {
+      position: absolute;
+      padding: 5px 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+      display: none;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to My Simple JavaScript Project</h1>
-  <button id="clickButton">Click Me!</button>
-  <p id="message"></p>
-  <script src="script.js"></script>
+  <div id="tooltip" class="tooltip"></div>
+  <script>
+    // Fake dataset
+    const data = {
+      nodes: [
+        { id: 1, name: "Chapter 1", topics: ["Introduction", "Basics"] },
+        { id: 2, name: "Chapter 2", topics: ["Basics", "Advanced"] },
+        { id: 3, name: "Chapter 3", topics: ["Advanced", "Case Studies"] }
+      ],
+      links: [
+        { source: 1, target: 2, topics: ["Basics"] },
+        { source: 2, target: 3, topics: ["Advanced"] }
+      ]
+    };
+
+    // SVG setup
+    const width = 800, height = 600;
+    const svg = d3.select("body")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    const tooltip = d3.select("#tooltip");
+
+    // Simulation setup
+    const simulation = d3.forceSimulation(data.nodes)
+      .force("link", d3.forceLink(data.links).id(d => d.id).distance(150))
+      .force("charge", d3.forceManyBody().strength(-300))
+      .force("center", d3.forceCenter(width / 2, height / 2));
+
+    // Draw links
+    const link = svg.append("g")
+      .selectAll("line")
+      .data(data.links)
+      .enter()
+      .append("line")
+      .attr("stroke", "#aaa")
+      .attr("stroke-width", 2);
+
+    // Draw nodes
+    const node = svg.append("g")
+      .selectAll("circle")
+      .data(data.nodes)
+      .enter()
+      .append("g")
+      .attr("class", "node")
+      .call(d3.drag()
+        .on("start", dragStarted)
+        .on("drag", dragged)
+        .on("end", dragEnded));
+
+    node.append("circle")
+      .attr("r", 20)
+      .attr("fill", "#69b3a2")
+      .on("mouseover", (event, d) => {
+        tooltip.style("display", "block")
+          .html(`
+            <strong>${d.name}</strong><br>
+            Topics: ${d.topics.join(", ")}
+          `);
+        d3.select(event.target).attr("fill", "#ff6f61"); // Highlight node
+        link.filter(l => l.source === d || l.target === d)
+          .attr("stroke", "#ff6f61")
+          .attr("stroke-width", 4); // Highlight links
+      })
+      .on("mousemove", (event) => {
+        tooltip.style("top", `${event.pageY + 10}px`)
+          .style("left", `${event.pageX + 10}px`);
+      })
+      .on("mouseout", (event, d) => {
+        tooltip.style("display", "none");
+        d3.select(event.target).attr("fill", "#69b3a2"); // Reset node color
+        link.attr("stroke", "#aaa").attr("stroke-width", 2); // Reset links
+      });
+
+    node.append("text")
+      .attr("dy", 4)
+      .attr("x", 25)
+      .text(d => d.name);
+
+    // Update simulation
+    simulation.on("tick", () => {
+      link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+      node.attr("transform", d => `translate(${d.x}, ${d.y})`);
+    });
+
+    // Drag functions
+    function dragStarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragEnded(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+  </script>
 </body>
 </html>
