@@ -15,6 +15,8 @@
     svg {
       display: block;
       margin: auto;
+      width: 100vw;
+      height: 100vh;
     }
     .node text {
       pointer-events: none;
@@ -35,112 +37,119 @@
 <body>
   <div id="tooltip" class="tooltip"></div>
   <script>
-    // Fake dataset
-    const data = {
-      nodes: [
-        { id: 1, name: "Chapter 1", topics: ["Introduction", "Basics"] },
-        { id: 2, name: "Chapter 2", topics: ["Basics", "Advanced"] },
-        { id: 3, name: "Chapter 3", topics: ["Advanced", "Case Studies"] }
-      ],
-      links: [
-        { source: 1, target: 2, topics: ["Basics"] },
-        { source: 2, target: 3, topics: ["Advanced"] }
-      ]
-    };
+    d3.json("database.json").then(function (data) {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
 
-    // SVG setup
-    const width = 800, height = 600;
-    const svg = d3.select("body")
-      .append("svg")
-      .attr("width", width)
-      .attr("height", height);
+      const svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet");
 
-    const tooltip = d3.select("#tooltip");
+      // Define zoom behavior
+      const zoom = d3.zoom()
+        .scaleExtent([0.2, 5]) // Set min and max zoom levels
+        .on("zoom", zoomed);
 
-    // Simulation setup
-    const simulation = d3.forceSimulation(data.nodes)
-      .force("link", d3.forceLink(data.links).id(d => d.id).distance(150))
-      .force("charge", d3.forceManyBody().strength(-300))
-      .force("center", d3.forceCenter(width / 2, height / 2));
+      // Group for all graph elements
+      const g = svg.append("g");
 
-    // Draw links
-    const link = svg.append("g")
-      .selectAll("line")
-      .data(data.links)
-      .enter()
-      .append("line")
-      .attr("stroke", "#aaa")
-      .attr("stroke-width", 2);
+      svg.call(zoom);
 
-    // Draw nodes
-    const node = svg.append("g")
-      .selectAll("circle")
-      .data(data.nodes)
-      .enter()
-      .append("g")
-      .attr("class", "node")
-      .call(d3.drag()
-        .on("start", dragStarted)
-        .on("drag", dragged)
-        .on("end", dragEnded));
+      const tooltip = d3.select("#tooltip");
 
-    node.append("circle")
-      .attr("r", 20)
-      .attr("fill", "#69b3a2")
-      .on("mouseover", (event, d) => {
-        tooltip.style("display", "block")
-          .html(`
-            <strong>${d.name}</strong><br>
-            Topics: ${d.topics.join(", ")}
-          `);
-        d3.select(event.target).attr("fill", "#ff6f61"); // Highlight node
-        link.filter(l => l.source === d || l.target === d)
-          .attr("stroke", "#ff6f61")
-          .attr("stroke-width", 4); // Highlight links
-      })
-      .on("mousemove", (event) => {
-        tooltip.style("top", `${event.pageY + 10}px`)
-          .style("left", `${event.pageX + 10}px`);
-      })
-      .on("mouseout", (event, d) => {
-        tooltip.style("display", "none");
-        d3.select(event.target).attr("fill", "#69b3a2"); // Reset node color
-        link.attr("stroke", "#aaa").attr("stroke-width", 2); // Reset links
+      const simulation = d3.forceSimulation(data.nodes)
+        .force("link", d3.forceLink(data.links).id(d => d.id).distance(150))
+        .force("charge", d3.forceManyBody().strength(-300))
+        .force("center", d3.forceCenter(width / 2, height / 2));
+
+      // Create links
+      const link = g.append("g")
+        .attr("class", "links")
+        .selectAll("line")
+        .data(data.links)
+        .enter()
+        .append("line")
+        .attr("stroke", "#aaa")
+        .attr("stroke-width", 2);
+
+      // Create nodes
+      const node = g.append("g")
+        .attr("class", "nodes")
+        .selectAll("g")
+        .data(data.nodes)
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .call(d3.drag()
+          .on("start", dragStarted)
+          .on("drag", dragged)
+          .on("end", dragEnded));
+
+      // Append circles for nodes
+      node.append("circle")
+        .attr("r", 20)
+        .attr("fill", "#69b3a2")
+        .on("mouseover", (event, d) => {
+          tooltip.style("display", "block")
+            .html(`
+              <strong>${d.name}</strong><br>
+              Topics: ${d.topics.join(", ")}
+            `);
+          d3.select(event.target).attr("fill", "#ff6f61"); // Highlight node
+          link.filter(l => l.source === d || l.target === d)
+            .attr("stroke", "#ff6f61")
+            .attr("stroke-width", 4); // Highlight links
+        })
+        .on("mousemove", (event) => {
+          tooltip.style("top", `${event.pageY + 10}px`)
+            .style("left", `${event.pageX + 10}px`);
+        })
+        .on("mouseout", (event) => {
+          tooltip.style("display", "none");
+          d3.select(event.target).attr("fill", "#69b3a2"); // Reset node color
+          link.attr("stroke", "#aaa").attr("stroke-width", 2); // Reset links
+        });
+
+      // Append text labels for nodes
+      node.append("text")
+        .attr("dy", 4)
+        .attr("x", 25)
+        .text(d => d.name);
+
+      simulation.on("tick", () => {
+        link
+          .attr("x1", d => d.source.x)
+          .attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x)
+          .attr("y2", d => d.target.y);
+
+        node.attr("transform", d => `translate(${d.x}, ${d.y})`);
       });
 
-    node.append("text")
-      .attr("dy", 4)
-      .attr("x", 25)
-      .text(d => d.name);
+      function dragStarted(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      }
 
-    // Update simulation
-    simulation.on("tick", () => {
-      link
-        .attr("x1", d => d.source.x)
-        .attr("y1", d => d.source.y)
-        .attr("x2", d => d.target.x)
-        .attr("y2", d => d.target.y);
+      function dragged(event, d) {
+        d.fx = event.x;
+        d.fy = event.y;
+      }
 
-      node.attr("transform", d => `translate(${d.x}, ${d.y})`);
+      function dragEnded(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+      }
+
+      function zoomed(event) {
+        g.attr("transform", event.transform); // Apply the zoom/pan transform to the group
+      }
     });
-
-    // Drag functions
-    function dragStarted(event, d) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
-      d.fx = d.x;
-      d.fy = d.y;
-    }
-
-    function dragged(event, d) {
-      d.fx = event.x;
-      d.fy = event.y;
-    }
-
-    function dragEnded(event, d) {
-      if (!event.active) simulation.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
-    }
   </script>
 </body>
 </html>

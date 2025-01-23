@@ -1,0 +1,7782 @@
+{
+  "nodes": [
+    {
+      "id": 1,
+      "name": "Chapter 1",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Chapter 2",
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Chapter 3",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Chapter 4",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Chapter 5",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Chapter 6",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Chapter 7",
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Chapter 8",
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Chapter 9",
+      "topics": [
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Chapter 10",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 11,
+      "name": "Chapter 11",
+      "topics": [
+        "Case Studies",
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "id": 12,
+      "name": "Chapter 12",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 13,
+      "name": "Chapter 13",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 14,
+      "name": "Chapter 14",
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 15,
+      "name": "Chapter 15",
+      "topics": [
+        "Advanced",
+        "Conclusion",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 16,
+      "name": "Chapter 16",
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 17,
+      "name": "Chapter 17",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 18,
+      "name": "Chapter 18",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 19,
+      "name": "Chapter 19",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 20,
+      "name": "Chapter 20",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 21,
+      "name": "Chapter 21",
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "id": 22,
+      "name": "Chapter 22",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 23,
+      "name": "Chapter 23",
+      "topics": [
+        "Theory",
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 24,
+      "name": "Chapter 24",
+      "topics": [
+        "Advanced",
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 25,
+      "name": "Chapter 25",
+      "topics": [
+        "Research",
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 26,
+      "name": "Chapter 26",
+      "topics": [
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "id": 27,
+      "name": "Chapter 27",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 28,
+      "name": "Chapter 28",
+      "topics": [
+        "Theory",
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "id": 29,
+      "name": "Chapter 29",
+      "topics": [
+        "Introduction",
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 30,
+      "name": "Chapter 30",
+      "topics": [
+        "Advanced",
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 31,
+      "name": "Chapter 31",
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 32,
+      "name": "Chapter 32",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 33,
+      "name": "Chapter 33",
+      "topics": [
+        "Introduction",
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 34,
+      "name": "Chapter 34",
+      "topics": [
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 35,
+      "name": "Chapter 35",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 36,
+      "name": "Chapter 36",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 37,
+      "name": "Chapter 37",
+      "topics": [
+        "Research",
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 38,
+      "name": "Chapter 38",
+      "topics": [
+        "Conclusion",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 39,
+      "name": "Chapter 39",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 40,
+      "name": "Chapter 40",
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 41,
+      "name": "Chapter 41",
+      "topics": [
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 42,
+      "name": "Chapter 42",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 43,
+      "name": "Chapter 43",
+      "topics": [
+        "Advanced",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 44,
+      "name": "Chapter 44",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 45,
+      "name": "Chapter 45",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 46,
+      "name": "Chapter 46",
+      "topics": [
+        "Introduction",
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 47,
+      "name": "Chapter 47",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 48,
+      "name": "Chapter 48",
+      "topics": [
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 49,
+      "name": "Chapter 49",
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "id": 50,
+      "name": "Chapter 50",
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 51,
+      "name": "Chapter 51",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 52,
+      "name": "Chapter 52",
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "id": 53,
+      "name": "Chapter 53",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 54,
+      "name": "Chapter 54",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 55,
+      "name": "Chapter 55",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 56,
+      "name": "Chapter 56",
+      "topics": [
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 57,
+      "name": "Chapter 57",
+      "topics": [
+        "Case Studies",
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 58,
+      "name": "Chapter 58",
+      "topics": [
+        "Advanced",
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "id": 59,
+      "name": "Chapter 59",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 60,
+      "name": "Chapter 60",
+      "topics": [
+        "Introduction",
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 61,
+      "name": "Chapter 61",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 62,
+      "name": "Chapter 62",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 63,
+      "name": "Chapter 63",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 64,
+      "name": "Chapter 64",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 65,
+      "name": "Chapter 65",
+      "topics": [
+        "Basics",
+        "Theory"
+      ]
+    },
+    {
+      "id": 66,
+      "name": "Chapter 66",
+      "topics": [
+        "Advanced",
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 67,
+      "name": "Chapter 67",
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 68,
+      "name": "Chapter 68",
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 69,
+      "name": "Chapter 69",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 70,
+      "name": "Chapter 70",
+      "topics": [
+        "Research",
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 71,
+      "name": "Chapter 71",
+      "topics": [
+        "Introduction",
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 72,
+      "name": "Chapter 72",
+      "topics": [
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "id": 73,
+      "name": "Chapter 73",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 74,
+      "name": "Chapter 74",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 75,
+      "name": "Chapter 75",
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 76,
+      "name": "Chapter 76",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 77,
+      "name": "Chapter 77",
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 78,
+      "name": "Chapter 78",
+      "topics": [
+        "Case Studies",
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 79,
+      "name": "Chapter 79",
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 80,
+      "name": "Chapter 80",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 81,
+      "name": "Chapter 81",
+      "topics": [
+        "Research",
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 82,
+      "name": "Chapter 82",
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 83,
+      "name": "Chapter 83",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 84,
+      "name": "Chapter 84",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 85,
+      "name": "Chapter 85",
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 86,
+      "name": "Chapter 86",
+      "topics": [
+        "Advanced",
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "id": 87,
+      "name": "Chapter 87",
+      "topics": [
+        "Advanced",
+        "Theory"
+      ]
+    },
+    {
+      "id": 88,
+      "name": "Chapter 88",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 89,
+      "name": "Chapter 89",
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 90,
+      "name": "Chapter 90",
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "id": 91,
+      "name": "Chapter 91",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 92,
+      "name": "Chapter 92",
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "id": 93,
+      "name": "Chapter 93",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 94,
+      "name": "Chapter 94",
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 95,
+      "name": "Chapter 95",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 96,
+      "name": "Chapter 96",
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 97,
+      "name": "Chapter 97",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 98,
+      "name": "Chapter 98",
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 99,
+      "name": "Chapter 99",
+      "topics": [
+        "Basics",
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 100,
+      "name": "Chapter 100",
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 101,
+      "name": "Chapter 101",
+      "topics": [
+        "Case Studies",
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "id": 102,
+      "name": "Chapter 102",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 103,
+      "name": "Chapter 103",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 104,
+      "name": "Chapter 104",
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 105,
+      "name": "Chapter 105",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 106,
+      "name": "Chapter 106",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 107,
+      "name": "Chapter 107",
+      "topics": [
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "id": 108,
+      "name": "Chapter 108",
+      "topics": [
+        "Advanced",
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "id": 109,
+      "name": "Chapter 109",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 110,
+      "name": "Chapter 110",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 111,
+      "name": "Chapter 111",
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 112,
+      "name": "Chapter 112",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 113,
+      "name": "Chapter 113",
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 114,
+      "name": "Chapter 114",
+      "topics": [
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "id": 115,
+      "name": "Chapter 115",
+      "topics": [
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 116,
+      "name": "Chapter 116",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 117,
+      "name": "Chapter 117",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 118,
+      "name": "Chapter 118",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 119,
+      "name": "Chapter 119",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 120,
+      "name": "Chapter 120",
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 121,
+      "name": "Chapter 121",
+      "topics": [
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 122,
+      "name": "Chapter 122",
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 123,
+      "name": "Chapter 123",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 124,
+      "name": "Chapter 124",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 125,
+      "name": "Chapter 125",
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 126,
+      "name": "Chapter 126",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 127,
+      "name": "Chapter 127",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 128,
+      "name": "Chapter 128",
+      "topics": [
+        "Conclusion",
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 129,
+      "name": "Chapter 129",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 130,
+      "name": "Chapter 130",
+      "topics": [
+        "Introduction",
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 131,
+      "name": "Chapter 131",
+      "topics": [
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 132,
+      "name": "Chapter 132",
+      "topics": [
+        "Introduction",
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "id": 133,
+      "name": "Chapter 133",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 134,
+      "name": "Chapter 134",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 135,
+      "name": "Chapter 135",
+      "topics": [
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "id": 136,
+      "name": "Chapter 136",
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 137,
+      "name": "Chapter 137",
+      "topics": [
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 138,
+      "name": "Chapter 138",
+      "topics": [
+        "Basics",
+        "Theory"
+      ]
+    },
+    {
+      "id": 139,
+      "name": "Chapter 139",
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 140,
+      "name": "Chapter 140",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 141,
+      "name": "Chapter 141",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 142,
+      "name": "Chapter 142",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 143,
+      "name": "Chapter 143",
+      "topics": [
+        "Case Studies",
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 144,
+      "name": "Chapter 144",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 145,
+      "name": "Chapter 145",
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "id": 146,
+      "name": "Chapter 146",
+      "topics": [
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 147,
+      "name": "Chapter 147",
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 148,
+      "name": "Chapter 148",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 149,
+      "name": "Chapter 149",
+      "topics": [
+        "Conclusion",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 150,
+      "name": "Chapter 150",
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 151,
+      "name": "Chapter 151",
+      "topics": [
+        "Advanced",
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "id": 152,
+      "name": "Chapter 152",
+      "topics": [
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 153,
+      "name": "Chapter 153",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 154,
+      "name": "Chapter 154",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 155,
+      "name": "Chapter 155",
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 156,
+      "name": "Chapter 156",
+      "topics": [
+        "Case Studies",
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 157,
+      "name": "Chapter 157",
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 158,
+      "name": "Chapter 158",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 159,
+      "name": "Chapter 159",
+      "topics": [
+        "Conclusion",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 160,
+      "name": "Chapter 160",
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 161,
+      "name": "Chapter 161",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 162,
+      "name": "Chapter 162",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 163,
+      "name": "Chapter 163",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 164,
+      "name": "Chapter 164",
+      "topics": [
+        "Introduction",
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 165,
+      "name": "Chapter 165",
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 166,
+      "name": "Chapter 166",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 167,
+      "name": "Chapter 167",
+      "topics": [
+        "Conclusion",
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 168,
+      "name": "Chapter 168",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 169,
+      "name": "Chapter 169",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 170,
+      "name": "Chapter 170",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 171,
+      "name": "Chapter 171",
+      "topics": [
+        "Case Studies",
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "id": 172,
+      "name": "Chapter 172",
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 173,
+      "name": "Chapter 173",
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 174,
+      "name": "Chapter 174",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 175,
+      "name": "Chapter 175",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 176,
+      "name": "Chapter 176",
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 177,
+      "name": "Chapter 177",
+      "topics": [
+        "Case Studies",
+        "Research",
+        "Basics"
+      ]
+    },
+    {
+      "id": 178,
+      "name": "Chapter 178",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 179,
+      "name": "Chapter 179",
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 180,
+      "name": "Chapter 180",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 181,
+      "name": "Chapter 181",
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 182,
+      "name": "Chapter 182",
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "id": 183,
+      "name": "Chapter 183",
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "id": 184,
+      "name": "Chapter 184",
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "id": 185,
+      "name": "Chapter 185",
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 186,
+      "name": "Chapter 186",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 187,
+      "name": "Chapter 187",
+      "topics": [
+        "Case Studies",
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 188,
+      "name": "Chapter 188",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 189,
+      "name": "Chapter 189",
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 190,
+      "name": "Chapter 190",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 191,
+      "name": "Chapter 191",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 192,
+      "name": "Chapter 192",
+      "topics": [
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "id": 193,
+      "name": "Chapter 193",
+      "topics": [
+        "Conclusion",
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 194,
+      "name": "Chapter 194",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 195,
+      "name": "Chapter 195",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 196,
+      "name": "Chapter 196",
+      "topics": [
+        "Theory",
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 197,
+      "name": "Chapter 197",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 198,
+      "name": "Chapter 198",
+      "topics": [
+        "Advanced",
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 199,
+      "name": "Chapter 199",
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "id": 200,
+      "name": "Chapter 200",
+      "topics": [
+        "Theory",
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "id": 201,
+      "name": "Chapter 201",
+      "topics": [
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "id": 202,
+      "name": "Chapter 202",
+      "topics": [
+        "Theory",
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 203,
+      "name": "Chapter 203",
+      "topics": [
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 204,
+      "name": "Chapter 204",
+      "topics": [
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 205,
+      "name": "Chapter 205",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 206,
+      "name": "Chapter 206",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 207,
+      "name": "Chapter 207",
+      "topics": [
+        "Case Studies",
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "id": 208,
+      "name": "Chapter 208",
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 209,
+      "name": "Chapter 209",
+      "topics": [
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 210,
+      "name": "Chapter 210",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 211,
+      "name": "Chapter 211",
+      "topics": [
+        "Advanced",
+        "Basics",
+        "Theory"
+      ]
+    },
+    {
+      "id": 212,
+      "name": "Chapter 212",
+      "topics": [
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 213,
+      "name": "Chapter 213",
+      "topics": [
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "id": 214,
+      "name": "Chapter 214",
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 215,
+      "name": "Chapter 215",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 216,
+      "name": "Chapter 216",
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "id": 217,
+      "name": "Chapter 217",
+      "topics": [
+        "Conclusion",
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 218,
+      "name": "Chapter 218",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 219,
+      "name": "Chapter 219",
+      "topics": [
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "id": 220,
+      "name": "Chapter 220",
+      "topics": [
+        "Theory",
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 221,
+      "name": "Chapter 221",
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 222,
+      "name": "Chapter 222",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 223,
+      "name": "Chapter 223",
+      "topics": [
+        "Conclusion",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 224,
+      "name": "Chapter 224",
+      "topics": [
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "id": 225,
+      "name": "Chapter 225",
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 226,
+      "name": "Chapter 226",
+      "topics": [
+        "Research",
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 227,
+      "name": "Chapter 227",
+      "topics": [
+        "Case Studies",
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 228,
+      "name": "Chapter 228",
+      "topics": [
+        "Theory",
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "id": 229,
+      "name": "Chapter 229",
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "id": 230,
+      "name": "Chapter 230",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 231,
+      "name": "Chapter 231",
+      "topics": [
+        "Advanced",
+        "Basics",
+        "Theory"
+      ]
+    },
+    {
+      "id": 232,
+      "name": "Chapter 232",
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 233,
+      "name": "Chapter 233",
+      "topics": [
+        "Conclusion",
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 234,
+      "name": "Chapter 234",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 235,
+      "name": "Chapter 235",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 236,
+      "name": "Chapter 236",
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 237,
+      "name": "Chapter 237",
+      "topics": [
+        "Basics",
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 238,
+      "name": "Chapter 238",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 239,
+      "name": "Chapter 239",
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 240,
+      "name": "Chapter 240",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 241,
+      "name": "Chapter 241",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 242,
+      "name": "Chapter 242",
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "id": 243,
+      "name": "Chapter 243",
+      "topics": [
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 244,
+      "name": "Chapter 244",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 245,
+      "name": "Chapter 245",
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "id": 246,
+      "name": "Chapter 246",
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 247,
+      "name": "Chapter 247",
+      "topics": [
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "id": 248,
+      "name": "Chapter 248",
+      "topics": [
+        "Advanced",
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "id": 249,
+      "name": "Chapter 249",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 250,
+      "name": "Chapter 250",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 251,
+      "name": "Chapter 251",
+      "topics": [
+        "Introduction",
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "id": 252,
+      "name": "Chapter 252",
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "id": 253,
+      "name": "Chapter 253",
+      "topics": [
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "id": 254,
+      "name": "Chapter 254",
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 255,
+      "name": "Chapter 255",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 256,
+      "name": "Chapter 256",
+      "topics": [
+        "Theory",
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 257,
+      "name": "Chapter 257",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 258,
+      "name": "Chapter 258",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 259,
+      "name": "Chapter 259",
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 260,
+      "name": "Chapter 260",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 261,
+      "name": "Chapter 261",
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 262,
+      "name": "Chapter 262",
+      "topics": [
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 263,
+      "name": "Chapter 263",
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 264,
+      "name": "Chapter 264",
+      "topics": [
+        "Advanced",
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 265,
+      "name": "Chapter 265",
+      "topics": [
+        "Theory",
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 266,
+      "name": "Chapter 266",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 267,
+      "name": "Chapter 267",
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 268,
+      "name": "Chapter 268",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 269,
+      "name": "Chapter 269",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 270,
+      "name": "Chapter 270",
+      "topics": [
+        "Advanced",
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "id": 271,
+      "name": "Chapter 271",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 272,
+      "name": "Chapter 272",
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 273,
+      "name": "Chapter 273",
+      "topics": [
+        "Research",
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 274,
+      "name": "Chapter 274",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 275,
+      "name": "Chapter 275",
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "id": 276,
+      "name": "Chapter 276",
+      "topics": [
+        "Advanced",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 277,
+      "name": "Chapter 277",
+      "topics": [
+        "Conclusion",
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 278,
+      "name": "Chapter 278",
+      "topics": [
+        "Advanced",
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "id": 279,
+      "name": "Chapter 279",
+      "topics": [
+        "Research",
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 280,
+      "name": "Chapter 280",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 281,
+      "name": "Chapter 281",
+      "topics": [
+        "Basics",
+        "Theory"
+      ]
+    },
+    {
+      "id": 282,
+      "name": "Chapter 282",
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 283,
+      "name": "Chapter 283",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 284,
+      "name": "Chapter 284",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 285,
+      "name": "Chapter 285",
+      "topics": [
+        "Conclusion",
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 286,
+      "name": "Chapter 286",
+      "topics": [
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 287,
+      "name": "Chapter 287",
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 288,
+      "name": "Chapter 288",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 289,
+      "name": "Chapter 289",
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 290,
+      "name": "Chapter 290",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 291,
+      "name": "Chapter 291",
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 292,
+      "name": "Chapter 292",
+      "topics": [
+        "Research",
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 293,
+      "name": "Chapter 293",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 294,
+      "name": "Chapter 294",
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 295,
+      "name": "Chapter 295",
+      "topics": [
+        "Introduction",
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "id": 296,
+      "name": "Chapter 296",
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 297,
+      "name": "Chapter 297",
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "id": 298,
+      "name": "Chapter 298",
+      "topics": [
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "id": 299,
+      "name": "Chapter 299",
+      "topics": [
+        "Case Studies",
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "id": 300,
+      "name": "Chapter 300",
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 301,
+      "name": "Chapter 301",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 302,
+      "name": "Chapter 302",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 303,
+      "name": "Chapter 303",
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 304,
+      "name": "Chapter 304",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 305,
+      "name": "Chapter 305",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 306,
+      "name": "Chapter 306",
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 307,
+      "name": "Chapter 307",
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "id": 308,
+      "name": "Chapter 308",
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 309,
+      "name": "Chapter 309",
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 310,
+      "name": "Chapter 310",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 311,
+      "name": "Chapter 311",
+      "topics": [
+        "Case Studies",
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 312,
+      "name": "Chapter 312",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 313,
+      "name": "Chapter 313",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 314,
+      "name": "Chapter 314",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 315,
+      "name": "Chapter 315",
+      "topics": [
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 316,
+      "name": "Chapter 316",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 317,
+      "name": "Chapter 317",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 318,
+      "name": "Chapter 318",
+      "topics": [
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "id": 319,
+      "name": "Chapter 319",
+      "topics": [
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 320,
+      "name": "Chapter 320",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 321,
+      "name": "Chapter 321",
+      "topics": [
+        "Advanced",
+        "Theory"
+      ]
+    },
+    {
+      "id": 322,
+      "name": "Chapter 322",
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 323,
+      "name": "Chapter 323",
+      "topics": [
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "id": 324,
+      "name": "Chapter 324",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 325,
+      "name": "Chapter 325",
+      "topics": [
+        "Conclusion",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 326,
+      "name": "Chapter 326",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 327,
+      "name": "Chapter 327",
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 328,
+      "name": "Chapter 328",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 329,
+      "name": "Chapter 329",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 330,
+      "name": "Chapter 330",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 331,
+      "name": "Chapter 331",
+      "topics": [
+        "Conclusion",
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 332,
+      "name": "Chapter 332",
+      "topics": [
+        "Advanced",
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 333,
+      "name": "Chapter 333",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 334,
+      "name": "Chapter 334",
+      "topics": [
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 335,
+      "name": "Chapter 335",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 336,
+      "name": "Chapter 336",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 337,
+      "name": "Chapter 337",
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "id": 338,
+      "name": "Chapter 338",
+      "topics": [
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "id": 339,
+      "name": "Chapter 339",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 340,
+      "name": "Chapter 340",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 341,
+      "name": "Chapter 341",
+      "topics": [
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 342,
+      "name": "Chapter 342",
+      "topics": [
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "id": 343,
+      "name": "Chapter 343",
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 344,
+      "name": "Chapter 344",
+      "topics": [
+        "Introduction",
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 345,
+      "name": "Chapter 345",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 346,
+      "name": "Chapter 346",
+      "topics": [
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 347,
+      "name": "Chapter 347",
+      "topics": [
+        "Theory",
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 348,
+      "name": "Chapter 348",
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 349,
+      "name": "Chapter 349",
+      "topics": [
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 350,
+      "name": "Chapter 350",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 351,
+      "name": "Chapter 351",
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 352,
+      "name": "Chapter 352",
+      "topics": [
+        "Introduction",
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 353,
+      "name": "Chapter 353",
+      "topics": [
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 354,
+      "name": "Chapter 354",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 355,
+      "name": "Chapter 355",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 356,
+      "name": "Chapter 356",
+      "topics": [
+        "Case Studies",
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "id": 357,
+      "name": "Chapter 357",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 358,
+      "name": "Chapter 358",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 359,
+      "name": "Chapter 359",
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "id": 360,
+      "name": "Chapter 360",
+      "topics": [
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 361,
+      "name": "Chapter 361",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 362,
+      "name": "Chapter 362",
+      "topics": [
+        "Basics",
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 363,
+      "name": "Chapter 363",
+      "topics": [
+        "Basics",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 364,
+      "name": "Chapter 364",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 365,
+      "name": "Chapter 365",
+      "topics": [
+        "Conclusion",
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "id": 366,
+      "name": "Chapter 366",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 367,
+      "name": "Chapter 367",
+      "topics": [
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 368,
+      "name": "Chapter 368",
+      "topics": [
+        "Basics",
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 369,
+      "name": "Chapter 369",
+      "topics": [
+        "Research",
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 370,
+      "name": "Chapter 370",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 371,
+      "name": "Chapter 371",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 372,
+      "name": "Chapter 372",
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 373,
+      "name": "Chapter 373",
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "id": 374,
+      "name": "Chapter 374",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 375,
+      "name": "Chapter 375",
+      "topics": [
+        "Case Studies",
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 376,
+      "name": "Chapter 376",
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 377,
+      "name": "Chapter 377",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 378,
+      "name": "Chapter 378",
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 379,
+      "name": "Chapter 379",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 380,
+      "name": "Chapter 380",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 381,
+      "name": "Chapter 381",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 382,
+      "name": "Chapter 382",
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 383,
+      "name": "Chapter 383",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 384,
+      "name": "Chapter 384",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 385,
+      "name": "Chapter 385",
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 386,
+      "name": "Chapter 386",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 387,
+      "name": "Chapter 387",
+      "topics": [
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 388,
+      "name": "Chapter 388",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 389,
+      "name": "Chapter 389",
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 390,
+      "name": "Chapter 390",
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "id": 391,
+      "name": "Chapter 391",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 392,
+      "name": "Chapter 392",
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "id": 393,
+      "name": "Chapter 393",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 394,
+      "name": "Chapter 394",
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 395,
+      "name": "Chapter 395",
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "id": 396,
+      "name": "Chapter 396",
+      "topics": [
+        "Conclusion",
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "id": 397,
+      "name": "Chapter 397",
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 398,
+      "name": "Chapter 398",
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "id": 399,
+      "name": "Chapter 399",
+      "topics": [
+        "Basics",
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "id": 400,
+      "name": "Chapter 400",
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "id": 401,
+      "name": "Chapter 401",
+      "topics": [
+        "Research",
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 402,
+      "name": "Chapter 402",
+      "topics": [
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 403,
+      "name": "Chapter 403",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 404,
+      "name": "Chapter 404",
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "id": 405,
+      "name": "Chapter 405",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 406,
+      "name": "Chapter 406",
+      "topics": [
+        "Research",
+        "Basics"
+      ]
+    },
+    {
+      "id": 407,
+      "name": "Chapter 407",
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 408,
+      "name": "Chapter 408",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 409,
+      "name": "Chapter 409",
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "id": 410,
+      "name": "Chapter 410",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 411,
+      "name": "Chapter 411",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 412,
+      "name": "Chapter 412",
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 413,
+      "name": "Chapter 413",
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "id": 414,
+      "name": "Chapter 414",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 415,
+      "name": "Chapter 415",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 416,
+      "name": "Chapter 416",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 417,
+      "name": "Chapter 417",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 418,
+      "name": "Chapter 418",
+      "topics": [
+        "Case Studies",
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "id": 419,
+      "name": "Chapter 419",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 420,
+      "name": "Chapter 420",
+      "topics": [
+        "Research",
+        "Basics"
+      ]
+    },
+    {
+      "id": 421,
+      "name": "Chapter 421",
+      "topics": [
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 422,
+      "name": "Chapter 422",
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 423,
+      "name": "Chapter 423",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 424,
+      "name": "Chapter 424",
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 425,
+      "name": "Chapter 425",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 426,
+      "name": "Chapter 426",
+      "topics": [
+        "Advanced",
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 427,
+      "name": "Chapter 427",
+      "topics": [
+        "Basics",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 428,
+      "name": "Chapter 428",
+      "topics": [
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 429,
+      "name": "Chapter 429",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 430,
+      "name": "Chapter 430",
+      "topics": [
+        "Case Studies",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 431,
+      "name": "Chapter 431",
+      "topics": [
+        "Theory",
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "id": 432,
+      "name": "Chapter 432",
+      "topics": [
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 433,
+      "name": "Chapter 433",
+      "topics": [
+        "Basics",
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 434,
+      "name": "Chapter 434",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 435,
+      "name": "Chapter 435",
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "id": 436,
+      "name": "Chapter 436",
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "id": 437,
+      "name": "Chapter 437",
+      "topics": [
+        "Advanced",
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "id": 438,
+      "name": "Chapter 438",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 439,
+      "name": "Chapter 439",
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 440,
+      "name": "Chapter 440",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 441,
+      "name": "Chapter 441",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 442,
+      "name": "Chapter 442",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 443,
+      "name": "Chapter 443",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 444,
+      "name": "Chapter 444",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 445,
+      "name": "Chapter 445",
+      "topics": [
+        "Theory",
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 446,
+      "name": "Chapter 446",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 447,
+      "name": "Chapter 447",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 448,
+      "name": "Chapter 448",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 449,
+      "name": "Chapter 449",
+      "topics": [
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "id": 450,
+      "name": "Chapter 450",
+      "topics": [
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 451,
+      "name": "Chapter 451",
+      "topics": [
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "id": 452,
+      "name": "Chapter 452",
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 453,
+      "name": "Chapter 453",
+      "topics": [
+        "Basics",
+        "Theory"
+      ]
+    },
+    {
+      "id": 454,
+      "name": "Chapter 454",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 455,
+      "name": "Chapter 455",
+      "topics": [
+        "Advanced",
+        "Theory"
+      ]
+    },
+    {
+      "id": 456,
+      "name": "Chapter 456",
+      "topics": [
+        "Case Studies",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 457,
+      "name": "Chapter 457",
+      "topics": [
+        "Research",
+        "Basics"
+      ]
+    },
+    {
+      "id": 458,
+      "name": "Chapter 458",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 459,
+      "name": "Chapter 459",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 460,
+      "name": "Chapter 460",
+      "topics": [
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "id": 461,
+      "name": "Chapter 461",
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 462,
+      "name": "Chapter 462",
+      "topics": [
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "id": 463,
+      "name": "Chapter 463",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 464,
+      "name": "Chapter 464",
+      "topics": [
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 465,
+      "name": "Chapter 465",
+      "topics": [
+        "Advanced",
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "id": 466,
+      "name": "Chapter 466",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 467,
+      "name": "Chapter 467",
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "id": 468,
+      "name": "Chapter 468",
+      "topics": [
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 469,
+      "name": "Chapter 469",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 470,
+      "name": "Chapter 470",
+      "topics": [
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "id": 471,
+      "name": "Chapter 471",
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 472,
+      "name": "Chapter 472",
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "id": 473,
+      "name": "Chapter 473",
+      "topics": [
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 474,
+      "name": "Chapter 474",
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 475,
+      "name": "Chapter 475",
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "id": 476,
+      "name": "Chapter 476",
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "id": 477,
+      "name": "Chapter 477",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 478,
+      "name": "Chapter 478",
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 479,
+      "name": "Chapter 479",
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "id": 480,
+      "name": "Chapter 480",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 481,
+      "name": "Chapter 481",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 482,
+      "name": "Chapter 482",
+      "topics": [
+        "Basics",
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 483,
+      "name": "Chapter 483",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 484,
+      "name": "Chapter 484",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 485,
+      "name": "Chapter 485",
+      "topics": [
+        "Case Studies",
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 486,
+      "name": "Chapter 486",
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "id": 487,
+      "name": "Chapter 487",
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "id": 488,
+      "name": "Chapter 488",
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "id": 489,
+      "name": "Chapter 489",
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "id": 490,
+      "name": "Chapter 490",
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 491,
+      "name": "Chapter 491",
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 492,
+      "name": "Chapter 492",
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 493,
+      "name": "Chapter 493",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 494,
+      "name": "Chapter 494",
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 495,
+      "name": "Chapter 495",
+      "topics": [
+        "Conclusion",
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "id": 496,
+      "name": "Chapter 496",
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "id": 497,
+      "name": "Chapter 497",
+      "topics": [
+        "Advanced",
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "id": 498,
+      "name": "Chapter 498",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 499,
+      "name": "Chapter 499",
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "id": 500,
+      "name": "Chapter 500",
+      "topics": [
+        "Conclusion",
+        "Basics",
+        "Case Studies"
+      ]
+    }
+  ],
+  "links": [
+    {
+      "source": 1,
+      "target": 2,
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "source": 2,
+      "target": 3,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 3,
+      "target": 4,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 4,
+      "target": 5,
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 5,
+      "target": 6,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 6,
+      "target": 7,
+      "topics": [
+        "Conclusion",
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "source": 7,
+      "target": 8,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 8,
+      "target": 9,
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 9,
+      "target": 10,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 10,
+      "target": 11,
+      "topics": [
+        "Conclusion",
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "source": 11,
+      "target": 12,
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "source": 12,
+      "target": 13,
+      "topics": [
+        "Conclusion",
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 13,
+      "target": 14,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 14,
+      "target": 15,
+      "topics": [
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "source": 15,
+      "target": 16,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 16,
+      "target": 17,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 17,
+      "target": 18,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 18,
+      "target": 19,
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 19,
+      "target": 20,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 20,
+      "target": 21,
+      "topics": [
+        "Basics",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 21,
+      "target": 22,
+      "topics": [
+        "Advanced",
+        "Theory"
+      ]
+    },
+    {
+      "source": 22,
+      "target": 23,
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 23,
+      "target": 24,
+      "topics": [
+        "Research",
+        "Basics"
+      ]
+    },
+    {
+      "source": 24,
+      "target": 25,
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 25,
+      "target": 26,
+      "topics": [
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "source": 26,
+      "target": 27,
+      "topics": [
+        "Basics",
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "source": 27,
+      "target": 28,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 28,
+      "target": 29,
+      "topics": [
+        "Introduction",
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "source": 29,
+      "target": 30,
+      "topics": [
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "source": 30,
+      "target": 31,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 31,
+      "target": 32,
+      "topics": [
+        "Introduction",
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "source": 32,
+      "target": 33,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 33,
+      "target": 34,
+      "topics": [
+        "Introduction",
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 34,
+      "target": 35,
+      "topics": [
+        "Theory",
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 35,
+      "target": 36,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 36,
+      "target": 37,
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 37,
+      "target": 38,
+      "topics": [
+        "Conclusion",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 38,
+      "target": 39,
+      "topics": [
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 39,
+      "target": 40,
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 40,
+      "target": 41,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 41,
+      "target": 42,
+      "topics": [
+        "Conclusion",
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "source": 42,
+      "target": 43,
+      "topics": [
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 43,
+      "target": 44,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 44,
+      "target": 45,
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 45,
+      "target": 46,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 46,
+      "target": 47,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 47,
+      "target": 48,
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 48,
+      "target": 49,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 49,
+      "target": 50,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 50,
+      "target": 51,
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 51,
+      "target": 52,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 52,
+      "target": 53,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 53,
+      "target": 54,
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 54,
+      "target": 55,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 55,
+      "target": 56,
+      "topics": [
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 56,
+      "target": 57,
+      "topics": [
+        "Conclusion",
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "source": 57,
+      "target": 58,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 58,
+      "target": 59,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 59,
+      "target": 60,
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 60,
+      "target": 61,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 61,
+      "target": 62,
+      "topics": [
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 62,
+      "target": 63,
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 63,
+      "target": 64,
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "source": 64,
+      "target": 65,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 65,
+      "target": 66,
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "source": 66,
+      "target": 67,
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 67,
+      "target": 68,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 68,
+      "target": 69,
+      "topics": [
+        "Introduction",
+        "Advanced",
+        "Theory"
+      ]
+    },
+    {
+      "source": 69,
+      "target": 70,
+      "topics": [
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "source": 70,
+      "target": 71,
+      "topics": [
+        "Theory",
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 71,
+      "target": 72,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 72,
+      "target": 73,
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 73,
+      "target": 74,
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "source": 74,
+      "target": 75,
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 75,
+      "target": 76,
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 76,
+      "target": 77,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 77,
+      "target": 78,
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 78,
+      "target": 79,
+      "topics": [
+        "Case Studies",
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 79,
+      "target": 80,
+      "topics": [
+        "Basics",
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 80,
+      "target": 81,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 81,
+      "target": 82,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 82,
+      "target": 83,
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "source": 83,
+      "target": 84,
+      "topics": [
+        "Basics",
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 84,
+      "target": 85,
+      "topics": [
+        "Research",
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 85,
+      "target": 86,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 86,
+      "target": 87,
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 87,
+      "target": 88,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 88,
+      "target": 89,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 89,
+      "target": 90,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 90,
+      "target": 91,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 91,
+      "target": 92,
+      "topics": [
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 92,
+      "target": 93,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 93,
+      "target": 94,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 94,
+      "target": 95,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 95,
+      "target": 96,
+      "topics": [
+        "Theory",
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "source": 96,
+      "target": 97,
+      "topics": [
+        "Conclusion",
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 97,
+      "target": 98,
+      "topics": [
+        "Case Studies",
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 98,
+      "target": 99,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 99,
+      "target": 100,
+      "topics": [
+        "Basics",
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 100,
+      "target": 101,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 101,
+      "target": 102,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 102,
+      "target": 103,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 103,
+      "target": 104,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 104,
+      "target": 105,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 105,
+      "target": 106,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 106,
+      "target": 107,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 107,
+      "target": 108,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 108,
+      "target": 109,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 109,
+      "target": 110,
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "source": 110,
+      "target": 111,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 111,
+      "target": 112,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 112,
+      "target": 113,
+      "topics": [
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 113,
+      "target": 114,
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 114,
+      "target": 115,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 115,
+      "target": 116,
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 116,
+      "target": 117,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 117,
+      "target": 118,
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 118,
+      "target": 119,
+      "topics": [
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "source": 119,
+      "target": 120,
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 120,
+      "target": 121,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 121,
+      "target": 122,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 122,
+      "target": 123,
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 123,
+      "target": 124,
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 124,
+      "target": 125,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 125,
+      "target": 126,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 126,
+      "target": 127,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 127,
+      "target": 128,
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "source": 128,
+      "target": 129,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 129,
+      "target": 130,
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "source": 130,
+      "target": 131,
+      "topics": [
+        "Basics",
+        "Theory"
+      ]
+    },
+    {
+      "source": 131,
+      "target": 132,
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 132,
+      "target": 133,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 133,
+      "target": 134,
+      "topics": [
+        "Conclusion",
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 134,
+      "target": 135,
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 135,
+      "target": 136,
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "source": 136,
+      "target": 137,
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 137,
+      "target": 138,
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 138,
+      "target": 139,
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 139,
+      "target": 140,
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "source": 140,
+      "target": 141,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 141,
+      "target": 142,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 142,
+      "target": 143,
+      "topics": [
+        "Basics",
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 143,
+      "target": 144,
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "source": 144,
+      "target": 145,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 145,
+      "target": 146,
+      "topics": [
+        "Theory",
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "source": 146,
+      "target": 147,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 147,
+      "target": 148,
+      "topics": [
+        "Basics",
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 148,
+      "target": 149,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 149,
+      "target": 150,
+      "topics": [
+        "Conclusion",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 150,
+      "target": 151,
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 151,
+      "target": 152,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 152,
+      "target": 153,
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 153,
+      "target": 154,
+      "topics": [
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 154,
+      "target": 155,
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 155,
+      "target": 156,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 156,
+      "target": 157,
+      "topics": [
+        "Theory",
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "source": 157,
+      "target": 158,
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 158,
+      "target": 159,
+      "topics": [
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "source": 159,
+      "target": 160,
+      "topics": [
+        "Case Studies",
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 160,
+      "target": 161,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 161,
+      "target": 162,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 162,
+      "target": 163,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 163,
+      "target": 164,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 164,
+      "target": 165,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 165,
+      "target": 166,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 166,
+      "target": 167,
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "source": 167,
+      "target": 168,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 168,
+      "target": 169,
+      "topics": [
+        "Theory",
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 169,
+      "target": 170,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 170,
+      "target": 171,
+      "topics": [
+        "Theory",
+        "Research",
+        "Basics"
+      ]
+    },
+    {
+      "source": 171,
+      "target": 172,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 172,
+      "target": 173,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 173,
+      "target": 174,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 174,
+      "target": 175,
+      "topics": [
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 175,
+      "target": 176,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 176,
+      "target": 177,
+      "topics": [
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "source": 177,
+      "target": 178,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 178,
+      "target": 179,
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 179,
+      "target": 180,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 180,
+      "target": 181,
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "source": 181,
+      "target": 182,
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "source": 182,
+      "target": 183,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 183,
+      "target": 184,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 184,
+      "target": 185,
+      "topics": [
+        "Basics",
+        "Theory"
+      ]
+    },
+    {
+      "source": 185,
+      "target": 186,
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "source": 186,
+      "target": 187,
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "source": 187,
+      "target": 188,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 188,
+      "target": 189,
+      "topics": [
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 189,
+      "target": 190,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 190,
+      "target": 191,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 191,
+      "target": 192,
+      "topics": [
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 192,
+      "target": 193,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 193,
+      "target": 194,
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "source": 194,
+      "target": 195,
+      "topics": [
+        "Theory",
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "source": 195,
+      "target": 196,
+      "topics": [
+        "Research",
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "source": 196,
+      "target": 197,
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 197,
+      "target": 198,
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 198,
+      "target": 199,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 199,
+      "target": 200,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 200,
+      "target": 201,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 201,
+      "target": 202,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 202,
+      "target": 203,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 203,
+      "target": 204,
+      "topics": [
+        "Advanced",
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 204,
+      "target": 205,
+      "topics": [
+        "Basics",
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 205,
+      "target": 206,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 206,
+      "target": 207,
+      "topics": [
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 207,
+      "target": 208,
+      "topics": [
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 208,
+      "target": 209,
+      "topics": [
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 209,
+      "target": 210,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 210,
+      "target": 211,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 211,
+      "target": 212,
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 212,
+      "target": 213,
+      "topics": [
+        "Theory",
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "source": 213,
+      "target": 214,
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "source": 214,
+      "target": 215,
+      "topics": [
+        "Case Studies",
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "source": 215,
+      "target": 216,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 216,
+      "target": 217,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 217,
+      "target": 218,
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "source": 218,
+      "target": 219,
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 219,
+      "target": 220,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 220,
+      "target": 221,
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "source": 221,
+      "target": 222,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 222,
+      "target": 223,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 223,
+      "target": 224,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 224,
+      "target": 225,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 225,
+      "target": 226,
+      "topics": [
+        "Theory",
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 226,
+      "target": 227,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 227,
+      "target": 228,
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 228,
+      "target": 229,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 229,
+      "target": 230,
+      "topics": [
+        "Research",
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 230,
+      "target": 231,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 231,
+      "target": 232,
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "source": 232,
+      "target": 233,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 233,
+      "target": 234,
+      "topics": [
+        "Conclusion",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 234,
+      "target": 235,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 235,
+      "target": 236,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 236,
+      "target": 237,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 237,
+      "target": 238,
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 238,
+      "target": 239,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 239,
+      "target": 240,
+      "topics": [
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "source": 240,
+      "target": 241,
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 241,
+      "target": 242,
+      "topics": [
+        "Research",
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 242,
+      "target": 243,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 243,
+      "target": 244,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 244,
+      "target": 245,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 245,
+      "target": 246,
+      "topics": [
+        "Advanced",
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "source": 246,
+      "target": 247,
+      "topics": [
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 247,
+      "target": 248,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 248,
+      "target": 249,
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 249,
+      "target": 250,
+      "topics": [
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "source": 250,
+      "target": 251,
+      "topics": [
+        "Case Studies",
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 251,
+      "target": 252,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 252,
+      "target": 253,
+      "topics": [
+        "Research",
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 253,
+      "target": 254,
+      "topics": [
+        "Research",
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "source": 254,
+      "target": 255,
+      "topics": [
+        "Advanced",
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 255,
+      "target": 256,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 256,
+      "target": 257,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 257,
+      "target": 258,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 258,
+      "target": 259,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 259,
+      "target": 260,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 260,
+      "target": 261,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 261,
+      "target": 262,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 262,
+      "target": 263,
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "source": 263,
+      "target": 264,
+      "topics": [
+        "Case Studies",
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 264,
+      "target": 265,
+      "topics": [
+        "Conclusion",
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 265,
+      "target": 266,
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "source": 266,
+      "target": 267,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 267,
+      "target": 268,
+      "topics": [
+        "Introduction",
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "source": 268,
+      "target": 269,
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 269,
+      "target": 270,
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 270,
+      "target": 271,
+      "topics": [
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 271,
+      "target": 272,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 272,
+      "target": 273,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 273,
+      "target": 274,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 274,
+      "target": 275,
+      "topics": [
+        "Introduction",
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 275,
+      "target": 276,
+      "topics": [
+        "Theory",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 276,
+      "target": 277,
+      "topics": [
+        "Research",
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "source": 277,
+      "target": 278,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 278,
+      "target": 279,
+      "topics": [
+        "Advanced",
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 279,
+      "target": 280,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 280,
+      "target": 281,
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "source": 281,
+      "target": 282,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 282,
+      "target": 283,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 283,
+      "target": 284,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 284,
+      "target": 285,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 285,
+      "target": 286,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 286,
+      "target": 287,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 287,
+      "target": 288,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 288,
+      "target": 289,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 289,
+      "target": 290,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 290,
+      "target": 291,
+      "topics": [
+        "Introduction",
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 291,
+      "target": 292,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 292,
+      "target": 293,
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "source": 293,
+      "target": 294,
+      "topics": [
+        "Conclusion",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 294,
+      "target": 295,
+      "topics": [
+        "Theory",
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 295,
+      "target": 296,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 296,
+      "target": 297,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 297,
+      "target": 298,
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "source": 298,
+      "target": 299,
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 299,
+      "target": 300,
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "source": 300,
+      "target": 301,
+      "topics": [
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 301,
+      "target": 302,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 302,
+      "target": 303,
+      "topics": [
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 303,
+      "target": 304,
+      "topics": [
+        "Conclusion",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 304,
+      "target": 305,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 305,
+      "target": 306,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 306,
+      "target": 307,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 307,
+      "target": 308,
+      "topics": [
+        "Introduction",
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 308,
+      "target": 309,
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 309,
+      "target": 310,
+      "topics": [
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 310,
+      "target": 311,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 311,
+      "target": 312,
+      "topics": [
+        "Introduction",
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 312,
+      "target": 313,
+      "topics": [
+        "Case Studies",
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "source": 313,
+      "target": 314,
+      "topics": [
+        "Advanced",
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 314,
+      "target": 315,
+      "topics": [
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "source": 315,
+      "target": 316,
+      "topics": [
+        "Basics",
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 316,
+      "target": 317,
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 317,
+      "target": 318,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 318,
+      "target": 319,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 319,
+      "target": 320,
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 320,
+      "target": 321,
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 321,
+      "target": 322,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 322,
+      "target": 323,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 323,
+      "target": 324,
+      "topics": [
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "source": 324,
+      "target": 325,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 325,
+      "target": 326,
+      "topics": [
+        "Research",
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 326,
+      "target": 327,
+      "topics": [
+        "Research",
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 327,
+      "target": 328,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 328,
+      "target": 329,
+      "topics": [
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 329,
+      "target": 330,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 330,
+      "target": 331,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 331,
+      "target": 332,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 332,
+      "target": 333,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 333,
+      "target": 334,
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 334,
+      "target": 335,
+      "topics": [
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 335,
+      "target": 336,
+      "topics": [
+        "Research",
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "source": 336,
+      "target": 337,
+      "topics": [
+        "Theory",
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "source": 337,
+      "target": 338,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 338,
+      "target": 339,
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 339,
+      "target": 340,
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 340,
+      "target": 341,
+      "topics": [
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "source": 341,
+      "target": 342,
+      "topics": [
+        "Research",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 342,
+      "target": 343,
+      "topics": [
+        "Advanced",
+        "Theory"
+      ]
+    },
+    {
+      "source": 343,
+      "target": 344,
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "source": 344,
+      "target": 345,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 345,
+      "target": 346,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 346,
+      "target": 347,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 347,
+      "target": 348,
+      "topics": [
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 348,
+      "target": 349,
+      "topics": [
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "source": 349,
+      "target": 350,
+      "topics": [
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 350,
+      "target": 351,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 351,
+      "target": 352,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 352,
+      "target": 353,
+      "topics": [
+        "Introduction",
+        "Theory"
+      ]
+    },
+    {
+      "source": 353,
+      "target": 354,
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 354,
+      "target": 355,
+      "topics": [
+        "Research",
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "source": 355,
+      "target": 356,
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 356,
+      "target": 357,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 357,
+      "target": 358,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 358,
+      "target": 359,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 359,
+      "target": 360,
+      "topics": [
+        "Introduction",
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "source": 360,
+      "target": 361,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 361,
+      "target": 362,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 362,
+      "target": 363,
+      "topics": [
+        "Advanced",
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 363,
+      "target": 364,
+      "topics": [
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 364,
+      "target": 365,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 365,
+      "target": 366,
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "source": 366,
+      "target": 367,
+      "topics": [
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 367,
+      "target": 368,
+      "topics": [
+        "Introduction",
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "source": 368,
+      "target": 369,
+      "topics": [
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "source": 369,
+      "target": 370,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 370,
+      "target": 371,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 371,
+      "target": 372,
+      "topics": [
+        "Research",
+        "Basics"
+      ]
+    },
+    {
+      "source": 372,
+      "target": 373,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 373,
+      "target": 374,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 374,
+      "target": 375,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 375,
+      "target": 376,
+      "topics": [
+        "Advanced",
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 376,
+      "target": 377,
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "source": 377,
+      "target": 378,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 378,
+      "target": 379,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 379,
+      "target": 380,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 380,
+      "target": 381,
+      "topics": [
+        "Introduction",
+        "Basics"
+      ]
+    },
+    {
+      "source": 381,
+      "target": 382,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 382,
+      "target": 383,
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "source": 383,
+      "target": 384,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 384,
+      "target": 385,
+      "topics": [
+        "Conclusion",
+        "Research",
+        "Basics"
+      ]
+    },
+    {
+      "source": 385,
+      "target": 386,
+      "topics": [
+        "Case Studies",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 386,
+      "target": 387,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 387,
+      "target": 388,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 388,
+      "target": 389,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 389,
+      "target": 390,
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 390,
+      "target": 391,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 391,
+      "target": 392,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 392,
+      "target": 393,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 393,
+      "target": 394,
+      "topics": [
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 394,
+      "target": 395,
+      "topics": [
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 395,
+      "target": 396,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 396,
+      "target": 397,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 397,
+      "target": 398,
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "source": 398,
+      "target": 399,
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 399,
+      "target": 400,
+      "topics": [
+        "Theory",
+        "Case Studies",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 400,
+      "target": 401,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 401,
+      "target": 402,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 402,
+      "target": 403,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 403,
+      "target": 404,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 404,
+      "target": 405,
+      "topics": [
+        "Introduction",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 405,
+      "target": 406,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 406,
+      "target": 407,
+      "topics": [
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 407,
+      "target": 408,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 408,
+      "target": 409,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 409,
+      "target": 410,
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "source": 410,
+      "target": 411,
+      "topics": [
+        "Basics",
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 411,
+      "target": 412,
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "source": 412,
+      "target": 413,
+      "topics": [
+        "Case Studies",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 413,
+      "target": 414,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 414,
+      "target": 415,
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "source": 415,
+      "target": 416,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 416,
+      "target": 417,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 417,
+      "target": 418,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 418,
+      "target": 419,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 419,
+      "target": 420,
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "source": 420,
+      "target": 421,
+      "topics": [
+        "Basics",
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 421,
+      "target": 422,
+      "topics": [
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "source": 422,
+      "target": 423,
+      "topics": [
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 423,
+      "target": 424,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 424,
+      "target": 425,
+      "topics": [
+        "Theory",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 425,
+      "target": 426,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 426,
+      "target": 427,
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 427,
+      "target": 428,
+      "topics": [
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "source": 428,
+      "target": 429,
+      "topics": [
+        "Conclusion",
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 429,
+      "target": 430,
+      "topics": [
+        "Research",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 430,
+      "target": 431,
+      "topics": [
+        "Conclusion",
+        "Theory"
+      ]
+    },
+    {
+      "source": 431,
+      "target": 432,
+      "topics": [
+        "Conclusion",
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "source": 432,
+      "target": 433,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 433,
+      "target": 434,
+      "topics": [
+        "Conclusion",
+        "Advanced",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 434,
+      "target": 435,
+      "topics": [
+        "Research",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 435,
+      "target": 436,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 436,
+      "target": 437,
+      "topics": [
+        "Conclusion",
+        "Advanced",
+        "Theory"
+      ]
+    },
+    {
+      "source": 437,
+      "target": 438,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 438,
+      "target": 439,
+      "topics": [
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "source": 439,
+      "target": 440,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 440,
+      "target": 441,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 441,
+      "target": 442,
+      "topics": [
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 442,
+      "target": 443,
+      "topics": [
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 443,
+      "target": 444,
+      "topics": [
+        "Research",
+        "Basics"
+      ]
+    },
+    {
+      "source": 444,
+      "target": 445,
+      "topics": [
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 445,
+      "target": 446,
+      "topics": [
+        "Advanced",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 446,
+      "target": 447,
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "source": 447,
+      "target": 448,
+      "topics": [
+        "Theory",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 448,
+      "target": 449,
+      "topics": [
+        "Advanced",
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 449,
+      "target": 450,
+      "topics": [
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 450,
+      "target": 451,
+      "topics": [
+        "Conclusion",
+        "Basics"
+      ]
+    },
+    {
+      "source": 451,
+      "target": 452,
+      "topics": [
+        "Case Studies",
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 452,
+      "target": 453,
+      "topics": [
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "source": 453,
+      "target": 454,
+      "topics": [
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "source": 454,
+      "target": 455,
+      "topics": [
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "source": 455,
+      "target": 456,
+      "topics": [
+        "Case Studies",
+        "Theory"
+      ]
+    },
+    {
+      "source": 456,
+      "target": 457,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 457,
+      "target": 458,
+      "topics": [
+        "Research",
+        "Conclusion",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 458,
+      "target": 459,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 459,
+      "target": 460,
+      "topics": [
+        "Basics",
+        "Introduction",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 460,
+      "target": 461,
+      "topics": [
+        "Case Studies",
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "source": 461,
+      "target": 462,
+      "topics": [
+        "Basics"
+      ]
+    },
+    {
+      "source": 462,
+      "target": 463,
+      "topics": [
+        "Conclusion",
+        "Basics",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 463,
+      "target": 464,
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 464,
+      "target": 465,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 465,
+      "target": 466,
+      "topics": [
+        "Theory",
+        "Conclusion",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 466,
+      "target": 467,
+      "topics": [
+        "Theory",
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 467,
+      "target": 468,
+      "topics": [
+        "Case Studies",
+        "Research"
+      ]
+    },
+    {
+      "source": 468,
+      "target": 469,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 469,
+      "target": 470,
+      "topics": [
+        "Advanced",
+        "Basics"
+      ]
+    },
+    {
+      "source": 470,
+      "target": 471,
+      "topics": [
+        "Basics",
+        "Theory",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 471,
+      "target": 472,
+      "topics": [
+        "Research"
+      ]
+    },
+    {
+      "source": 472,
+      "target": 473,
+      "topics": [
+        "Case Studies",
+        "Advanced",
+        "Research"
+      ]
+    },
+    {
+      "source": 473,
+      "target": 474,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 474,
+      "target": 475,
+      "topics": [
+        "Introduction"
+      ]
+    },
+    {
+      "source": 475,
+      "target": 476,
+      "topics": [
+        "Research",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 476,
+      "target": 477,
+      "topics": [
+        "Introduction",
+        "Research"
+      ]
+    },
+    {
+      "source": 477,
+      "target": 478,
+      "topics": [
+        "Conclusion",
+        "Case Studies",
+        "Basics"
+      ]
+    },
+    {
+      "source": 478,
+      "target": 479,
+      "topics": [
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "source": 479,
+      "target": 480,
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 480,
+      "target": 481,
+      "topics": [
+        "Basics",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 481,
+      "target": 482,
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 482,
+      "target": 483,
+      "topics": [
+        "Advanced",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 483,
+      "target": 484,
+      "topics": [
+        "Case Studies",
+        "Advanced",
+        "Theory"
+      ]
+    },
+    {
+      "source": 484,
+      "target": 485,
+      "topics": [
+        "Conclusion",
+        "Theory",
+        "Basics"
+      ]
+    },
+    {
+      "source": 485,
+      "target": 486,
+      "topics": [
+        "Research",
+        "Theory"
+      ]
+    },
+    {
+      "source": 486,
+      "target": 487,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 487,
+      "target": 488,
+      "topics": [
+        "Advanced"
+      ]
+    },
+    {
+      "source": 488,
+      "target": 489,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 489,
+      "target": 490,
+      "topics": [
+        "Basics",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 490,
+      "target": 491,
+      "topics": [
+        "Introduction",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": 491,
+      "target": 492,
+      "topics": [
+        "Introduction",
+        "Basics",
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 492,
+      "target": 493,
+      "topics": [
+        "Conclusion",
+        "Advanced"
+      ]
+    },
+    {
+      "source": 493,
+      "target": 494,
+      "topics": [
+        "Basics",
+        "Research"
+      ]
+    },
+    {
+      "source": 494,
+      "target": 495,
+      "topics": [
+        "Theory"
+      ]
+    },
+    {
+      "source": 495,
+      "target": 496,
+      "topics": [
+        "Theory",
+        "Introduction"
+      ]
+    },
+    {
+      "source": 496,
+      "target": 497,
+      "topics": [
+        "Theory",
+        "Conclusion",
+        "Research"
+      ]
+    },
+    {
+      "source": 497,
+      "target": 498,
+      "topics": [
+        "Theory",
+        "Research"
+      ]
+    },
+    {
+      "source": 498,
+      "target": 499,
+      "topics": [
+        "Case Studies"
+      ]
+    },
+    {
+      "source": 499,
+      "target": 500,
+      "topics": [
+        "Conclusion"
+      ]
+    }
+  ]
+}
