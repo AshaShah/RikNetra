@@ -32,9 +32,28 @@
       box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
       display: none;
     }
+    .search-container {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: white;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    select {
+      padding: 5px;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
+  <div class="search-container">
+    <label for="chapter-select">Search Chapter:</label>
+    <select id="chapter-select">
+      <option value="">Select a Chapter</option>
+    </select>
+  </div>
   <div id="tooltip" class="tooltip"></div>
   <script>
     d3.json("database.json").then(function (data) {
@@ -48,12 +67,10 @@
         .attr("viewBox", `0 0 ${width} ${height}`)
         .attr("preserveAspectRatio", "xMidYMid meet");
 
-      // Define zoom behavior
       const zoom = d3.zoom()
-        .scaleExtent([0.2, 5]) // Set min and max zoom levels
+        .scaleExtent([0.2, 5]) 
         .on("zoom", zoomed);
 
-      // Group for all graph elements
       const g = svg.append("g");
 
       svg.call(zoom);
@@ -88,7 +105,6 @@
           .on("drag", dragged)
           .on("end", dragEnded));
 
-      // Append circles for nodes
       node.append("circle")
         .attr("r", 20)
         .attr("fill", "#69b3a2")
@@ -98,22 +114,24 @@
               <strong>${d.name}</strong><br>
               Topics: ${d.topics.join(", ")}
             `);
-          d3.select(event.target).attr("fill", "#ff6f61"); // Highlight node
+          d3.select(event.target).attr("fill", "#ff6f61");
           link.filter(l => l.source === d || l.target === d)
             .attr("stroke", "#ff6f61")
-            .attr("stroke-width", 4); // Highlight links
+            .attr("stroke-width", 4);
         })
         .on("mousemove", (event) => {
           tooltip.style("top", `${event.pageY + 10}px`)
             .style("left", `${event.pageX + 10}px`);
         })
-        .on("mouseout", (event) => {
+        .on("mouseout", (event, d) => {
           tooltip.style("display", "none");
-          d3.select(event.target).attr("fill", "#69b3a2"); // Reset node color
-          link.attr("stroke", "#aaa").attr("stroke-width", 2); // Reset links
+          d3.select(event.target).attr("fill", "#69b3a2");
+          link.attr("stroke", "#aaa").attr("stroke-width", 2);
+        })
+        .on("click", (event, d) => {
+          window.location.href = d.url; // Redirect to chapter URL
         });
 
-      // Append text labels for nodes
       node.append("text")
         .attr("dy", 4)
         .attr("x", 25)
@@ -147,9 +165,43 @@
       }
 
       function zoomed(event) {
-        g.attr("transform", event.transform); // Apply the zoom/pan transform to the group
+        g.attr("transform", event.transform);
+      }
+
+      // Populate the search dropdown
+      const chapterSelect = d3.select("#chapter-select");
+      data.nodes.forEach(node => {
+        chapterSelect.append("option")
+          .attr("value", node.id)
+          .text(node.name);
+      });
+
+      // Handle chapter search selection
+      chapterSelect.on("change", function(event) {
+        const selectedChapterId = this.value;
+        if (selectedChapterId) {
+          const selectedNode = data.nodes.find(d => d.id === selectedChapterId);
+          focusNode(selectedNode);
+        }
+      });
+
+      // Focus the selected node and its connections
+      function focusNode(nodeData) {
+        const transform = d3.zoomIdentity.translate(width / 2, height / 2).scale(2);
+        svg.transition().duration(750).call(zoom.transform, transform);
+
+        node.select("circle")
+          .attr("fill", d => (d === nodeData ? "#ff6f61" : "#ccc"));
+
+        link.attr("stroke", d => (d.source === nodeData || d.target === nodeData ? "#ff6f61" : "#ccc"))
+            .attr("stroke-width", d => (d.source === nodeData || d.target === nodeData ? 4 : 1));
+
+        // Grayout other nodes and links
+        node.filter(d => d !== nodeData).select("circle").attr("fill", "#ccc");
+        link.filter(d => d.source !== nodeData && d.target !== nodeData).attr("stroke", "#ccc");
       }
     });
   </script>
 </body>
 </html>
+
