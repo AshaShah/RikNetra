@@ -1,0 +1,33 @@
+{
+  "nodes": [
+    { "id": "Node1", "name": "Node 1"},
+    { "id": "Node2", "name": "Node 2"},
+    { "id": "Node3", "name": "Node 3"},
+    { "id": "Node4", "name": "Node 4"},
+    { "id": "Node5", "name": "Node 5"},
+    { "id": "Node6", "name": "Node 6"},
+    { "id": "Node7", "name": "Node 7"},
+    { "id": "Node8", "name": "Node 8"},
+    { "id": "Node9", "name": "Node 9"},
+    { "id": "Node10", "name": "Node 10"}
+  ],
+  "edges": [
+    { "source": "Node1", "target": "Node2", "weight": 0.0013 },
+    { "source": "Node1", "target": "Node3", "weight": 0.0015 },
+    { "source": "Node2", "target": "Node3", "weight": 0.0009 },
+    { "source": "Node2", "target": "Node4", "weight": 0.0012 },
+    { "source": "Node3", "target": "Node5", "weight": 0.0011 },
+    { "source": "Node1", "target": "Node6", "weight": 0.0013 },
+    { "source": "Node10", "target": "Node3", "weight": 0.0015 },
+    { "source": "Node2", "target": "Node3", "weight": 0.0009 },
+    { "source": "Node2", "target": "Node4", "weight": 0.0012 },
+    { "source": "Node4", "target": "Node5", "weight": 0.0011 },
+    { "source": "Node5", "target": "Node2", "weight": 0.0013 },
+    { "source": "Node6", "target": "Node3", "weight": 0.0015 },
+    { "source": "Node7", "target": "Node3", "weight": 0.0009 },
+    { "source": "Node8", "target": "Node4", "weight": 0.0012 },
+    { "source": "Node10", "target": "Node2", "weight": 0.0015 },
+    { "source": "Node10", "target": "Node4", "weight": 0.0015 },
+    { "source": "Node9", "target": "Node5", "weight": 0.0011 }
+  ]
+}

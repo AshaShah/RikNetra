@@ -1,0 +1,116 @@
+/* General body styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden; /* Prevent body scrolling */
+}
+
+
+/* Fixed-size container for the graph */
+.graph-container {
+  position: fixed;
+  top: 100px; /* Adjust based on your search container height */
+  left: 20px;
+  width: 800px;
+  height: 500px;
+  border: 2px solid #ccc;
+  overflow: auto; /* Enable scrollbars */
+  background-color: #fff;
+}
+
+/* Zoom controls */
+.zoom-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.zoom-controls button {
+  background-color: #010302;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  margin: 2px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.zoom-controls button:hover {
+  background-color: #080808;
+}
+/* SVG container */
+.svg-container {
+  width: 100%;
+  height: 10;
+  overflow: visible; /* Allow SVG to extend beyond the container */
+}
+
+/* Ensure the SVG takes up the full container */
+svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  clip-path: inset(0 0 0 0); 
+}
+
+/* Styling for the tooltip */
+.tooltip {
+  position: absolute;
+  display: none;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+/* Styling for the search container */
+.search-container {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it's always on top */
+}
+
+/* Styling for the search input field */
+input[type="text"] {
+  padding: 5px;
+  font-size: 14px;
+  width: 200px;
+  position: relative;
+}
+
+/* Styling for the autocomplete results dropdown */
+.autocomplete-results {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px;
+  max-height: 150px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+/* Styling for individual items in the autocomplete dropdown */
+.autocomplete-results div {
+  padding: 5px;
+  cursor: pointer;
+}
+
+/* Hover effect for dropdown items */
+.autocomplete-results div:hover {
+  background-color: #f0f0f0;
+}
+
+/*to run in local server, use the following command in terminal: python -m http.server 8000  */
