@@ -1,0 +1,88 @@
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #007bff;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+main {
+  padding: 20px;
+}
+
+section {
+  margin-bottom: 20px;
+}
+
+h1, h2 {
+  margin: 0;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+ul li {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 250px;
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+ul li:hover {
+  transform: scale(1.05);
+}
+
+ul li a {
+  display: block;
+  text-decoration: none;
+  color: #007bff;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Popular Suktas Section */
+#popular-suktas {
+  list-style-type: none;
+  padding: 0;
+}
+
+#popular-suktas li {
+  margin: 10px 0;
+}
+
+#popular-suktas a {
+  text-decoration: none;
+  color: #007BFF;
+  font-weight: bold;
+}
+
+#popular-suktas a:hover {
+  text-decoration: underline;
+}
+
+
+footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
