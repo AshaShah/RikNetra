@@ -172,7 +172,7 @@
 
       //*** Append circles to each node
       node.append("circle")
-        .attr("r", 20)
+        .attr("r", 3)
         .attr("fill", "#69b3a2")
         .on("mouseover", (event, d) => {
           // Only apply hover effects if no node is selected
@@ -213,7 +213,7 @@
       node.append("text")
         .attr("dx", 8)  // Moves text slightly to the right
         .attr("dy", 4)  // Moves text slightly downward
-        .style("font-size", "12px")
+        .style("font-size", "4px")
         .style("fill", "black")
         .style("pointer-events", "none")  // Prevents text from interfering with interactions
         .text(d => d.id);  // Display the node id
@@ -398,7 +398,7 @@
       //*** Close the popup when the close button is clicked
       closePopup.on("click", function () {
         popup.style("display", "none");
-      }); */
+      }); 
 
       //*** Close the popup when clicking outside of it
       document.addEventListener("click", function (event) {
@@ -407,7 +407,7 @@
         }
       });
 
-
+*/
 
 
       //*** Function to focus on a specific node by zooming and highlighting it
