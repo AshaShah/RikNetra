@@ -6,93 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Network Graph Visualization</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      background-color: #f8f9fa;
-    }
+  <link rel="stylesheet" href="option1.css">
 
-    .graph-container {
-      position: relative;
-      width: 100%;
-      height: 800px;
-      border: 1px solid #ccc;
-      background-color: white;
-    }
 
-    .controls {
-      margin-bottom: 20px;
-    }
 
-    .controls input,
-    .controls button {
-      margin-right: 10px;
-    }
-
-    .node {
-      cursor: pointer;
-    }
-
-    .edge {
-      stroke: #aaa;
-      stroke-width: 2;
-    }
-
-    .tooltip {
-      position: absolute;
-      background-color: white;
-      padding: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      pointer-events: none;
-    }
-
-    .popup {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background-color: white;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .popup h3 {
-      margin-top: 0;
-    }
-
-    .popup ul {
-      list-style-type: none;
-      padding: 0;
-    }
-
-    .popup ul li {
-      margin-bottom: 10px;
-    }
-
-    .popup ul li a {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    .popup ul li a:hover {
-      text-decoration: underline;
-    }
-  </style>
 </head>
 
 <body>
   <div class="controls">
+    <button id="backBtn"> Back</i> </button>
     <input type="text" id="search-input" placeholder="Search node...">
-    <button id="zoom-in">Zoom In</button>
+    <button id="zoom-in">Zoom In </button>
     <button id="zoom-out">Zoom Out</button>
+    <button id="resetBtn">Reset Graph</button>
     <label>
       <input type="checkbox" id="toggle-labels" checked> Show Labels
     </label>
   </div>
+  
   <div class="graph-container">
     <svg width="100%" height="100%"></svg>
     <div id="tooltip" class="tooltip" style="display: none;"></div>
@@ -205,7 +136,7 @@
         .text(d => d.name)
         .style("font-size", "5px")
         .style("fill", "#333");
-      
+
       // Drag event handlers
       function dragStarted(event, d) {
         if (!event.active) simulation.alphaTarget(0.3).restart();
@@ -316,6 +247,16 @@
           return d.id === selectedNode.id || connected ? "block" : "none";
         });
       }
+      // Back Button
+      document.getElementById("backBtn").addEventListener("click", () => {
+        window.location.href = "index.html"; // Change to the correct main page
+      });
+      // Reset Graph Button
+      document.getElementById("resetBtn").addEventListener("click", () => {
+        svg.transition()
+          .duration(500)
+          .call(zoom.transform, d3.zoomIdentity);
+      });
 
     });
   </script>
