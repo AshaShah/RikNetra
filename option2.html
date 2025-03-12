@@ -2,529 +2,384 @@
 <html lang="en">
 
 <head>
-  <!--*** Meta tags for character encoding and responsive design -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!--*** Title of the webpage -->
-  <title>Rigveda Connections</title>
-  <!--*** Include D3.js library for data visualization -->
+  <title>Network Graph Visualization</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <!--*** Link to external CSS file for styling -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="suktaconnection.css">
 </head>
 
 <body>
-  <!--*** Search container for chapter input and autocomplete results -->
-  <div class="search-container">
-    <label for="chapter-input">Search Chapter:</label>
-    <input type="text" id="chapter-input" placeholder="Search for a chapter">
-    <div id="autocomplete-results" class="autocomplete-results"></div>
+  <div class="controls">
+    <button id="backBtn">Back To Main</button>
+    <input type="text" id="search-input" placeholder="Search node...">
+    <button id="zoom-in">Zoom In</button>
+    <button id="zoom-out">Zoom Out</button>
+    <button id="resetBtn">Reset Graph</button>
+    <label>
+      <input type="checkbox" id="toggle-labels" checked> Show Labels
+    </label>
+    <label>
+      <input type="checkbox" id="isolate-node-toggle"> Show only selected Sukta
+    </label>
+    <button id="colorGroupBtn">Color by Group</button>
+    <button id="defaultColorBtn">Default Color</button>
   </div>
 
-  <!--*** Tooltip for displaying node information on hover -->
-  <div id="tooltip" class="tooltip"></div>
-
-  <!--*** Fixed-size container for the graph -->
   <div class="graph-container">
-    <!--*** Zoom controls for the graph -->
-    <div class="zoom-controls">
-      <button id="zoom-in">+</button>
-      <button id="zoom-out">-</button>
-    </div>
-    <!--*** SVG container for rendering the graph -->
-    <div class="svg-container">
+    <svg width="100%" height="100%"></svg>
+    <div id="tooltip" class="tooltip" style="display: none;"></div>
+    <div id="popup" class="popup" style="display: none;">
+      <h3 id="popup-title"></h3>
+      <ul id="popup-links"></ul>
+      <button id="read-chapter">Read this Chapter</button>
     </div>
   </div>
-
-  <!--*** Reset button to reset the graph to its initial state -->
-  <div class="reset-button-container">
-    <button id="reset-button">Reset Graph</button>
-  </div>
-
-  <!-- *** Popup container section start *** -->
-  <div id="popup" class="popup">
-    <div class="popup-header">
-      <h3 id="popup-title">Connections for Node</h3>
-      <button id="close-popup">&times;</button>
-    </div>
-    <div id="popup-links" class="popup-links"></div>
-  </div>
-  <!-- *** Popup container section end *** -->
-
 
   <script>
-    //*** Define the width and height of the graph
-    const
-      width = 1000,
-      height = 800;
+const width = 1200;
+const height = 800;
+let selectedNode = null;
+let selectedEdge = null;
+let isolateMode = false;
 
-    //*** Load the JSON data containing nodes and edges
-    d3.json("updated_data.json").then(function (data) {
-      //*** Extract weights from edges for normalization
-      const weights = data.edges.map(d => d.weight);
+const svg = d3.select("svg");
+const tooltip = d3.select("#tooltip");
+const popup = d3.select("#popup");
+const popupTitle = d3.select("#popup-title");
+const popupLinks = d3.select("#popup-links");
 
-      //*** Find the minimum and maximum weights for normalization
-      const min_weight = Math.min(...weights);
-      const max_weight = Math.max(...weights);
+const zoom = d3.zoom()
+  .scaleExtent([0.1, 5])
+  .on("zoom", (event) => {
+    g.attr("transform", event.transform);
+  });
 
-      //*** Define the new range for normalized weights
-      const new_min = 0.1;
-      const new_max = 1.0;
+svg.call(zoom);
 
-      //*** Normalize the weights to fit within the new range
-      data.edges.forEach(d => {
-        if (max_weight === min_weight) {
-          d.normalized_weight = min_weight;
-        } else {
-          d.normalized_weight = ((d.weight - min_weight) / (max_weight - min_weight)) * (new_max - new_min) + new_min;
-        }
-      });
+const g = svg.append("g");
 
-      //*** Log the normalized weights for debugging
-      console.log(data.edges.map(d => ({ weight: d.weight, normalized_weight: d.normalized_weight })));
+d3.json("updated_data.json").then(data => {
+  const nodes = data.nodes;
+  const edges = data.edges;
 
-      //*** Create an SVG element and append it to the container
-      const svg = d3.select(".svg-container")
-        .append("svg")
-        .attr("width", "100%") // Fixed width for the container
-        .attr("height", "100%") // Fixed height for the container
-        .attr("viewBox", [0, 0, width, height]) // Set viewBox to enable scaling
-        .attr("preserveAspectRatio", "xMidYMid meet") // Maintain aspect ratio
-        .call(d3.zoom()
-          .scaleExtent([0.2, 5]) // Set minimum and maximum zoom levels
-          .on("zoom", (event) => {
-            g.attr("transform", event.transform); // Apply zoom transformation to the group
-          })
-        );
+  // Extract weights from edges for normalization
+  const weights = edges.map(d => d.weight);
 
-      //*** Append a group element to the SVG for zooming
-      const g = svg.append("g");
+  // Find the minimum and maximum weights for normalization
+  const min_weight = Math.min(...weights);
+  const max_weight = Math.max(...weights);
 
-      //*** Define zoom behavior for the SVG
-      const zoom = d3.zoom()
-        .scaleExtent([0.2, 5])
-        .on("zoom", (event) => {
-          g.attr("transform", event.transform);
-        });
+  // Define the new range for normalized weights
+  const new_min = 1;
+  const new_max = 10;
 
-      //*** Select the tooltip element
-      const tooltip = d3.select("#tooltip");
+  edges.forEach(d => {
+    if (max_weight === min_weight) {
+      d.normalized_weight = new_max; // If all weights are the same, use the maximum value
+    } else {
+      d.normalized_weight = ((d.weight - min_weight) / (max_weight - min_weight)) * (new_max - new_min) + new_min;
+    }
+  });
 
-      //*** Create a force simulation with nodes and edges
-      const simulation = d3.forceSimulation(data.nodes)
-        .force("link", d3.forceLink(data.edges).id(d => d.id).distance(100).strength(0.5)) // Link force
-        .force("charge", d3.forceManyBody().strength(-300)) // Repulsion force
-        .force("collide", d3.forceCollide().radius(30).strength(1))
-        .force("center", d3.forceCenter(width / 2, height / 2)) // Centering force
-        .force("x", d3.forceX(d => d.x).strength(0.1)) // Pull nodes toward the center horizontally
-        .force("y", d3.forceY(d => d.y).strength(0.1)); // Pull nodes toward the center vertically
+  const xScale = d3.scaleLinear()
+    .domain([d3.min(nodes, d => d.x), d3.max(nodes, d => d.x)])
+    .range([100, width - 100]);
 
-      // Scale x and y values to fit the SVG dimensions
-      const scaleX = d3.scaleLinear()
-        .domain([d3.min(data.nodes, d => d.x), d3.max(data.nodes, d => d.x)])
-        .range([0, width]);
+  const yScale = d3.scaleLinear()
+    .domain([d3.min(nodes, d => d.y), d3.max(nodes, d => d.y)])
+    .range([100, height - 100]);
 
-      const scaleY = d3.scaleLinear()
-        .domain([d3.min(data.nodes, d => d.y), d3.max(data.nodes, d => d.y)])
-        .range([0, height]);
-
-      // Apply scaling to node positions
-      data.nodes.forEach(node => {
-        node.x = scaleX(node.x);
-        node.y = scaleY(node.y);
-        //node.fx = node.x; // Fix x position
-        //node.fy = node.y; // Fix y position
-      });
-
-      //*** Create lines for each edge in the data
-      const link = g.append("g")
-        .attr("class", "links")
-        .selectAll("line")
-        .data(data.edges)
-        .enter()
-        .append("line")
-        .attr("stroke", "#aaa") // Set the stroke color
-        .attr("stroke-width", d => Math.max(1, Math.min(10, 1 / d.normalized_weight))); // Adjust thickness (less weight = wider)
-
-      //*** Create nodes for each node in the data
-      const node = g.append("g")
-        .attr("class", "nodes")
-        .selectAll("g")
-        .data(data.nodes)
-        .enter()
-        .append("g")
-        .attr("class", "node")
-        .attr("transform", d => `translate(${d.x}, ${d.y})`) // Set initial position based on x and y
-        .call(d3.drag() // Enable drag behavior for nodes
-          .on("start", dragStarted)
-          .on("drag", dragged)
-          .on("end", dragEnded));
-
-      //*** Append circles to each node
-      node.append("circle")
-        .attr("r", 20)
-        .attr("fill", "#69b3a2")
-        .on("mouseover", (event, d) => {
-          if (!selectedNode) {
-            tooltip.style("display", "block").html(`<strong>${d.name}</strong>`);
-            d3.select(event.target).attr("fill", "#ff6f61");
-            node.selectAll("circle")
-              .attr("fill", node => (node === d || isTarget(d, node) ? "#ff6f61" : "#69b3a2"));
-
-            link.attr("stroke", edge => (edge.source === d ? "#ff6f61" : "#aaa"))
-              .attr("stroke-width", edge => (edge.source === d ? 1 / edge.normalized_weight + 2 : 1 / edge.normalized_weight));
-          }
-        })
-        .on("mousemove", (event) => {
-          const tooltipWidth = tooltip.node().offsetWidth;
-          const tooltipHeight = tooltip.node().offsetHeight;
-          let x = Math.min(event.pageX + 10, window.innerWidth - tooltipWidth - 10);
-          let y = Math.min(event.pageY + 10, window.innerHeight - tooltipHeight - 10);
-          tooltip.style("top", `${y}px`).style("left", `${x}px`);
-        })
-        .on("mouseout", (event, d) => {
-          if (!selectedNode) {
-            tooltip.style("display", "none");
-            d3.select(event.target).attr("fill", "#69b3a2");
-            node.selectAll("circle").attr("fill", "#69b3a2");
-            link.attr("stroke", "#aaa")
-              .attr("stroke-width", edge => 1 / edge.normalized_weight);
-          }
-        })
-        .on("click", (event, d) => {
-          setSelectedNode(d, event.target);
-        });
-
-      //*** Append text labels to each node
-      node.append("text")
-        .attr("dx", 8)  // Moves text slightly to the right
-        .attr("dy", 4)  // Moves text slightly downward
-        .style("font-size", "12px")
-        .style("fill", "black")
-        .style("pointer-events", "none")  // Prevents text from interfering with interactions
-        .text(d => d.id);  // Display the node id
-
-      //*** Update the positions of links and nodes on each tick of the simulation
-      simulation.on("tick", () => {
-        link
-          .attr("x1", d => d.source.x)
-          .attr("y1", d => d.source.y)
-          .attr("x2", d => d.target.x)
-          .attr("y2", d => d.target.y);
-
-        node.attr("transform", d => `translate(${d.x},${d.y})`);
-      });
-
-      //*** Variables to keep track of the selected node and its circle element
-      let selectedNode = null;
-      let selectedCircle = null;
-
-      //*** Function to set the selected node and highlight it
-      function setSelectedNode(nodeData, circleElement) {
-        selectedNode = nodeData;
-        selectedCircle = circleElement;
-        highlightSelectedNode();
+  const link = g.append("g")
+    .selectAll("line")
+    .data(edges)
+    .enter()
+    .append("line")
+    .attr("class", "edge")
+    .attr("stroke-width", d => 11 - d.normalized_weight) // Apply normalized weight
+    .attr("stroke", "#aaa")
+    .on("click", (event, d) => {
+      if (selectedEdge) {
+        selectedEdge.attr("stroke", "#aaa"); // Reset previous selected edge color
       }
-
-      //*** Function to highlight the selected node and its connected links
-      function highlightSelectedNode() {
-        node.selectAll("circle")
-          .attr("fill", d => (d === selectedNode ? "#ff6f61" : "#ccc"));
-
-        node.selectAll("text")
-          .attr("fill", d => (d === selectedNode ? "#ff6f61" : "#ccc"));
-
-        link.attr("stroke", d => (d.source === selectedNode ? "#ff6f61" : "#aaa"))
-          .attr("stroke-width", d => (d.source === selectedNode ? 1 / d.normalized_weight + 2 : 1 / d.normalized_weight))
-          .raise();
+      selectedEdge = d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
+      highlightEdgeNodes(d);
+    })
+    .on("mouseover", (event, d) => {
+      d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
+    })
+    .on("mouseout", (event, d) => {
+      if (!selectedEdge || d3.select(event.target).datum() !== selectedEdge.datum()) {
+        d3.select(event.target).attr("stroke", "#aaa").attr("stroke-width", 11 - d.normalized_weight);
       }
-
-      //*** Drag event handlers for nodes
-      function dragStarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-      }
-
-      function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-      }
-
-      function dragEnded(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-        if (!event.subject) {
-          d.fx = null;
-          d.fy = null;
-        }
-      }
-
-      //*** Select the chapter input and autocomplete results elements
-      const chapterInput = d3.select("#chapter-input");
-      const autocompleteResults = d3.select("#autocomplete-results");
-
-      //*** Listen for input events on the chapter input field
-      chapterInput.on("input", function () {
-        const searchTerm = this.value.toLowerCase();
-        const filteredNodes = data.nodes.filter(d => d.name.toLowerCase().includes(searchTerm));
-
-        //*** Clear previous autocomplete results
-        autocompleteResults.html("");
-
-        //*** Hide the results if no matches are found
-        if (filteredNodes.length === 0) {
-          autocompleteResults.style("display", "none");
-          return;
-        }
-
-        //*** Display the filtered nodes in the autocomplete results
-        autocompleteResults.style("display", "block");
-        filteredNodes.forEach(node => {
-          autocompleteResults.append("div")
-            .text(node.name)
-            .on("click", function () {
-              chapterInput.property("value", node.name);
-              focusNode(node);
-              autocompleteResults.style("display", "none");
-            });
-        });
-      });
-
-      //*** Handle Enter key press in the chapter input field
-      chapterInput.on("keydown", function (event) {
-        if (event.key === "Enter") {
-          const searchTerm = this.value.toLowerCase();
-          const matchingNode = data.nodes.find(d => d.name.toLowerCase() === searchTerm);
-
-          if (matchingNode) {
-            focusNode(matchingNode);
-            autocompleteResults.style("display", "none"); // Hide the autocomplete dropdown
-          } else {
-            alert("No matching chapter found!"); // Notify the user if no match is found
-          }
-        }
-      });
-
-      //*** Hide the autocomplete results when clicking outside the input or results
-      document.addEventListener("click", function (event) {
-        if (!chapterInput.node().contains(event.target) && !autocompleteResults.node().contains(event.target)) {
-          autocompleteResults.style("display", "none");
-        }
-      });
-
-      //*** Function to show the popup with node details
-      //*** Select the popup and its elements
-      const popup = d3.select("#popup");
-      const popupTitle = d3.select("#popup-title");
-      const popupLinks = d3.select("#popup-links");
-      const closePopup = d3.select("#close-popup");
-
-      //*** Function to show the popup with node details
-      function showPopup(nodeData) {
-        //*** Set the title of the popup
-        popupTitle.text("Connections for " + nodeData.name);
-
-        //*** Clear previous links
-        popupLinks.html("");
-
-        //*** Find all connected nodes (both source and target connections)
-        const filteredEdges = data.edges.filter(edge => {
-          const source = String(edge.source).trim().toLowerCase();
-          const target = String(edge.target).trim().toLowerCase();
-          const nodeId = String(nodeData.id).trim().toLowerCase();
-          return source === nodeId || target === nodeId;
-        });
-        console.log("Filtered Edges:", filteredEdges);
-
-        const connectedNodes = filteredEdges.map(edge => {
-          const source = String(edge.source).trim().toLowerCase();
-          const target = String(edge.target).trim().toLowerCase();
-          const nodeId = String(nodeData.id).trim().toLowerCase();
-          const connectedNodeId = source === nodeId ? target : source;
-          const connectedNode = data.nodes.find(node => String(node.id).trim().toLowerCase() === connectedNodeId);
-          if (!connectedNode) {
-            console.warn("Connected node not found:", connectedNodeId);
-          }
-          return connectedNode;
-        }).filter(node => node); // Remove undefined values
-        console.log("Connected Nodes:", connectedNodes);
-
-        //*** Display a message if no connections are found
-        if (connectedNodes.length === 0) {
-          popupLinks.append("p")
-            .text("No connections found for this node.");
-        } else {
-          //*** Add details for each connected node
-          connectedNodes.forEach((node, index) => {
-            const nodeDiv = popupLinks.append("div")
-              .attr("class", "connected-node");
-
-            //*** Add the connected node's name
-            nodeDiv.append("p")
-              .text(`Node: ${node.name}`);
-
-            //*** Add a link if the node has a URL
-            if (node.url) {
-              nodeDiv.append("a")
-                .attr("href", node.url)
-                .attr("target", "_blank")
-                .text(`Click here to view ${node.name}`);
-            }
-
-            //*** Add other relevant data (e.g., ID, weight, etc.)
-            nodeDiv.append("p")
-              .text(`ID: ${node.id}`);
-
-            //*** Add a separator between nodes (except after the last node)
-            if (index < connectedNodes.length - 1) {
-              popupLinks.append("hr");
-            }
-          });
-        }
-
-        //*** Show the popup
-        popup.style("display", "block");
-      }
-
-      //*** Close the popup when the close button is clicked
-      closePopup.on("click", function () {
-        popup.style("display", "none");
-      });
-
-      //*** Close the popup when clicking outside of it
-      document.addEventListener("click", function (event) {
-        if (!popup.node().contains(event.target) && !d3.select(event.target).classed("node")) {
-          popup.style("display", "none");
-        }
-      });
-
-
-      
-
-      //*** Function to focus on a specific node by zooming and highlighting it
-
-      function focusNode(nodeData) {
-        const x = nodeData.x;
-        const y = nodeData.y;
-        const scale = 2; // Adjust the zoom scale as needed
-
-        // Zoom and pan to the searched node
-        svg.transition()
-          .duration(750)
-          .call(zoom.transform, d3.zoomIdentity
-            .translate(width / 2, height / 2)
-            .scale(scale)
-            .translate(-x, -y)
-          );
-
-        //*** Highlight the searched node and its target nodes
-        node.selectAll("circle")
-          .attr("fill", d => (d === nodeData ? "#ff6f61" : "#ccc")); // Highlight only the searched node
-
-        node.selectAll("text")
-          .attr("fill", d => (d === nodeData ? "#ff6f61" : "#000")); // Highlight only the searched node label
-
-        //*** Highlight outgoing edges of the searched node and dim all other edges
-        link.attr("stroke", d => (d.source === nodeData ? "#ff6f61" : "#aaa")) // Highlight outgoing edges
-          .attr("stroke-width", d => (d.source === nodeData ? 1 / d.normalized_weight + 2 : 1 / d.normalized_weight)) // Adjust stroke width
-        //.attr("opacity", d => (d.source === nodeData ? 1 : 0.3)); // Dim all other edges
-
-        //*** Highlight target nodes
-        const targetNodes = data.edges
-          .filter(edge => edge.source === nodeData.id)
-          .map(edge => data.nodes.find(node => node.id === edge.target));
-
-        targetNodes.forEach(targetNode => {
-          node.selectAll("circle")
-            .filter(d => d === targetNode)
-            .attr("fill", "#ff6f61"); // Highlight target nodes
-
-          node.selectAll("text")
-            .filter(d => d === targetNode)
-            .attr("fill", "#ff6f61"); // Highlight target node labels
-        });
-
-        //*** Set the selected node and highlight it
-        setSelectedNode(nodeData, node.select("circle").node());
-
-        //*** Show the popup with node details
-        showPopup(nodeData);
-      }
-
-      //*** Helper function to check if a node is a target of the source node
-      function isTarget(sourceNode, targetNode) {
-        return data.edges.some(edge => edge.source === sourceNode.id && edge.target === targetNode.id);
-      }
-      //*** Select the reset button
-      const resetButton = d3.select("#reset-button");
-
-      //*** Reset Graph Function (Centered)
-      function resetGraph() {
-        const transform = d3.zoomIdentity
-          .translate(width / 2, height / 2) // Move to center
-          .scale(1) // Reset scale
-          .translate(-width / 2, -height / 2); // Move back to original position
-
-        svg.transition()
-          .duration(750)
-          .call(zoom.transform, transform);
-
-        //*** Reset all nodes and edges to their original colors
-        node.selectAll("circle").attr("fill", "#69b3a2"); // Reset all nodes to original color
-        node.selectAll("text").attr("fill", "#000"); // Reset all node labels to original color
-        link.attr("stroke", "#aaa") // Reset all edges to original color
-          .attr("stroke-width", d => 1 / d.normalized_weight); // Reset edge stroke width
-
-        //*** Clear the search input
-        chapterInput.property("value", "");
-        autocompleteResults.style("display", "none");
-
-        //*** Hide the popup
-        popup.style("display", "none");
-      }
-
-      //*** Add click event listener to the reset button
-      resetButton.on("click", resetGraph);
-
-      //*** Select the zoom in and zoom out buttons
-      const zoomInButton = d3.select("#zoom-in");
-      const zoomOutButton = d3.select("#zoom-out");
-
-      //*** Define zoom scale factor
-      const zoomFactor = 1.2; // Increase or decrease scale by this factor
-      let currentTransform = d3.zoomIdentity; // Track the current zoom state
-
-      //*** Apply zoom transform to SVG
-      function applyZoom(transform) {
-        svg.transition()
-          .duration(300)
-          .call(zoom.transform, transform);
-        currentTransform = transform;
-      }
-
-      //*** Zoom In Event (Centered)
-      zoomInButton.on("click", function () {
-        const [x, y] = [width / 2, height / 2]; // Center of the viewport
-        const scale = currentTransform.k * zoomFactor; // New scale
-        const transform = d3.zoomIdentity
-          .translate(width / 2, height / 2) // Move to center
-          .scale(scale) // Apply new scale
-          .translate(-x, -y); // Move back to original position
-        applyZoom(transform);
-      });
-
-      //*** Zoom Out Event (Centered)
-      zoomOutButton.on("click", function () {
-        const [x, y] = [width / 2, height / 2]; // Center of the viewport
-        const scale = currentTransform.k / zoomFactor; // New scale
-        const transform = d3.zoomIdentity
-          .translate(width / 2, height / 2) // Move to center
-          .scale(scale) // Apply new scale
-          .translate(-x, -y); // Move back to original position
-        applyZoom(transform);
-      });
-
     });
+
+  // Define the drag behavior
+  const drag = d3.drag()
+    .on("start", dragStarted)
+    .on("drag", dragged)
+    .on("end", dragEnded);
+
+  const node = g.append("g")
+    .selectAll("circle")
+    .data(nodes)
+    .enter()
+    .append("circle")
+    .attr("class", "node")
+    .attr("r", 8)
+    .attr("fill", "#43a872") // Default color
+    .call(drag) // Enable drag behavior
+    .on("mouseover", (event, d) => {
+      tooltip.style("display", "block")
+        .html(`<strong>${d.name}</strong>`)
+        .style("left", `${event.pageX + 5}px`)
+        .style("top", `${event.pageY + 5}px`);
+    })
+    .on("mouseout", () => {
+      tooltip.style("display", "none");
+    })
+    .on("click", (event, d) => {
+      selectedNode = d;
+      showPopup(d);
+      zoomToNode(d);
+      highlightNode(d);
+    });
+
+  const label = g.append("g")
+    .selectAll("text")
+    .data(nodes)
+    .enter()
+    .append("text")
+    .attr("x", d => xScale(d.x) + 10)
+    .attr("y", d => yScale(d.y) + 5)
+    .text(d => d.name)
+    .style("font-size", "5px")
+    .style("fill", "black");
+
+  // Force simulation
+  const simulation = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(edges).id(d => d.id).distance(50))
+    .force("charge", d3.forceManyBody().strength(-30))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("x", d3.forceX().x(d => xScale(d.x)))
+    .force("y", d3.forceY().y(d => yScale(d.y)))
+    .on("tick", ticked);
+
+  function ticked() {
+    link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+
+    node
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
+
+    label
+      .attr("x", d => d.x + 10)
+      .attr("y", d => d.y + 5);
+  }
+
+  // Drag event handlers
+  function dragStarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+    simulation.alpha(0.3).restart();
+  }
+
+  function dragEnded(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+
+  d3.select("#toggle-labels").on("change", function () {
+    updateVisibility();
+  });
+
+  d3.select("#zoom-in").on("click", () => {
+    svg.transition().call(zoom.scaleBy, 1.2);
+  });
+
+  d3.select("#zoom-out").on("click", () => {
+    svg.transition().call(zoom.scaleBy, 0.8);
+  });
+
+  d3.select("#search-input").on("input", function () {
+    const searchTerm = this.value.toLowerCase();
+    const matchingNode = nodes.find(n => n.name.toLowerCase().includes(searchTerm));
+    if (matchingNode) {
+      selectedNode = matchingNode;
+      showPopup(matchingNode);
+      zoomToNode(matchingNode);
+      highlightNode(matchingNode);
+    }
+  });
+
+  d3.select("#isolate-node-toggle").on("change", function () {
+    isolateMode = this.checked;
+    updateVisibility();
+  });
+
+  d3.select("#close-popup").on("click", () => {
+    popup.style("display", "none");
+    isolateMode = false;
+    updateVisibility();
+  });
+
+  d3.select("#colorGroupBtn").on("click", () => {
+    colorNodesByGroup();
+  });
+
+
+  d3.select("#defaultColorBtn").on("click", () => {
+    resetNodeColors();
+  });
+
+  function showPopup(node) {
+  popupTitle.text(`Connections for ${node.name}`);
+  popupLinks.html("");
+
+  const connections = edges.filter(e => e.source.id === node.id)
+                           .sort((a, b) => a.weight - b.weight); // Sort by weight ascending
+
+  connections.forEach(conn => {
+    const targetNode = nodes.find(n => n.id === conn.target.id);
+    if (targetNode) {
+      popupLinks.append("li")
+        .text(`${targetNode.name}`);
+    }
+  });
+
+  popup.style("display", "block");
+}
+  function zoomToNode(node) {
+    const x = node.x;
+    const y = node.y;
+    const scale = 2;
+    const transform = d3.zoomIdentity
+      .translate(width / 2, height / 2)
+      .scale(scale)
+      .translate(-x, -y);
+    svg.transition().duration(750).call(zoom.transform, transform);
+  }
+
+  function highlightNode(selectedNode) {
+  node.attr("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1)
+      .attr("stroke", d => d.id === selectedNode.id ? "red" : null)
+      .attr("stroke-width", d => d.id === selectedNode.id ? 2 : null);
+  link.attr("opacity", d => d.source.id === selectedNode.id ? 1 : 0.1)
+      .attr("stroke", d => d.source.id === selectedNode.id ? "red" : "#aaa");
+
+  label.style("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1);
+}
+
+function highlightEdgeNodes(edge) {
+  node.attr("fill", d => {
+    if (d.id === edge.source.id) return "blue";
+    if (d.id === edge.target.id && edge.source.id !== d.id) return "green";
+    return "grey";
+  });
+}
+
+function updateVisibility() {
+  const showLabels = d3.select("#toggle-labels").property("checked");
+
+  node.attr("opacity", d => {
+    if (!isolateMode) return 1;
+    
+    const isConnected = edges.some(e =>
+      e.source.id === selectedNode.id && e.target.id === d.id
+    );
+    
+    return d.id === selectedNode.id || isConnected ? 1 : 0;
+  });
+
+  link.attr("opacity", d => {
+    if (!isolateMode) return 1;
+    return d.source.id === selectedNode.id ? 1 : 0;
+  });
+
+  label.style("display", d => {
+    if (!showLabels) return "none";
+    if (!isolateMode) return "block";
+    
+    const isConnected = edges.some(e =>
+      e.source.id === selectedNode.id && e.target.id === d.id
+    );
+    
+    return d.id === selectedNode.id || isConnected ? "block" : "none";
+  })
+  .style("opacity", d => {
+    if (!isolateMode) return 1;
+    
+    const isConnected = edges.some(e =>
+      e.source.id === selectedNode.id && e.target.id === d.id
+    );
+    
+    return d.id === selectedNode.id || isConnected ? 1 : 0.1;
+  });
+}
+function colorNodesByGroup() {
+    const customColors = [
+      "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
+      "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94", "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5",
+      "#393b79", "#637939", "#8c6d31", "#843c39", "#7b4173", "#5254a3", "#8ca252", "#bd9e39", "#ad494a", "#a55194",
+      "#6b6ecf", "#b5cf6b", "#e7ba52", "#d6616b", "#ce6dbd", "#9c9ede", "#cedb9c", "#e7cb94", "#e7969c", "#de9ed6",
+      "#3182bd", "#31a354", "#756bb1"
+    ];
+    const colorScale = d3.scaleOrdinal(customColors);
+
+    // Check if group values exist
+    nodes.forEach(node => {
+      if (node.group === undefined || node.group === null) {
+        console.error(`Node ${node.id} is missing group value`);
+      } else {
+        console.log(`Node ${node.id} belongs to group ${node.group}`);
+      }
+    });
+
+    // Color the nodes based on their group
+    node.attr("fill", d => {
+      if (d.group !== undefined && d.group !== null) {
+        return colorScale(d.group);
+      } else {
+        return "#43a872"; // Default color for nodes without a group
+      }
+    });
+  }
+
+
+  function resetNodeColors() {
+    node.attr("fill", "#43a872");
+  }
+
+  document.getElementById("backBtn").addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    location.reload(); // Refresh the page to reset everything to default state
+  });
+
+  d3.select("#read-chapter").on("click", () => {
+    if (selectedNode) {
+      const chapterName = selectedNode.name;
+      const chapterId = selectedNode.id;
+
+      window.location.href = `chapter.html?chapterId=${encodeURIComponent(chapterId)}&chapterName=${encodeURIComponent(chapterName)}`;
+    } else {
+      alert("Please select a node first.");
+    }
+  });
+});
   </script>
 </body>
 
