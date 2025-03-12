@@ -88,6 +88,7 @@ body {
   cursor: pointer;
 }
 
+
 .node {
   cursor: pointer;
   stroke-width: 2px;
@@ -186,49 +187,4 @@ body {
 
 .popup-close:hover {
   color: #ff0000;
-}
-
-/* New styles for graph buttons */
-.graph-buttons {
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-}
-
-.graph-buttons .color-btn {
-  padding: 12px 24px;
-  border: none;
-  background-color: #1f77d5;
-  color: white;
-  font-size: 18px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.graph-buttons .color-btn:hover {
-  background-color: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.graph-buttons .color-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.graph-buttons .color-btn.selected {
-  background-color: #ff9900;
-}
-
-.selected-option {
-  margin-top: 12px;
-  font-size: 16px;
-  color: #333;
 }
