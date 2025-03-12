@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter Details</title>
+  <style>
+    /* General Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Arial", sans-serif;
+      background: linear-gradient(135deg, #f4f7fc, #e2e8f0);
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Container for Chapter Details */
+    .chapter-container {
+      width: 90%;
+      max-width: 800px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      margin: 20px;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Chapter Name */
+    .chapter-name {
+      font-size: 32px;
+      font-weight: bold;
+      color: #1f77d5;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* Paragraph Section */
+    .paragraph {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #555;
+      margin-bottom: 30px;
+      text-align: justify;
+    }
+
+    /* Connect Chapter Section */
+    .connect-chapter {
+      margin-top: 30px;
+    }
+
+    .connect-chapter h3 {
+      font-size: 24px;
+      font-weight: bold;
+      color: #1f77d5;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .connect-chapter ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .connect-chapter li {
+      background: #f9fafb;
+      margin-bottom: 10px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .connect-chapter li:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .connect-chapter li a {
+      color: #1f77d5;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+
+    .connect-chapter li a:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+
+    /* Back Button */
+    .back-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 12px 24px;
+      background: #1f77d5;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .back-button:hover {
+      background: #0056b3;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .back-button:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Back Button -->
+  <button class="back-button" onclick="window.location.href='suktaconnection.html'">← Back</button>
+
+  <!-- Chapter Details Container -->
+  <div class="chapter-container">
+    <!-- Chapter Name -->
+    <div class="chapter-name" id="chapter-name"></div>
+
+    <!-- Paragraph Section -->
+    <div class="paragraph">
+      <p id="chapter-info">This is a placeholder paragraph for the chapter. You can add more content here to describe the chapter in detail.</p>
+    </div>
+
+    <!-- Connect Chapter Section -->
+    <div class="connect-chapter">
+      <h3>Related Sukta</h3>
+      <ul id="connect-list"></ul>
+    </div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Get the chapter ID and name from the URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const chapterId = urlParams.get('chapterId');
+    const chapterName = urlParams.get('chapterName');
+
+    // Display the chapter name
+    document.getElementById("chapter-name").textContent = chapterName;
+
+    // Fetch the JSON data to get connected chapters
+    d3.json("updated_data.json").then(data => {
+      const nodes = data.nodes;
+      const edges = data.edges;
+
+      // Find the selected chapter (node) by ID
+      const selectedChapter = nodes.find(node => node.id === chapterId);
+
+      // Display placeholder paragraph (replace with database content later)
+      const chapterInfo = document.getElementById("chapter-info");
+      chapterInfo.textContent = `This is a placeholder for ${selectedChapter.name}. More details will be added later.`;
+
+      // Find connected chapters based on edges where the selected node is the SOURCE
+      const connectedChapters = edges
+        .filter(edge => edge.source === chapterId) // Only include edges where the selected node is the source
+        .map(edge => {
+          const connectedNodeId = edge.target; // Get the target node ID
+          return nodes.find(node => node.id === connectedNodeId); // Find the target node
+        });
+
+      // Display connected chapters
+      const connectList = document.getElementById("connect-list");
+      connectedChapters.forEach(chapter => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="chapter.html?chapterId=${encodeURIComponent(chapter.id)}&chapterName=${encodeURIComponent(chapter.name)}">${chapter.name}</a>`;
+        connectList.appendChild(li);
+      });
+    }).catch(error => {
+      console.error("Error loading JSON data:", error);
+    });
+  </script>
+</body>
+
+</html>
