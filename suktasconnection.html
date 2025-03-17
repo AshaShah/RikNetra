@@ -7,15 +7,16 @@
   <title>Network Graph Visualization</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <link rel="stylesheet" href="suktaconnection.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
   <div class="controls">
-    <button id="backBtn">Back To Main</button>
-    <input type="text" id="search-input" placeholder="Search node...">
-    <button id="zoom-in">Zoom In</button>
-    <button id="zoom-out">Zoom Out</button>
-    <button id="resetBtn">Reset Graph</button>
+    <button id="backBtn"><i class="fas fa-home"></i></button>
+    <input type="text" id="search-input" placeholder="Search Sukta...">
+    <button id="zoom-in"><i class="fas fa-search-plus"></i></button>
+    <button id="zoom-out"><i class="fas fa-search-minus"></i></button>
+    <button id="resetBtn"><i class="fas fa-sync"></i></button>
     <label>
       <input type="checkbox" id="toggle-labels" checked> Show Labels
     </label>
@@ -25,14 +26,21 @@
   </div>
 
   <div class="graph-container">
+    <!-- Graph Buttons on the Right Side -->
     <div class="graph-buttons">
-      <button id="colorGroupBtn" class="color-btn">Color by Group</button>
-      <button id="defaultColorBtn" class="color-btn">Default Color</button>
-      <div id="selectedOption" class="selected-option">Default Color selected</div>
+      <button id="colorGroupBtn" class="color-btn" title="Color by Group">
+        <i class="fas fa-palette"></i> <!-- Icon for Color by Group -->
+      </button>
+      <button id="defaultColorBtn" class="color-btn" title="Default Color">
+        <i class="fas fa-tint"></i> <!-- Icon for Default Color -->
+      </button>
+      <div id="selectedOption" class="selected-option">Selected: Default color</div>
     </div>
+  
     <svg width="100%" height="100%"></svg>
     <div id="tooltip" class="tooltip" style="display: none;"></div>
     <div id="popup" class="popup" style="display: none;">
+      <button id="close-popup" class="close-btn">×</button>
       <h3 id="popup-title"></h3>
       <ul id="popup-links"></ul>
       <button id="read-chapter">Read this Chapter</button>
@@ -248,7 +256,7 @@ d3.json("updated_data.json").then(data => {
   });
 
   function showPopup(node) {
-  popupTitle.text(`Connections for ${node.name}`);
+  popupTitle.text(`${node.name} and its related Sukta`);
   popupLinks.html("");
 
   const connections = edges.filter(e => e.source.id === node.id)
@@ -375,14 +383,14 @@ function colorNodesByGroup() {
   document.getElementById("colorGroupBtn").addEventListener("click", () => {
       document.getElementById("colorGroupBtn").classList.add("selected");
       document.getElementById("defaultColorBtn").classList.remove("selected");
-      document.getElementById("selectedOption").innerText = "Color by Group selected";
+      document.getElementById("selectedOption").innerText = "Selected: Color by Group";
       colorNodesByGroup();
     });
 
     document.getElementById("defaultColorBtn").addEventListener("click", () => {
       document.getElementById("defaultColorBtn").classList.add("selected");
       document.getElementById("colorGroupBtn").classList.remove("selected");
-      document.getElementById("selectedOption").innerText = "Default Color selected";
+      document.getElementById("selectedOption").innerText = "Selected: Default color";
       resetNodeColors();
     });
   d3.select("#read-chapter").on("click", () => {
@@ -395,6 +403,11 @@ function colorNodesByGroup() {
       alert("Please select a node first.");
     }
   });
+  d3.select("#close-popup").on("click", () => {
+  popup.style("display", "none");
+  isolateMode = false;
+  updateVisibility();
+});
 });
   </script>
 </body>
