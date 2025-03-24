@@ -13,6 +13,14 @@
 <body>
   <div class="controls">
     <button id="backBtn"><i class="fas fa-home"></i></button>
+    <select id="database-select">
+      <option value="k3database.json">Sukta with 2 connections</option>
+      <option value="k4database.json">Sukta with 3 connections</option>
+      <option value="k5database.json">Sukta with 4 connections</option>
+      <option value="k6database.json">Sukta with 5 connections</option>
+      <option value="k8database.json">Sukta with 7 connections</option>
+      <option value="k11database.json">Sukta with 10 connections</option>
+    </select>
     <input type="text" id="search-input" placeholder="Search Sukta...">
     <button id="zoom-in"><i class="fas fa-search-plus"></i></button>
     <button id="zoom-out"><i class="fas fa-search-minus"></i></button>
@@ -26,14 +34,15 @@
   </div>
 
   <div class="graph-container">
-    <!-- Graph Buttons on the Right Side -->
     <div class="graph-buttons">
-      <button id="colorGroupBtn" class="color-btn" title="Color by Group">
-        <i class="fas fa-palette"></i> <!-- Icon for Color by Group -->
-      </button>
-      <button id="defaultColorBtn" class="color-btn" title="Default Color">
-        <i class="fas fa-tint"></i> <!-- Icon for Default Color -->
-      </button>
+      <div class="toggle-switch">
+        <input type="checkbox" id="color-toggle">
+        <label for="color-toggle" class="toggle-label">
+          <span class="toggle-text">Default</span> <!-- Text on the left -->
+          <span class="toggle-slider"></span> <!-- Slider in the middle -->
+          <span class="toggle-text">Group</span> <!-- Text on the right -->
+        </label>
+      </div>
       <div id="selectedOption" class="selected-option">Selected: Default color</div>
     </div>
   
@@ -70,344 +79,351 @@ svg.call(zoom);
 
 const g = svg.append("g");
 
-d3.json("updated_data.json").then(data => {
-  const nodes = data.nodes;
-  const edges = data.edges;
+function loadGraphData(database) {
+  d3.json(database).then(data => {
+    const nodes = data.nodes;
+    const edges = data.edges;
 
-  // Extract weights from edges for normalization
-  const weights = edges.map(d => d.weight);
+    // Extract weights from edges for normalization
+    const weights = edges.map(d => d.weight);
 
-  // Find the minimum and maximum weights for normalization
-  const min_weight = Math.min(...weights);
-  const max_weight = Math.max(...weights);
+    // Find the minimum and maximum weights for normalization
+    const min_weight = Math.min(...weights);
+    const max_weight = Math.max(...weights);
 
-  // Define the new range for normalized weights
-  const new_min = 1;
-  const new_max = 10;
+    // Define the new range for normalized weights
+    const new_min = 1;
+    const new_max = 10;
 
-  edges.forEach(d => {
-    if (max_weight === min_weight) {
-      d.normalized_weight = new_max; // If all weights are the same, use the maximum value
-    } else {
-      d.normalized_weight = ((d.weight - min_weight) / (max_weight - min_weight)) * (new_max - new_min) + new_min;
-    }
-  });
-
-
-  const xScale = d3.scaleLinear()
-    .domain([d3.min(nodes, d => d.x), d3.max(nodes, d => d.x)])
-    .range([100, width - 100]);
-
-  const yScale = d3.scaleLinear()
-    .domain([d3.min(nodes, d => d.y), d3.max(nodes, d => d.y)])
-    .range([100, height - 100]);
-
-  const link = g.append("g")
-    .selectAll("line")
-    .data(edges)
-    .enter()
-    .append("line")
-    .attr("class", "edge")
-    .attr("stroke-width", d => 11 - d.normalized_weight) // Apply normalized weight
-    .attr("stroke", "#aaa")
-    .on("click", (event, d) => {
-      if (selectedEdge) {
-        selectedEdge.attr("stroke", "#aaa"); // Reset previous selected edge color
-      }
-      selectedEdge = d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
-      highlightEdgeNodes(d);
-    })
-    .on("mouseover", (event, d) => {
-      d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
-    })
-    .on("mouseout", (event, d) => {
-      if (!selectedEdge || d3.select(event.target).datum() !== selectedEdge.datum()) {
-        d3.select(event.target).attr("stroke", "#aaa").attr("stroke-width", 11 - d.normalized_weight);
+    edges.forEach(d => {
+      if (max_weight === min_weight) {
+        d.normalized_weight = new_max; // If all weights are the same, use the maximum value
+      } else {
+        d.normalized_weight = ((d.weight - min_weight) / (max_weight - min_weight)) * (new_max - new_min) + new_min;
       }
     });
 
-  // Define the drag behavior
-  const drag = d3.drag()
-    .on("start", dragStarted)
-    .on("drag", dragged)
-    .on("end", dragEnded);
+    const xScale = d3.scaleLinear()
+      .domain([d3.min(nodes, d => d.x), d3.max(nodes, d => d.x)])
+      .range([100, width - 100]);
 
-  const node = g.append("g")
-    .selectAll("circle")
-    .data(nodes)
-    .enter()
-    .append("circle")
-    .attr("class", "node")
-    .attr("r", 8)
-    .attr("fill", "#43a872")
-    .call(drag) 
-    .on("mouseover", (event, d) => {
-      tooltip.style("display", "block")
-        .html(`<strong>${d.name}</strong>`)
-        .style("left", `${event.pageX + 5}px`)
-        .style("top", `${event.pageY + 5}px`);
-    })
-    .on("mouseout", () => {
-      tooltip.style("display", "none");
-    })
-    .on("click", (event, d) => {
-      selectedNode = d;
-      showPopup(d);
-      zoomToNode(d);
-      highlightNode(d);
+    const yScale = d3.scaleLinear()
+      .domain([d3.min(nodes, d => d.y), d3.max(nodes, d => d.y)])
+      .range([100, height - 100]);
+
+    const link = g.append("g")
+      .selectAll("line")
+      .data(edges)
+      .enter()
+      .append("line")
+      .attr("class", "edge")
+      .attr("stroke-width", d => 11 - d.normalized_weight) // Apply normalized weight
+      .attr("stroke", "#aaa")
+      .on("click", (event, d) => {
+        if (selectedEdge) {
+          selectedEdge.attr("stroke", "#aaa"); // Reset previous selected edge color
+        }
+        selectedEdge = d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
+        highlightEdgeNodes(d);
+      })
+      .on("mouseover", (event, d) => {
+        d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
+      })
+      .on("mouseout", (event, d) => {
+        if (!selectedEdge || d3.select(event.target).datum() !== selectedEdge.datum()) {
+          d3.select(event.target).attr("stroke", "#aaa").attr("stroke-width", 11 - d.normalized_weight);
+        }
+      });
+
+    // Define the drag behavior
+    const drag = d3.drag()
+      .on("start", dragStarted)
+      .on("drag", dragged)
+      .on("end", dragEnded);
+
+    const node = g.append("g")
+      .selectAll("circle")
+      .data(nodes)
+      .enter()
+      .append("circle")
+      .attr("class", "node")
+      .attr("r", 8)
+      .attr("fill", "#43a872")
+      .call(drag) 
+      .on("mouseover", (event, d) => {
+        tooltip.style("display", "block")
+          .html(`<strong>${d.name}</strong>`)
+          .style("left", `${event.pageX + 5}px`)
+          .style("top", `${event.pageY + 5}px`);
+      })
+      .on("mouseout", () => {
+        tooltip.style("display", "none");
+      })
+      .on("click", (event, d) => {
+        selectedNode = d;
+        showPopup(d);
+        zoomToNode(d);
+        highlightNode(d);
+      });
+
+    const label = g.append("g")
+      .selectAll("text")
+      .data(nodes)
+      .enter()
+      .append("text")
+      .attr("x", d => xScale(d.x) + 10)
+      .attr("y", d => yScale(d.y) + 5)
+      .text(d => d.name)
+      .style("font-size", "5px")
+      .style("fill", "black");
+
+    // Force simulation
+    const simulation = d3.forceSimulation(nodes)
+      .force("link", d3.forceLink(edges).id(d => d.id).distance(50))
+      .force("charge", d3.forceManyBody().strength(-30))
+      .force("center", d3.forceCenter(width / 2, height / 2))
+      .force("x", d3.forceX().x(d => xScale(d.x)))
+      .force("y", d3.forceY().y(d => yScale(d.y)))
+      .on("tick", ticked);
+
+    function ticked() {
+      link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+      node
+        .attr("cx", d => d.x)
+        .attr("cy", d => d.y);
+
+      label
+        .attr("x", d => d.x + 10)
+        .attr("y", d => d.y + 5);
+    }
+
+    // Drag event handlers
+    function dragStarted(event, d) {
+      if (!event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+      simulation.alpha(0.3).restart();
+    }
+
+    function dragEnded(event, d) {
+      if (!event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+    }
+
+    d3.select("#toggle-labels").on("change", updateVisibility);
+
+    d3.select("#zoom-in").on("click", () => {
+      svg.transition().call(zoom.scaleBy, 1.2);
     });
 
-  const label = g.append("g")
-    .selectAll("text")
-    .data(nodes)
-    .enter()
-    .append("text")
-    .attr("x", d => xScale(d.x) + 10)
-    .attr("y", d => yScale(d.y) + 5)
-    .text(d => d.name)
-    .style("font-size", "5px")
-    .style("fill", "black");
+    d3.select("#zoom-out").on("click", () => {
+      svg.transition().call(zoom.scaleBy, 0.8);
+    });
 
-  // Force simulation
-  const simulation = d3.forceSimulation(nodes)
-    .force("link", d3.forceLink(edges).id(d => d.id).distance(50))
-    .force("charge", d3.forceManyBody().strength(-30))
-    .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("x", d3.forceX().x(d => xScale(d.x)))
-    .force("y", d3.forceY().y(d => yScale(d.y)))
-    .on("tick", ticked);
+    d3.select("#search-input").on("input", function () {
+      const searchTerm = this.value.toLowerCase();
+      const matchingNode = nodes.find(n => n.name.toLowerCase().includes(searchTerm));
+      if (matchingNode) {
+        selectedNode = matchingNode;
+        showPopup(matchingNode);
+        zoomToNode(matchingNode);
+        highlightNode(matchingNode);
+      }
+    });
 
-  function ticked() {
-    link
-      .attr("x1", d => d.source.x)
-      .attr("y1", d => d.source.y)
-      .attr("x2", d => d.target.x)
-      .attr("y2", d => d.target.y);
+    d3.select("#isolate-node-toggle").on("change", function () {
+      isolateMode = this.checked;
+      updateVisibility();
+    });
 
-    node
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y);
+    d3.select("#close-popup").on("click", () => {
+      popup.style("display", "none");
+      isolateMode = false;
+      updateVisibility();
+    });
 
-    label
-      .attr("x", d => d.x + 10)
-      .attr("y", d => d.y + 5);
-  }
+    function showPopup(node) {
+      popupTitle.text(`${node.name} and its related Sukta`);
+      popupLinks.html("");
 
-  // Drag event handlers
-  function dragStarted(event, d) {
-    if (!event.active) simulation.alphaTarget(0.3).restart();
-    d.fx = d.x;
-    d.fy = d.y;
-  }
+      const connections = edges.filter(e => e.source.id === node.id)
+                               .sort((a, b) => a.weight - b.weight); // Sort by weight ascending
 
-  function dragged(event, d) {
-    d.fx = event.x;
-    d.fy = event.y;
-    simulation.alpha(0.3).restart();
-  }
+      connections.forEach(conn => {
+        const targetNode = nodes.find(n => n.id === conn.target.id);
+        if (targetNode) {
+          popupLinks.append("li")
+            .text(`${targetNode.name}`);
+        }
+      });
 
-  function dragEnded(event, d) {
-    if (!event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
-  }
-
-  d3.select("#toggle-labels").on("change", function () {
-    updateVisibility();
-  });
-
-  d3.select("#zoom-in").on("click", () => {
-    svg.transition().call(zoom.scaleBy, 1.2);
-  });
-
-  d3.select("#zoom-out").on("click", () => {
-    svg.transition().call(zoom.scaleBy, 0.8);
-  });
-
-  d3.select("#search-input").on("input", function () {
-    const searchTerm = this.value.toLowerCase();
-    const matchingNode = nodes.find(n => n.name.toLowerCase().includes(searchTerm));
-    if (matchingNode) {
-      selectedNode = matchingNode;
-      showPopup(matchingNode);
-      zoomToNode(matchingNode);
-      highlightNode(matchingNode);
+      popup.style("display", "block");
     }
-  });
 
-  d3.select("#isolate-node-toggle").on("change", function () {
-    isolateMode = this.checked;
-    updateVisibility();
-  });
+    function zoomToNode(node) {
+      const x = node.x;
+      const y = node.y;
+      const scale = 2;
+      const transform = d3.zoomIdentity
+        .translate(width / 2, height / 2)
+        .scale(scale)
+        .translate(-x, -y);
+      svg.transition().duration(750).call(zoom.transform, transform);
+    }
 
-  d3.select("#close-popup").on("click", () => {
-    popup.style("display", "none");
-    isolateMode = false;
-    updateVisibility();
-  });
+    function highlightNode(selectedNode) {
+      node.attr("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1)
+          .attr("stroke", d => d.id === selectedNode.id ? "red" : null)
+          .attr("stroke-width", d => d.id === selectedNode.id ? 2 : null);
+      link.attr("opacity", d => d.source.id === selectedNode.id ? 1 : 0.1)
+          .attr("stroke", d => d.source.id === selectedNode.id ? "red" : "#aaa");
 
-  d3.select("#colorGroupBtn").on("click", () => {
+      label.style("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1);
+    }
+
+    function highlightEdgeNodes(edge) {
+      node.attr("fill", d => {
+        if (d.id === edge.source.id) return "blue";
+        if (d.id === edge.target.id && edge.source.id !== d.id) return "green";
+        return "grey";
+      });
+    }
+
+    function updateVisibility() {
+      const showLabels = d3.select("#toggle-labels").property("checked");
+
+      node.attr("opacity", d => {
+        if (!isolateMode) return 1;
+        
+        const isConnected = edges.some(e =>
+          e.source.id === selectedNode.id && e.target.id === d.id
+        );
+        
+        return d.id === selectedNode.id || isConnected ? 1 : 0;
+      });
+
+      link.attr("opacity", d => {
+        if (!isolateMode) return 1;
+        return d.source.id === selectedNode.id ? 1 : 0;
+      });
+
+      label.style("display", d => {
+        if (!showLabels) return "none";
+        if (!isolateMode) return "block";
+        
+        const isConnected = edges.some(e =>
+          e.source.id === selectedNode.id && e.target.id === d.id
+        );
+        
+        return d.id === selectedNode.id || isConnected ? "block" : "none";
+      })
+      .style("opacity", d => {
+        if (!isolateMode) return 1;
+        
+        const isConnected = edges.some(e =>
+          e.source.id === selectedNode.id && e.target.id === d.id
+        );
+        
+        return d.id === selectedNode.id || isConnected ? 1 : 0.1;
+      });
+    }
+
+    function colorNodesByGroup() {
+      const customColors = [
+        "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
+        "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94", "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5",
+        "#393b79", "#637939", "#8c6d31", "#843c39", "#7b4173", "#5254a3", "#8ca252", "#bd9e39", "#ad494a", "#a55194",
+        "#6b6ecf", "#b5cf6b", "#e7ba52", "#d6616b", "#ce6dbd", "#9c9ede", "#cedb9c", "#e7cb94", "#e7969c", "#de9ed6",
+        "#3182bd", "#31a354", "#756bb1"
+      ];
+      const colorScale = d3.scaleOrdinal(customColors);
+
+      // Check if group values exist
+      nodes.forEach(node => {
+        if (node.group === undefined || node.group === null) {
+          console.error(`Node ${node.id} is missing group value`);
+        } else {
+          console.log(`Node ${node.id} belongs to group ${node.group}`);
+        }
+      });
+
+      // Color the nodes based on their group
+      node.attr("fill", d => {
+        if (d.group !== undefined && d.group !== null) {
+          return colorScale(d.group);
+        } else {
+          return "#43a872"; // Default color for nodes without a group
+        }
+      });
+    }
+
+    function resetNodeColors() {
+      node.attr("fill", "#43a872");
+    }
+
+    document.getElementById("backBtn").addEventListener("click", () => {
+      window.location.href = "index.html";
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      location.reload(); // Refresh the page to reset everything to default state
+    });
+
+// Add event listener for the toggle switch
+document.getElementById("color-toggle").addEventListener("change", function () {
+  if (this.checked) {
+    // Toggle is ON (Color by Group)
+    document.getElementById("selectedOption").innerText = "Selected: Color by Group";
     colorNodesByGroup();
-  });
-
-
-  d3.select("#defaultColorBtn").on("click", () => {
+  } else {
+    // Toggle is OFF (Default Color)
+    document.getElementById("selectedOption").innerText = "Selected: Default color";
     resetNodeColors();
-  });
-
-  function showPopup(node) {
-  popupTitle.text(`${node.name} and its related Sukta`);
-  popupLinks.html("");
-
-  const connections = edges.filter(e => e.source.id === node.id)
-                           .sort((a, b) => a.weight - b.weight); // Sort by weight ascending
-
-  connections.forEach(conn => {
-    const targetNode = nodes.find(n => n.id === conn.target.id);
-    if (targetNode) {
-      popupLinks.append("li")
-        .text(`${targetNode.name}`);
-    }
-  });
-
-  popup.style("display", "block");
-}
-  function zoomToNode(node) {
-    const x = node.x;
-    const y = node.y;
-    const scale = 2;
-    const transform = d3.zoomIdentity
-      .translate(width / 2, height / 2)
-      .scale(scale)
-      .translate(-x, -y);
-    svg.transition().duration(750).call(zoom.transform, transform);
   }
-
-  function highlightNode(selectedNode) {
-  node.attr("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1)
-      .attr("stroke", d => d.id === selectedNode.id ? "red" : null)
-      .attr("stroke-width", d => d.id === selectedNode.id ? 2 : null);
-  link.attr("opacity", d => d.source.id === selectedNode.id ? 1 : 0.1)
-      .attr("stroke", d => d.source.id === selectedNode.id ? "red" : "#aaa");
-
-  label.style("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1);
-}
-
-function highlightEdgeNodes(edge) {
-  node.attr("fill", d => {
-    if (d.id === edge.source.id) return "blue";
-    if (d.id === edge.target.id && edge.source.id !== d.id) return "green";
-    return "grey";
-  });
-}
-
-function updateVisibility() {
-  const showLabels = d3.select("#toggle-labels").property("checked");
-
-  node.attr("opacity", d => {
-    if (!isolateMode) return 1;
-    
-    const isConnected = edges.some(e =>
-      e.source.id === selectedNode.id && e.target.id === d.id
-    );
-    
-    return d.id === selectedNode.id || isConnected ? 1 : 0;
-  });
-
-  link.attr("opacity", d => {
-    if (!isolateMode) return 1;
-    return d.source.id === selectedNode.id ? 1 : 0;
-  });
-
-  label.style("display", d => {
-    if (!showLabels) return "none";
-    if (!isolateMode) return "block";
-    
-    const isConnected = edges.some(e =>
-      e.source.id === selectedNode.id && e.target.id === d.id
-    );
-    
-    return d.id === selectedNode.id || isConnected ? "block" : "none";
-  })
-  .style("opacity", d => {
-    if (!isolateMode) return 1;
-    
-    const isConnected = edges.some(e =>
-      e.source.id === selectedNode.id && e.target.id === d.id
-    );
-    
-    return d.id === selectedNode.id || isConnected ? 1 : 0.1;
-  });
-}
-function colorNodesByGroup() {
-    const customColors = [
-      "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
-      "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94", "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5",
-      "#393b79", "#637939", "#8c6d31", "#843c39", "#7b4173", "#5254a3", "#8ca252", "#bd9e39", "#ad494a", "#a55194",
-      "#6b6ecf", "#b5cf6b", "#e7ba52", "#d6616b", "#ce6dbd", "#9c9ede", "#cedb9c", "#e7cb94", "#e7969c", "#de9ed6",
-      "#3182bd", "#31a354", "#756bb1"
-    ];
-    const colorScale = d3.scaleOrdinal(customColors);
-
-    // Check if group values exist
-    nodes.forEach(node => {
-      if (node.group === undefined || node.group === null) {
-        console.error(`Node ${node.id} is missing group value`);
-      } else {
-        console.log(`Node ${node.id} belongs to group ${node.group}`);
-      }
-    });
-
-    // Color the nodes based on their group
-    node.attr("fill", d => {
-      if (d.group !== undefined && d.group !== null) {
-        return colorScale(d.group);
-      } else {
-        return "#43a872"; // Default color for nodes without a group
-      }
-    });
-  }
-
-
-  function resetNodeColors() {
-    node.attr("fill", "#43a872");
-  }
-
-  document.getElementById("backBtn").addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
-
-  document.getElementById("resetBtn").addEventListener("click", () => {
-    location.reload(); // Refresh the page to reset everything to default state
-  });
-  document.getElementById("colorGroupBtn").addEventListener("click", () => {
-      document.getElementById("colorGroupBtn").classList.add("selected");
-      document.getElementById("defaultColorBtn").classList.remove("selected");
-      document.getElementById("selectedOption").innerText = "Selected: Color by Group";
-      colorNodesByGroup();
-    });
-
-    document.getElementById("defaultColorBtn").addEventListener("click", () => {
-      document.getElementById("defaultColorBtn").classList.add("selected");
-      document.getElementById("colorGroupBtn").classList.remove("selected");
-      document.getElementById("selectedOption").innerText = "Selected: Default color";
-      resetNodeColors();
-    });
-  d3.select("#read-chapter").on("click", () => {
-    if (selectedNode) {
-      const chapterName = selectedNode.name;
-      const chapterId = selectedNode.id;
-
-      window.location.href = `chapter.html?chapterId=${encodeURIComponent(chapterId)}&chapterName=${encodeURIComponent(chapterName)}`;
-    } else {
-      alert("Please select a node first.");
-    }
-  });
-  d3.select("#close-popup").on("click", () => {
-  popup.style("display", "none");
-  isolateMode = false;
-  updateVisibility();
 });
+
+    d3.select("#read-chapter").on("click", () => {
+      if (selectedNode) {
+        const chapterName = selectedNode.name;
+        const chapterId = selectedNode.id;
+        const database = d3.select("#database-select").property("value");
+
+        window.location.href = `chapter.html?chapterId=${encodeURIComponent(chapterId)}&chapterName=${encodeURIComponent(chapterName)}&database=${encodeURIComponent(database)}`;
+      } else {
+        alert("Please select a node first.");
+      }
+    });
+  }).catch(error => {
+    console.error("Error loading the graph data:", error);
+  });
+}
+
+// Check if the database parameter is present in the URL
+const urlParams = new URLSearchParams(window.location.search);
+const database = urlParams.get('database');
+if (database) {
+  d3.select("#database-select").property("value", database);
+  loadGraphData(database);
+} else {
+  // Initial load
+  loadGraphData(d3.select("#database-select").property("value"));
+}
+
+// Update graph data when a new database is selected
+d3.select("#database-select").on("change", function() {
+  g.selectAll("*").remove(); // Clear existing graph
+  loadGraphData(this.value);
 });
   </script>
 </body>
