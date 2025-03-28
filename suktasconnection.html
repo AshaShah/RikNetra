@@ -38,9 +38,9 @@
       <div class="toggle-switch">
         <input type="checkbox" id="color-toggle">
         <label for="color-toggle" class="toggle-label">
-          <span class="toggle-text">Default</span> <!-- Text on the left -->
-          <span class="toggle-slider"></span> <!-- Slider in the middle -->
-          <span class="toggle-text">Group</span> <!-- Text on the right -->
+          <span class="toggle-text">Default</span>
+          <span class="toggle-slider"></span>
+          <span class="toggle-text">Group</span>
         </label>
       </div>
       <div id="selectedOption" class="selected-option">Selected: Default color</div>
@@ -62,6 +62,9 @@ const height = 800;
 let selectedNode = null;
 let selectedEdge = null;
 let isolateMode = false;
+let node = null;
+let link = null;
+let label = null;
 
 const svg = d3.select("svg");
 const tooltip = d3.select("#tooltip");
@@ -79,25 +82,32 @@ svg.call(zoom);
 
 const g = svg.append("g");
 
+function resetNodeColors() {
+  if (node) {
+    node.attr("fill", "#43a872");
+  }
+}
+
+function resetColorToggle() {
+  document.getElementById("color-toggle").checked = false;
+  document.getElementById("selectedOption").innerText = "Selected: Default color";
+  resetNodeColors();
+}
+
 function loadGraphData(database) {
   d3.json(database).then(data => {
     const nodes = data.nodes;
     const edges = data.edges;
 
-    // Extract weights from edges for normalization
     const weights = edges.map(d => d.weight);
-
-    // Find the minimum and maximum weights for normalization
     const min_weight = Math.min(...weights);
     const max_weight = Math.max(...weights);
-
-    // Define the new range for normalized weights
     const new_min = 1;
     const new_max = 10;
 
     edges.forEach(d => {
       if (max_weight === min_weight) {
-        d.normalized_weight = new_max; // If all weights are the same, use the maximum value
+        d.normalized_weight = new_max;
       } else {
         d.normalized_weight = ((d.weight - min_weight) / (max_weight - min_weight)) * (new_max - new_min) + new_min;
       }
@@ -111,17 +121,17 @@ function loadGraphData(database) {
       .domain([d3.min(nodes, d => d.y), d3.max(nodes, d => d.y)])
       .range([100, height - 100]);
 
-    const link = g.append("g")
+    link = g.append("g")
       .selectAll("line")
       .data(edges)
       .enter()
       .append("line")
       .attr("class", "edge")
-      .attr("stroke-width", d => 11 - d.normalized_weight) // Apply normalized weight
+      .attr("stroke-width", d => 11 - d.normalized_weight)
       .attr("stroke", "#aaa")
       .on("click", (event, d) => {
         if (selectedEdge) {
-          selectedEdge.attr("stroke", "#aaa"); // Reset previous selected edge color
+          selectedEdge.attr("stroke", "#aaa");
         }
         selectedEdge = d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
         highlightEdgeNodes(d);
@@ -135,13 +145,12 @@ function loadGraphData(database) {
         }
       });
 
-    // Define the drag behavior
     const drag = d3.drag()
       .on("start", dragStarted)
       .on("drag", dragged)
       .on("end", dragEnded);
 
-    const node = g.append("g")
+    node = g.append("g")
       .selectAll("circle")
       .data(nodes)
       .enter()
@@ -166,7 +175,7 @@ function loadGraphData(database) {
         highlightNode(d);
       });
 
-    const label = g.append("g")
+    label = g.append("g")
       .selectAll("text")
       .data(nodes)
       .enter()
@@ -177,7 +186,6 @@ function loadGraphData(database) {
       .style("font-size", "5px")
       .style("fill", "black");
 
-    // Force simulation
     const simulation = d3.forceSimulation(nodes)
       .force("link", d3.forceLink(edges).id(d => d.id).distance(50))
       .force("charge", d3.forceManyBody().strength(-30))
@@ -202,7 +210,6 @@ function loadGraphData(database) {
         .attr("y", d => d.y + 5);
     }
 
-    // Drag event handlers
     function dragStarted(event, d) {
       if (!event.active) simulation.alphaTarget(0.3).restart();
       d.fx = d.x;
@@ -258,7 +265,7 @@ function loadGraphData(database) {
       popupLinks.html("");
 
       const connections = edges.filter(e => e.source.id === node.id)
-                               .sort((a, b) => a.weight - b.weight); // Sort by weight ascending
+                               .sort((a, b) => a.weight - b.weight);
 
       connections.forEach(conn => {
         const targetNode = nodes.find(n => n.id === conn.target.id);
@@ -349,7 +356,6 @@ function loadGraphData(database) {
       ];
       const colorScale = d3.scaleOrdinal(customColors);
 
-      // Check if group values exist
       nodes.forEach(node => {
         if (node.group === undefined || node.group === null) {
           console.error(`Node ${node.id} is missing group value`);
@@ -358,18 +364,13 @@ function loadGraphData(database) {
         }
       });
 
-      // Color the nodes based on their group
       node.attr("fill", d => {
         if (d.group !== undefined && d.group !== null) {
           return colorScale(d.group);
         } else {
-          return "#43a872"; // Default color for nodes without a group
+          return "#43a872";
         }
       });
-    }
-
-    function resetNodeColors() {
-      node.attr("fill", "#43a872");
     }
 
     document.getElementById("backBtn").addEventListener("click", () => {
@@ -377,21 +378,18 @@ function loadGraphData(database) {
     });
 
     document.getElementById("resetBtn").addEventListener("click", () => {
-      location.reload(); // Refresh the page to reset everything to default state
+      location.reload();
     });
 
-// Add event listener for the toggle switch
-document.getElementById("color-toggle").addEventListener("change", function () {
-  if (this.checked) {
-    // Toggle is ON (Color by Group)
-    document.getElementById("selectedOption").innerText = "Selected: Color by Group";
-    colorNodesByGroup();
-  } else {
-    // Toggle is OFF (Default Color)
-    document.getElementById("selectedOption").innerText = "Selected: Default color";
-    resetNodeColors();
-  }
-});
+    document.getElementById("color-toggle").addEventListener("change", function () {
+      if (this.checked) {
+        document.getElementById("selectedOption").innerText = "Selected: Color by Group";
+        colorNodesByGroup();
+      } else {
+        document.getElementById("selectedOption").innerText = "Selected: Default color";
+        resetNodeColors();
+      }
+    });
 
     d3.select("#read-chapter").on("click", () => {
       if (selectedNode) {
@@ -409,20 +407,29 @@ document.getElementById("color-toggle").addEventListener("change", function () {
   });
 }
 
-// Check if the database parameter is present in the URL
 const urlParams = new URLSearchParams(window.location.search);
 const database = urlParams.get('database');
 if (database) {
   d3.select("#database-select").property("value", database);
   loadGraphData(database);
 } else {
-  // Initial load
   loadGraphData(d3.select("#database-select").property("value"));
 }
 
-// Update graph data when a new database is selected
 d3.select("#database-select").on("change", function() {
-  g.selectAll("*").remove(); // Clear existing graph
+
+  // Clear search input
+  document.getElementById("search-input").value = "";
+  
+  // Close any open popup
+  popup.style("display", "none");
+  
+  // Reset isolation mode
+  isolateMode = false;
+  d3.select("#isolate-node-toggle").property("checked", false);
+
+  g.selectAll("*").remove();
+  resetColorToggle();
   loadGraphData(this.value);
 });
   </script>
