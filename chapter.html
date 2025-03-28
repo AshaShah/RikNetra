@@ -10,11 +10,14 @@
 </head>
 
 <body>
-  <!-- Back Button -->
-  <button class="back-button" onclick="window.location.href='suktasconnection.html'">← Back</button>
+  <!-- Header Section -->
+  <header>
+    <!-- Back Button -->
+    <button class="back-button" onclick="goBack()">← Back</button>
 
-  <!-- Home Button -->
-  <button class="home-button" onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
+    <!-- Home Button -->
+    <button class="home-button" onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
+  </header>
 
   <!-- Chapter Details Container -->
   <div class="chapter-container">
@@ -35,16 +38,22 @@
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script>
-    // Get the chapter ID and name from the URL query parameters
+    // Get the chapter ID, name, and database from the URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
     const chapterId = urlParams.get('chapterId');
     const chapterName = urlParams.get('chapterName');
+    const database = urlParams.get('database');
 
     // Display the chapter name
     document.getElementById("chapter-name").textContent = chapterName;
 
+    // Function to go back to suktasconnection.html with the correct database parameter
+    function goBack() {
+      window.location.href = `suktasconnection.html?database=${encodeURIComponent(database)}`;
+    }
+
     // Fetch the JSON data to get connected chapters
-    d3.json("updated_data.json").then(data => {
+    d3.json(database).then(data => {
       const nodes = data.nodes;
       const edges = data.edges;
 
@@ -69,7 +78,7 @@
       const connectList = document.getElementById("connect-list");
       connectedChapters.forEach(chapter => {
         const li = document.createElement("li");
-        li.innerHTML = `<a href="chapter.html?chapterId=${encodeURIComponent(chapter.id)}&chapterName=${encodeURIComponent(chapter.name)}">${chapter.name}</a><span class="dropdown-toggle"></span>`;
+        li.innerHTML = `<a href="chapter.html?chapterId=${encodeURIComponent(chapter.id)}&chapterName=${encodeURIComponent(chapter.name)}&database=${encodeURIComponent(database)}">${chapter.name}</a><span class="dropdown-toggle"></span>`;
         
         // Adding dropdown content
         const dropdownContent = document.createElement("div");
