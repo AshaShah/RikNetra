@@ -10,7 +10,7 @@ body {
 .graph-container {
   position: relative;
   width: 100%;
-  height: 800px;
+  height: 650px;
   border-radius: 12px;
   background-color: white;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
@@ -232,7 +232,7 @@ body {
 /* Graph Buttons Container */
 .graph-buttons {
   position: absolute;
-  top: 650px; /* Adjust as needed */
+  top: 570px; /* Adjust as needed */
   right: 20px; /* Position on the right side */
   display: flex;
   flex-direction: column;

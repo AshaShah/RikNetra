@@ -43,16 +43,16 @@ header button:hover {
 }
 
 .chapter-container {
-  width: 95%; /* Increased width */
-  max-width: 1000px; /* Increased max-width */
+  width: 95%;
+  max-width: 1000px;
   background: white;
   border-radius: 16px;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-  padding: 40px; /* Increased padding */
-  margin: 30px 0; /* Adjusted margin */
+  padding: 40px;
+  margin: 30px 0;
   animation: fadeIn 0.5s ease-in-out;
-  overflow-y: auto; /* Added for scrolling */
-  margin-top: 100px; /* Added margin-top for space below header */
+  overflow-y: auto;
+  margin-top: 100px;
 }
 
 @keyframes fadeIn {
@@ -68,13 +68,13 @@ header button:hover {
 
 /* Chapter Name */
 .chapter-name {
-  font-size: 40px; /* Larger font size */
+  font-size: 40px;
   font-weight: bold;
   color: #1f77d5;
-  margin-bottom: 30px; /* Increased margin */
+  margin-bottom: 30px;
   text-align: center;
-  padding: 20px 0; /* Added padding */
-  border-bottom: 2px solid #1f77d5; /* Added border for emphasis */
+  padding: 20px 0;
+  border-bottom: 2px solid #1f77d5;
 }
 
 /* Paragraph Section */
@@ -112,7 +112,8 @@ header button:hover {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative; /* Added for dropdown */
+  position: relative;
+  overflow: hidden;
 }
 
 .connect-chapter li:hover {
@@ -120,48 +121,56 @@ header button:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-.connect-chapter li a {
+.chapter-link {
   color: #1f77d5;
   text-decoration: none;
   font-size: 18px;
   font-weight: 500;
   transition: color 0.3s ease;
+  display: block;
+  padding-right: 30px; /* Space for dropdown button */
 }
 
-.connect-chapter li a:hover {
+.chapter-link:hover {
   color: #0056b3;
   text-decoration: underline;
 }
 
-/* Dropdown for Related Chapters */
+/* Dropdown Styles */
+.dropdown-toggle {
+  cursor: pointer;
+  font-weight: bold;
+  color: #1f77d5;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  padding: 5px;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  font-size: 16px;
+}
+
+.dropdown-toggle:hover {
+  color: #003f8a;
+}
+
 .dropdown-content {
   display: none;
-  padding: 10px;
+  padding: 15px;
   margin-top: 10px;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 16px;
   color: #555;
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 0.2s ease-in-out;
 }
 
-.dropdown.active .dropdown-content {
+.dropdown-content.active {
   display: block;
-}
-
-.dropdown-toggle {
-  cursor: pointer;
-  font-weight: bold;
-  color: #1f77d5;
-  position: absolute;
-  right: 10px; /* Added for positioning */
-  top: 50%; /* Added for positioning */
-  transform: translateY(-50%); /* Center vertically */
-}
-
-.dropdown-toggle::after {
-  content: " ▼";
-  font-size: 12px;
 }
 
 /* Back and Home Buttons */

@@ -14,6 +14,28 @@
   </header>
 
   <main>
+    <!-- Search Box Section -->
+    <section class="search-section">
+      <div class="search-container">
+        <div class="search-input-container">
+          <input type="text" id="search-box" placeholder="Search by words...">
+          <span class="clear-search" id="clear-search" style="display: none;">×</span>
+          <button id="search-button"><i class="fas fa-search"></i> Search</button>
+        </div>
+        <select id="database-select" class="styled-select">
+          <option value="testdata.json">Test</option>
+          <option value="k3database.json">Sukta with 2 connections</option>
+          <option value="k4database.json">Sukta with 3 connections</option>
+          <option value="k5database.json">Sukta with 4 connections</option>
+          <option value="k6database.json">Sukta with 5 connections</option>
+          <option value="k8database.json">Sukta with 7 connections</option>
+          <option value="k11database.json">Sukta with 10 connections</option>
+        </select>
+      </div>
+      <div id="search-results-dropdown" class="search-results-dropdown">
+        <ul id="search-results"></ul>
+      </div>
+    </section>
     <section>
       <h2>About This Website</h2>
       <p>
@@ -45,6 +67,103 @@
       </ul>
     </section>
   </main>
+
+  <footer>
+    <p>&copy; Rigveda Connections. All rights reserved.</p>
+  </footer>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    const searchBox = document.getElementById("search-box");
+const searchButton = document.getElementById("search-button");
+const databaseSelect = document.getElementById("database-select");
+const searchResultsDropdown = document.getElementById("search-results-dropdown");
+const searchResults = document.getElementById("search-results");
+const clearSearch = document.getElementById("clear-search");
+
+// Show/hide clear button based on input
+searchBox.addEventListener("input", () => {
+  clearSearch.style.display = searchBox.value ? "block" : "none";
+});
+
+// Clear search input
+clearSearch.addEventListener("click", () => {
+  searchBox.value = "";
+  clearSearch.style.display = "none";
+  searchResultsDropdown.style.display = "none";
+  searchBox.focus();
+});
+
+// Search function
+function performSearch() {
+  const searchTerm = searchBox.value.trim().toLowerCase();
+  const selectedDatabase = databaseSelect.value;
+
+  if (!searchTerm) {
+    searchResultsDropdown.style.display = "none";
+    return;
+  }
+
+  d3.json(selectedDatabase).then(data => {
+    const nodes = data.nodes;
+
+    // Filter nodes that match the search term
+    const matchingNodes = nodes.filter(node => node.text && node.text.toLowerCase().includes(searchTerm));
+    
+    if (matchingNodes.length === 0) {
+      searchResults.innerHTML = "<li>No results found</li>";
+      searchResultsDropdown.style.display = "block";
+      return;
+    }
+
+    // Display results
+    searchResults.innerHTML = ""; // Clear previous results
+
+    matchingNodes.forEach(node => {
+      const listItem = document.createElement("li");
+
+      // Highlight the matching word in the text
+      const highlightedText = node.text.replace(
+        new RegExp(`(${searchTerm})`, "gi"),
+        "<mark>$1</mark>"
+      );
+
+      listItem.innerHTML = `
+        <a href="chapter.html?chapterId=${encodeURIComponent(node.id)}&chapterName=${encodeURIComponent(node.name)}&database=${encodeURIComponent(selectedDatabase)}">
+          ${node.name}
+        </a>
+        <p>${highlightedText}</p>
+      `;
+
+      searchResults.appendChild(listItem);
+    });
+    
+    searchResultsDropdown.style.display = "block";
+  }).catch(error => {
+    console.error("Error loading JSON data:", error);
+    searchResults.innerHTML = "<li>Error loading data. Please try again.</li>";
+    searchResultsDropdown.style.display = "block";
+  });
+}
+
+// Search on button click
+searchButton.addEventListener("click", performSearch);
+
+// Search on Enter key
+searchBox.addEventListener("keyup", (event) => {
+  if (event.key === "Enter") {
+    performSearch();
+  }
+});
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (event) => {
+  if (!event.target.closest(".search-section")) {
+    searchResultsDropdown.style.display = "none";
+  }
+});
+  </script>
+
 
   <footer>
     <p>&copy; Rigveda Connections. All rights reserved.</p>
