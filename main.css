@@ -15,6 +15,7 @@ header {
 
 main {
   padding: 20px;
+  padding-bottom: 60px
 }
 
 section {
@@ -167,6 +168,7 @@ ul li a {
   max-height: 400px;
   overflow-y: auto;
   margin-top: 5px;
+  display: none;
 }
 
 .search-results-dropdown ul {
@@ -199,6 +201,9 @@ ul li a {
   margin: 5px 0 0 0;
   color: #666;
   font-size: 14px;
+}
+.search-results-visible {
+  display: block !important;
 }
 
 mark {
