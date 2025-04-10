@@ -76,6 +76,135 @@ ul li a {
   text-decoration: underline;
 }
 
+/* Search Section Styles */
+.search-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-container {
+  display: flex;
+  width: 100%;
+  gap: 10px;
+}
+
+.search-input-container {
+  position: relative;
+  flex-grow: 1;
+  display: flex;
+}
+
+#search-box {
+  width: 100%;
+  padding: 12px 15px;
+  padding-right: 35px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+#search-button {
+  padding: 0 20px;
+  font-size: 16px;
+  background-color: #575c61;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+#search-button:hover {
+  background-color: #0056b3;
+}
+
+.clear-search {
+  position: absolute;
+  right: 120px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+  font-size: 27px;
+  padding: 0 10px;
+}
+
+.clear-search:hover {
+  color: #333;
+}
+
+.styled-select {
+  padding: 12px 15px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.search-results-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid rgb(69, 65, 65);
+  border-radius: 0 0 5px 5px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 100;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 5px;
+}
+
+.search-results-dropdown ul {
+  display: block;
+  width: 100%;
+}
+
+.search-results-dropdown li {
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  padding: 12px 15px;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.search-results-dropdown li:hover {
+  background-color: #a09f9f;
+  transform: none;
+}
+
+.search-results-dropdown li a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.search-results-dropdown li p {
+  margin: 5px 0 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+mark {
+  background-color: #fff9c4;
+  padding: 0 2px;
+}
 
 footer {
   background-color: #333;
@@ -86,3 +215,4 @@ footer {
   bottom: 0;
   width: 100%;
 }
+
