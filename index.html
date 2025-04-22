@@ -6,14 +6,44 @@
   <title>Rigveda Connections</title>
   <link rel="stylesheet" href="main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="darkmode/dark-mode.css">
+  <script src="darkmode/darkMode.js"></script>
+
 </head>
 <body>
   <header>
     <h1>Welcome to Rigveda Connections</h1>
     <p>Explore the connections between chapters in the Rigveda.</p>
+
+    <button id="dark-mode-toggle" class="dark-mode-toggle">
+      <i class="fas fa-moon"></i> Dark Mode
+    </button>
   </header>
 
   <main>
+    <!-- Search Box Section -->
+    <section class="search-section">
+      <div class="search-container">
+        <div class="search-input-container">
+          <input type="text" id="search-box" placeholder="Search by words...">
+          <span class="clear-search" id="clear-search" style="display: none;">×</span>
+          <button id="search-button"><i class="fas fa-search"></i> Search</button>
+        </div>
+        <select id="database-select" class="styled-select">
+          <option value="database/testdata.json">Test</option>
+          <option value="database/k3database.json">Sukta with 2 connections</option>
+          <option value="database/k4database.json">Sukta with 3 connections</option>
+          <option value="database/k5database.json">Sukta with 4 connections</option>
+          <option value="database/6database.json">Sukta with 5 connections</option>
+          <option value="database/k8database.json">Sukta with 7 connections</option>
+          <option value="database/k11database.json">Sukta with 10 connections</option>
+        </select>
+      </div>
+      <div id="search-results-dropdown" class="search-results-dropdown">
+        <ul id="search-results"></ul>
+      </div>
+    </section>
+
     <section>
       <h2>About This Website</h2>
       <p>
@@ -26,22 +56,22 @@
       <h2>Options</h2>
       <ul>
         <li><a href="suktasconnection.html">View Sukta Connections</a></li>
-        <li><a href="option1.html">Option 2 (Coming Soon)</a></li>
+        <li><a href="groupconnection.html">View Group Connections</a></li>
         <li><a href="#">Option 3 (Coming Soon)</a></li>
         <li><a href="#">Option 4 (Coming Soon)</a></li>
       </ul>
     </section>
 
-    <!-- New Section: Popular Suktas -->
+    <!-- Popular Suktas -->
     <section>
       <h2>Popular Suktas</h2>
       <p>Explore famous Suktas from the Rigveda:</p>
       <ul id="popular-suktas">
-        <li><a href="chapter.html?chapterId=RV%2010.129&chapterName=RV%2010.129&database=k5database.json">RV 10.129</a></li>
-        <li><a href="chapter.html?chapterId=RV%201.1&chapterName=RV%201.1&database=k5database.json">RV 1.1</a></li>
-        <li><a href="chapter.html?chapterId=RV%201.2&chapterName=RV%201.2&database=k5database.json">RV 1.2</a></li>
-        <li><a href="chapter.html?chapterId=RV%201.3&chapterName=RV%201.3&database=k5database.json">RV 1.3</a></li>
-        <li><a href="chapter.html?chapterId=RV%201.4&chapterName=RV%201.4&database=k5database.json">RV 1.4</a></li>
+        <li><a href="chapter.html?chapterId=RV%2010.129&chapterName=RV%2010.129&database=database%2Fk5database.json">RV 10.129</a></li>
+        <li><a href="chapter.html?chapterId=RV%201.1&chapterName=RV%201.1&database=database%2Fk5database.json">RV 1.1</a></li>
+        <li><a href="chapter.html?chapterId=RV%201.2&chapterName=RV%201.2&database=database%2Fk5database.json">RV 1.2</a></li>
+        <li><a href="chapter.html?chapterId=RV%201.3&chapterName=RV%201.3&database=database%2Fk5database.json">RV 1.3</a></li>
+        <li><a href="chapter.html?chapterId=RV%201.4&chapterName=RV%201.4&database=database%2Fk5database.json">RV 1.4</a></li>
       </ul>
     </section>
   </main>
@@ -49,5 +79,23 @@
   <footer>
     <p>&copy; Rigveda Connections. All rights reserved.</p>
   </footer>
+
+<!-- Include the D3.js library and the search component script -->
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="searchComponent.js"></script>
+  <script>
+    // Initialize the search component
+    document.addEventListener('DOMContentLoaded', () => {
+      new RigvedaSearch({
+        searchBox: document.getElementById('search-box'),
+        searchButton: document.getElementById('search-button'),
+        clearSearch: document.getElementById('clear-search'),
+        databaseSelect: document.getElementById('database-select'),
+        resultsContainer: document.getElementById('search-results-dropdown'),
+        resultsList: document.getElementById('search-results')
+      });
+    });
+  </script>
+  <script src="darkmode/darkMode.js"></script>
 </body>
 </html>

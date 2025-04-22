@@ -1,189 +1,355 @@
 body {
-    margin: 0;
-    padding: 20px;
-    font-family: "Arial", sans-serif;
-    background-color: #f4f7fc;
-    color: #333;
-  }
-  
-  /* Graph Container */
-  .graph-container {
-    position: relative;
-    width: 100%;
-    height: 800px;
-    border-radius: 12px;
-    background-color: white;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    overflow: hidden;
-    transition: box-shadow 0.3s ease;
-  }
-  
-  .graph-container:hover {
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Controls Section */
-  .controls {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  
-  .controls button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 16px;
-    border: none;
-    background-color: #1f77d5;
-    color: white;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .controls button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  .controls button:active {
-    transform: translateY(0);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .controls button i {
-    margin-right: 8px;
-  }
-  
-  .controls input[type="text"] {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  }
-  
-  .controls input[type="text"]:focus {
-    border-color: #1f77d5;
-    box-shadow: 0 0 8px rgba(31, 119, 213, 0.2);
-  }
-  
-  .controls label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 16px;
-    color: #555;
-  }
-  
-  .controls input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-  }
-  
-  .node {
-    cursor: pointer;
-    stroke-width: 2px;
-  }
-  
-  .edge {
-    stroke: #bbb;
-    stroke-width: 2;
-    transition: stroke 0.3s ease;
-  }
-  
-  .edge:hover {
-    stroke: #007bff;
-  }
-  
-  .tooltip {
-    position: absolute;
-    background-color: white;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    pointer-events: none;
-    font-size: 14px;
-    color: #333;
-  }
-  
-  .popup {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  }
-  
-  .popup h3 {
-    margin-top: 0;
-    font-size: 18px;
-    color: #333;
-  }
-  
-  .popup ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .popup ul li {
-    margin-bottom: 12px;
-  }
-  
-  .popup ul li a {
-    color: #007bff;
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  .popup ul li a:hover {
-    color: #0056b3;
-    text-decoration: underline;
-  }
-  
-  .popup button {
-    margin-top: 16px;
-    padding: 10px 16px;
-    border: none;
-    background-color: #656a6f;
-    color: white;
-    font-size: 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .popup button:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .popup button:active {
-    transform: translateY(0);
-    box-shadow: none;
-  }
-  
-  .popup-close {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    font-size: 24px;
-    color: #333;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .popup-close:hover {
-    color: #ff0000;
-  }
+  margin: 0;
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+  background-color: #f4f7fc;
+  color: #333;
+}
+
+/* Graph Container */
+.graph-container {
+  position: relative;
+  width: 100%;
+  height: 800px;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.graph-container:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Controls Section */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border: none;
+  background-color: #1f77d5;
+  color: white;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.controls button:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.controls button:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.controls button i {
+  margin-right: 8px;
+}
+
+.controls input[type="text"] {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.controls input[type="text"]:focus {
+  border-color: #1f77d5;
+  box-shadow: 0 0 8px rgba(31, 119, 213, 0.2);
+}
+
+.controls select {
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  background-color: white;
+  color: black;
+  font-size: 16px;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.controls select:focus {
+  border-color: #1f77d5;
+  box-shadow: 0 0 8px rgba(31, 119, 213, 0.2);
+}
+
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  color: #555;
+}
+
+.controls input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.node {
+  cursor: pointer;
+  stroke-width: 2px;
+}
+
+.edge {
+  stroke: #bbb;
+  stroke-width: 2;
+  transition: stroke 0.3s ease;
+}
+
+.edge:hover {
+  stroke: #007bff;
+}
+
+.tooltip {
+  position: absolute;
+  background-color: white;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Popup Container */
+.popup {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  max-width: 90%;
+  z-index: 1000;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  background-color: #ff4d4d;
+  color: white;
+  transform: scale(1.1);
+}
+
+.close-btn:active {
+  transform: scale(0.9);
+}
+
+/* Popup Title */
+.popup h3 {
+  margin-top: 0;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+/* Popup Links List */
+.popup ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.popup ul li {
+  margin-bottom: 8px;
+}
+
+.popup ul li a {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.popup ul li a:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Read Chapter Button */
+#read-chapter {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background-color: #1f77d5;
+  color: white;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#read-chapter:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#read-chapter:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Graph Buttons Container */
+.graph-buttons {
+  position: absolute;
+  top: 650px; /* Adjust as needed */
+  right: 20px; /* Position on the right side */
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Spacing between buttons */
+  align-items: flex-end; /* Align buttons to the right */
+}
+
+/* Color Buttons */
+.color-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border: none;
+  background-color: #1f77d5;
+  color: white;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.color-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.color-btn i {
+  font-size: 16px; /* Adjust icon size */
+  margin-right: 8px; /* Add spacing between icon and text (if any) */
+}
+
+/* Selected Option Text */
+.selected-option {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #333;
+  text-align: right; /* Align text to the right */
+}
+
+/* Toggle Switch Container */
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative; /* Ensure relative positioning for absolute children */
+}
+
+/* Hide the checkbox input */
+.toggle-switch input[type="checkbox"] {
+  display: none;
+}
+
+/* Toggle Switch Label */
+.toggle-label {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100px; /* Width of the toggle switch */
+  height: 30px; /* Height of the toggle switch */
+  background-color: #1f77d5; /* Default background color */
+  border-radius: 15px; /* Rounded corners */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Toggle Switch Slider */
+.toggle-slider {
+  position: absolute;
+  width: 26px; /* Size of the slider */
+  height: 26px;
+  background-color: white; /* Slider color */
+  border-radius: 50%; /* Circular slider */
+  left: 2px; /* Initial position on the left */
+  transition: transform 0.3s ease; /* Smooth transition */
+}
+
+/* Toggle Switch Text */
+.toggle-text {
+  font-size: 14px;
+  color: white;
+  transition: opacity 0.3s ease;
+  position: absolute; /* Position text absolutely */
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Center vertically */
+}
+
+/* Position "Default" text on the left */
+.toggle-text:first-child {
+  left: 40px; /* Adjust distance from the left */
+}
+
+/* Position "Group" text on the right */
+.toggle-text:last-child {
+  right: 40px; /* Adjust distance from the right */
+}
+
+/* Toggle Switch Checked State */
+#color-toggle:checked + .toggle-label {
+  background-color: #43a872; /* Change background color when checked */
+}
+
+#color-toggle:checked + .toggle-label .toggle-slider {
+  transform: translateX(70px); /* Move slider to the right */
+}
+
+#color-toggle:checked + .toggle-label .toggle-text:first-child {
+  opacity: 0; /* Hide "Default" text when checked */
+}
+
+#color-toggle:not(:checked) + .toggle-label .toggle-text:last-child {
+  opacity: 0; /* Hide "Group" text when not checked */
+}

@@ -5,15 +5,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chapter Details</title>
-  <link rel="stylesheet" href="chapter.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="chapter.css">
 </head>
 
 <body>
   <!-- Header Section -->
   <header>
     <!-- Back Button -->
-    <button class="back-button" onclick="goBack()">← Back</button>
+    <button class="back-button" onclick="goBack()">Back To Sukta-View</button>
 
     <!-- Home Button -->
     <button class="home-button" onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
@@ -26,7 +26,7 @@
 
     <!-- Paragraph Section -->
     <div class="paragraph">
-      <p id="chapter-info">This is a placeholder paragraph for the chapter. You can add more content here to describe the chapter in detail.</p>
+      <p id="chapter-info"></p>
     </div>
 
     <!-- Connect Chapter Section -->
@@ -60,35 +60,52 @@
       // Find the selected chapter (node) by ID
       const selectedChapter = nodes.find(node => node.id === chapterId);
 
-      // Display placeholder paragraph (replace with database content later)
+      // Display the chapter text or a placeholder if no text is available
       const chapterInfo = document.getElementById("chapter-info");
-      chapterInfo.textContent = `This is a placeholder for ${selectedChapter.name}. More details will be added later.`;
+      chapterInfo.textContent = selectedChapter.text || `This is a placeholder for ${selectedChapter.name}. More details will be added later.`;
 
       // Find connected chapters based on edges where the selected node is the SOURCE
       const connectedChapters = edges
-        .filter(edge => edge.source === chapterId) // Only include edges where the selected node is the source
+        .filter(edge => edge.source === chapterId)
         .map(edge => {
-          const connectedNodeId = edge.target; // Get the target node ID
-          const connectedNode = nodes.find(node => node.id === connectedNodeId); // Find the target node
-          return { ...connectedNode, weight: edge.weight }; // Include the weight in the connected node object
+          const connectedNodeId = edge.target;
+          const connectedNode = nodes.find(node => node.id === connectedNodeId);
+          return { ...connectedNode, weight: edge.weight };
         })
-        .sort((a, b) => a.weight - b.weight); // Sort by weight in ascending order
+        .sort((a, b) => a.weight - b.weight);
 
       // Display connected chapters
       const connectList = document.getElementById("connect-list");
       connectedChapters.forEach(chapter => {
         const li = document.createElement("li");
-        li.innerHTML = `<a href="chapter.html?chapterId=${encodeURIComponent(chapter.id)}&chapterName=${encodeURIComponent(chapter.name)}&database=${encodeURIComponent(database)}">${chapter.name}</a><span class="dropdown-toggle"></span>`;
         
-        // Adding dropdown content
+        // Create link
+        const chapterLink = document.createElement("a");
+        chapterLink.href = `chapter.html?chapterId=${encodeURIComponent(chapter.id)}&chapterName=${encodeURIComponent(chapter.name)}&database=${encodeURIComponent(database)}`;
+        chapterLink.textContent = chapter.name;
+        chapterLink.classList.add("chapter-link");
+        li.appendChild(chapterLink);
+
+        // Create dropdown toggle
+        const dropdownToggle = document.createElement("button");
+        dropdownToggle.classList.add("dropdown-toggle");
+        dropdownToggle.innerHTML = '▼';
+        li.appendChild(dropdownToggle);
+
+        // Create dropdown content
         const dropdownContent = document.createElement("div");
         dropdownContent.classList.add("dropdown-content");
-        dropdownContent.textContent = `This is some placeholder content for ${chapter.name}. More detailed information about this chapter can be added here.`;
+        dropdownContent.textContent = chapter.text || `This is some placeholder content for ${chapter.name}. More detailed information about this chapter can be added here.`;
         li.appendChild(dropdownContent);
 
-        li.querySelector('.dropdown-toggle').addEventListener("click", (event) => {
+        // Event listener for toggle
+        dropdownToggle.addEventListener("click", (event) => {
           event.preventDefault();
+          event.stopPropagation();
           dropdownContent.classList.toggle("active");
+          
+          // Rotate arrow icon
+          dropdownToggle.innerHTML = dropdownContent.classList.contains("active") ? '▲' : '▼';
         });
 
         connectList.appendChild(li);
@@ -97,6 +114,6 @@
       console.error("Error loading JSON data:", error);
     });
   </script>
+  <script src="darkmode/darkMode.js"></script>
 </body>
-
 </html>
