@@ -197,3 +197,132 @@ header button:hover {
   transform: translateY(0);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
+
+/* common */
+.dark-mode-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: rgba(0,0,0,0.1);
+  border: none;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s;
+  z-index: 1000;
+}
+
+.dark-mode-toggle:hover {
+  background-color: rgba(0,0,0,0.2);
+}
+
+.dark-mode .dark-mode-toggle {
+  background-color: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.dark-mode .dark-mode-toggle:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+/* ==================== */
+/* DARK MODE OVERRIDES  */
+/* ==================== */
+
+.dark-mode {
+  background: linear-gradient(135deg, #121212, #1a1a1a);
+  color: #e0e0e0;
+}
+
+/* Header Section */
+.dark-mode header {
+  background-color: #1e1e1e;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode header button {
+  background-color: #bb86fc;
+  color: #121212;
+}
+
+.dark-mode header button:hover {
+  background-color: #9c64d6;
+}
+
+/* Chapter Container */
+.dark-mode .chapter-container {
+  background-color: #1e1e1e;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+}
+
+/* Chapter Name */
+.dark-mode .chapter-name {
+  color: #bb86fc;
+  border-bottom-color: #bb86fc;
+}
+
+/* Paragraph Section */
+.dark-mode .paragraph {
+  color: #e0e0e0;
+}
+
+/* Connect Chapter Section */
+.dark-mode .connect-chapter h3 {
+  color: #bb86fc;
+}
+
+.dark-mode .connect-chapter li {
+  background-color: #2d2d2d;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .chapter-link {
+  color: #bb86fc;
+}
+
+.dark-mode .chapter-link:hover {
+  color: #9c64d6;
+}
+
+/* Dropdown Styles */
+.dark-mode .dropdown-toggle {
+  color: #bb86fc;
+}
+
+.dark-mode .dropdown-toggle:hover {
+  color: #9c64d6;
+}
+
+.dark-mode .dropdown-content {
+  background-color: #2d2d2d;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+/* Buttons */
+.dark-mode .back-button,
+.dark-mode .home-button {
+  background-color: #bb86fc;
+  color: #121212;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .back-button:hover,
+.dark-mode .home-button:hover {
+  background-color: #9c64d6;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Animation remains the same */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

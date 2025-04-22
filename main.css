@@ -221,3 +221,82 @@ footer {
   width: 100%;
 }
 
+/* Only add dark mode overrides using the .dark-mode class */
+.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode header {
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #333;
+}
+
+.dark-mode main {
+  background-color: #121212;
+}
+
+.dark-mode section {
+  background-color: #1e1e1e;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.dark-mode ul li {
+  background-color: #464545;
+  box-shadow: 0px 4px 6px rgba(0,0,0,0.3);
+}
+
+.dark-mode ul li a {
+  color: #bb86fc;
+}
+
+.dark-mode #popular-suktas a {
+  color: #bb86fc;
+}
+
+.dark-mode #search-box,
+.dark-mode .styled-select {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+.dark-mode .search-results-dropdown {
+  background-color: #2d2d2d;
+  border-color: #444;
+}
+
+.dark-mode .search-results-dropdown li {
+  background-color: #2d2d2d;
+  border-bottom-color: #444;
+}
+
+.dark-mode .search-results-dropdown li:hover {
+  background-color: #3d3d3d;
+}
+
+.dark-mode .search-results-dropdown li p {
+  color: #a0a0a0;
+}
+
+.dark-mode footer {
+  background-color: #000;
+}
+
+/* Dark mode toggle button (only appears in dark mode) */
+.dark-mode-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: rgba(255,255,255,0.1);
+  border: none;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s;
+}
+
+.dark-mode-toggle:hover {
+  background-color: rgba(255,255,255,0.2);
+}

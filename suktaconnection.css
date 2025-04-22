@@ -353,3 +353,163 @@ body {
 #color-toggle:not(:checked) + .toggle-label .toggle-text:last-child {
   opacity: 0; /* Hide "Group" text when not checked */
 }
+/* ==================== */
+/* DARK MODE OVERRIDES  */
+/* ==================== */
+
+.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* Graph Container */
+.dark-mode .graph-container {
+  background-color: #1e1e1e;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Controls Section */
+.dark-mode .controls button {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+.dark-mode .controls button:hover {
+  background-color: #3d3d3d;
+}
+
+.dark-mode .controls input[type="text"],
+.dark-mode .controls select {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+.dark-mode .controls label {
+  color: #a0a0a0;
+}
+
+
+.dark-mode .node text {
+  fill: white !important; /* Force white text for node labels */
+}
+
+.dark-mode .edge {
+  stroke: #6f6969;
+}
+
+.dark-mode .edge:hover {
+  stroke: #bb86fc; /* Purple accent for hover */
+}
+
+/* Tooltip */
+.dark-mode .tooltip {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border-color: #444;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Popup Container */
+.dark-mode .popup {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .popup h3 {
+  color: #e0e0e0;
+}
+
+.dark-mode .popup ul li a {
+  color: #bb86fc; /* Purple accent for links */
+}
+
+.dark-mode .popup ul li a:hover {
+  color: #9c64d6; /* Darker purple on hover */
+}
+
+/* Buttons */
+.dark-mode #read-chapter {
+  background-color: #bb86fc; /* Purple accent */
+  color: #121212; /* Dark text for contrast */
+}
+
+.dark-mode #read-chapter:hover {
+  background-color: #9c64d6;
+}
+
+.dark-mode .close-btn {
+  background-color: #3d3d3d;
+  color: #e0e0e0;
+}
+
+.dark-mode .close-btn:hover {
+  background-color: #ff4d4d;
+  color: white;
+}
+
+/* Toggle Switch */
+.dark-mode .toggle-label {
+  background-color: #555;
+}
+
+.dark-mode #color-toggle:checked + .toggle-label {
+  background-color: #43a872; /* Keep your green color */
+}
+
+.dark-mode .selected-option {
+  color: #a0a0a0;
+}
+
+/* Graph Buttons */
+.dark-mode .color-btn {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+}
+
+.dark-mode .color-btn:hover {
+  background-color: #3d3d3d;
+}
+
+/* Text Elements */
+.dark-mode text {
+  fill: white !important; /* Force white text for all SVG text elements */
+}
+
+/* Ensure node names are visible */
+.dark-mode .node text {
+  font-size: 5px;
+  fill: white;
+  stroke: none;
+  paint-order: stroke;
+}
+
+/* common */
+.dark-mode-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  background-color: rgba(0,0,0,0.1);
+  border: none;
+  cursor: pointer;
+  color: white;
+  transition: all 0.3s;
+  z-index: 1000;
+}
+
+.dark-mode-toggle:hover {
+  background-color: rgba(0,0,0,0.2);
+}
+
+.dark-mode .dark-mode-toggle {
+  background-color: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.dark-mode .dark-mode-toggle:hover {
+  background-color: rgba(255,255,255,0.2);
+}
