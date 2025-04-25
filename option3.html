@@ -53,478 +53,172 @@
 
 
   <script>
-    //*** Define the width and height of the graph
-    const
-      width = 1000,
-      height = 800;
+   class RigvedaSearch {
+  constructor({ searchBox, searchButton, clearSearch, databaseSelect, resultsContainer, resultsList }) {
+    this.searchBox = searchBox;
+    this.searchButton = searchButton;
+    this.clearSearch = clearSearch;
+    this.databaseSelect = databaseSelect;
+    this.resultsContainer = resultsContainer;
+    this.resultsList = resultsList;
+    this.currentData = null;
+    this.nodeWeights = {};
 
-    //*** Load the JSON data containing nodes and edges
-    d3.json("updated_data.json").then(function (data) {
-      //*** Extract weights from edges for normalization
-      const weights = data.edges.map(d => d.weight);
+    // Initialize event listeners
+    this.setupEventListeners();
+    this.loadDatabase(this.databaseSelect.value);
+  }
 
-      //*** Find the minimum and maximum weights for normalization
-      const min_weight = Math.min(...weights);
-      const max_weight = Math.max(...weights);
-
-      //*** Define the new range for normalized weights
-      const new_min = 0.1;
-      const new_max = 1.0;
-
-      //*** Normalize the weights to fit within the new range
-      data.edges.forEach(d => {
-        if (max_weight === min_weight) {
-          d.normalized_weight = min_weight;
-        } else {
-          d.normalized_weight = ((d.weight - min_weight) / (max_weight - min_weight)) * (new_max - new_min) + new_min;
-        }
-      });
-
-      //*** Log the normalized weights for debugging
-      console.log(data.edges.map(d => ({ weight: d.weight, normalized_weight: d.normalized_weight })));
-
-      //*** Create an SVG element and append it to the container
-      const svg = d3.select(".svg-container")
-        .append("svg")
-        .attr("width", "100%") // Fixed width for the container
-        .attr("height", "100%") // Fixed height for the container
-        .attr("viewBox", [0, 0, width, height]) // Set viewBox to enable scaling
-        .attr("preserveAspectRatio", "xMidYMid meet") // Maintain aspect ratio
-        .call(d3.zoom()
-          .scaleExtent([0.2, 5]) // Set minimum and maximum zoom levels
-          .on("zoom", (event) => {
-            g.attr("transform", event.transform); // Apply zoom transformation to the group
-          })
-        );
-
-      //*** Append a group element to the SVG for zooming
-      const g = svg.append("g");
-
-      //*** Define zoom behavior for the SVG
-      const zoom = d3.zoom()
-        .scaleExtent([0.2, 5])
-        .on("zoom", (event) => {
-          g.attr("transform", event.transform);
-        });
-
-      //*** Select the tooltip element
-      const tooltip = d3.select("#tooltip");
-
-      //*** Create a force simulation with nodes and edges
-      const simulation = d3.forceSimulation(data.nodes)
-        .force("link", d3.forceLink(data.edges).id(d => d.id).distance(100).strength(0.5)) // Link force
-        .force("charge", d3.forceManyBody().strength(-300)) // Repulsion force
-        .force("collide", d3.forceCollide().radius(30).strength(1))
-        .force("center", d3.forceCenter(width / 2, height / 2)) // Centering force
-        .force("x", d3.forceX(d => d.x).strength(0.1)) // Pull nodes toward the center horizontally
-        .force("y", d3.forceY(d => d.y).strength(0.1)); // Pull nodes toward the center vertically
-
-      // Scale x and y values to fit the SVG dimensions
-      const scaleX = d3.scaleLinear()
-        .domain([d3.min(data.nodes, d => d.x), d3.max(data.nodes, d => d.x)])
-        .range([0, width]);
-
-      const scaleY = d3.scaleLinear()
-        .domain([d3.min(data.nodes, d => d.y), d3.max(data.nodes, d => d.y)])
-        .range([0, height]);
-
-      // Apply scaling to node positions
-      data.nodes.forEach(node => {
-        node.x = scaleX(node.x);
-        node.y = scaleY(node.y);
-        //node.fx = node.x; // Fix x position
-        //node.fy = node.y; // Fix y position
-      });
-
-      //*** Create lines for each edge in the data
-      const link = g.append("g")
-        .attr("class", "links")
-        .selectAll("line")
-        .data(data.edges)
-        .enter()
-        .append("line")
-        .attr("stroke", "#aaa") // Set the stroke color
-        .attr("stroke-width", d => Math.max(1, Math.min(10, 1 / d.normalized_weight))); // Adjust thickness (less weight = wider)
-
-      //*** Create nodes for each node in the data
-      const node = g.append("g")
-        .attr("class", "nodes")
-        .selectAll("g")
-        .data(data.nodes)
-        .enter()
-        .append("g")
-        .attr("class", "node")
-        .attr("transform", d => `translate(${d.x}, ${d.y})`) // Set initial position based on x and y
-        .call(d3.drag() // Enable drag behavior for nodes
-          .on("start", dragStarted)
-          .on("drag", dragged)
-          .on("end", dragEnded));
-
-      //*** Append circles to each node
-      node.append("circle")
-        .attr("r", 20)
-        .attr("fill", "#69b3a2")
-        .on("mouseover", (event, d) => {
-          if (!selectedNode) {
-            tooltip.style("display", "block").html(`<strong>${d.name}</strong>`);
-            d3.select(event.target).attr("fill", "#ff6f61");
-            node.selectAll("circle")
-              .attr("fill", node => (node === d || isTarget(d, node) ? "#ff6f61" : "#69b3a2"));
-
-            link.attr("stroke", edge => (edge.source === d ? "#ff6f61" : "#aaa"))
-              .attr("stroke-width", edge => (edge.source === d ? 1 / edge.normalized_weight + 2 : 1 / edge.normalized_weight));
-          }
-        })
-        .on("mousemove", (event) => {
-          const tooltipWidth = tooltip.node().offsetWidth;
-          const tooltipHeight = tooltip.node().offsetHeight;
-          let x = Math.min(event.pageX + 10, window.innerWidth - tooltipWidth - 10);
-          let y = Math.min(event.pageY + 10, window.innerHeight - tooltipHeight - 10);
-          tooltip.style("top", `${y}px`).style("left", `${x}px`);
-        })
-        .on("mouseout", (event, d) => {
-          if (!selectedNode) {
-            tooltip.style("display", "none");
-            d3.select(event.target).attr("fill", "#69b3a2");
-            node.selectAll("circle").attr("fill", "#69b3a2");
-            link.attr("stroke", "#aaa")
-              .attr("stroke-width", edge => 1 / edge.normalized_weight);
-          }
-        })
-        .on("click", (event, d) => {
-          setSelectedNode(d, event.target);
-        });
-
-      //*** Append text labels to each node
-      node.append("text")
-        .attr("dx", 8)  // Moves text slightly to the right
-        .attr("dy", 4)  // Moves text slightly downward
-        .style("font-size", "12px")
-        .style("fill", "black")
-        .style("pointer-events", "none")  // Prevents text from interfering with interactions
-        .text(d => d.id);  // Display the node id
-
-      //*** Update the positions of links and nodes on each tick of the simulation
-      simulation.on("tick", () => {
-        link
-          .attr("x1", d => d.source.x)
-          .attr("y1", d => d.source.y)
-          .attr("x2", d => d.target.x)
-          .attr("y2", d => d.target.y);
-
-        node.attr("transform", d => `translate(${d.x},${d.y})`);
-      });
-
-      //*** Variables to keep track of the selected node and its circle element
-      let selectedNode = null;
-      let selectedCircle = null;
-
-      //*** Function to set the selected node and highlight it
-      function setSelectedNode(nodeData, circleElement) {
-        selectedNode = nodeData;
-        selectedCircle = circleElement;
-        highlightSelectedNode();
+  setupEventListeners() {
+    // Search interactions
+    this.searchBox.addEventListener('input', () => this.onSearchInput());
+    this.searchBox.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.performSearch();
       }
-
-      //*** Function to highlight the selected node and its connected links
-      function highlightSelectedNode() {
-        node.selectAll("circle")
-          .attr("fill", d => (d === selectedNode ? "#ff6f61" : "#ccc"));
-
-        node.selectAll("text")
-          .attr("fill", d => (d === selectedNode ? "#ff6f61" : "#ccc"));
-
-        link.attr("stroke", d => (d.source === selectedNode ? "#ff6f61" : "#aaa"))
-          .attr("stroke-width", d => (d.source === selectedNode ? 1 / d.normalized_weight + 2 : 1 / d.normalized_weight))
-          .raise();
-      }
-
-      //*** Drag event handlers for nodes
-      function dragStarted(event, d) {
-        if (!event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-      }
-
-      function dragged(event, d) {
-        d.fx = event.x;
-        d.fy = event.y;
-      }
-
-      function dragEnded(event, d) {
-        if (!event.active) simulation.alphaTarget(0);
-        if (!event.subject) {
-          d.fx = null;
-          d.fy = null;
-        }
-      }
-
-      //*** Select the chapter input and autocomplete results elements
-      const chapterInput = d3.select("#chapter-input");
-      const autocompleteResults = d3.select("#autocomplete-results");
-
-      //*** Listen for input events on the chapter input field
-      chapterInput.on("input", function () {
-        const searchTerm = this.value.toLowerCase();
-        const filteredNodes = data.nodes.filter(d => d.name.toLowerCase().includes(searchTerm));
-
-        //*** Clear previous autocomplete results
-        autocompleteResults.html("");
-
-        //*** Hide the results if no matches are found
-        if (filteredNodes.length === 0) {
-          autocompleteResults.style("display", "none");
-          return;
-        }
-
-        //*** Display the filtered nodes in the autocomplete results
-        autocompleteResults.style("display", "block");
-        filteredNodes.forEach(node => {
-          autocompleteResults.append("div")
-            .text(node.name)
-            .on("click", function () {
-              chapterInput.property("value", node.name);
-              focusNode(node);
-              autocompleteResults.style("display", "none");
-            });
-        });
-      });
-
-      //*** Handle Enter key press in the chapter input field
-      chapterInput.on("keydown", function (event) {
-        if (event.key === "Enter") {
-          const searchTerm = this.value.toLowerCase();
-          const matchingNode = data.nodes.find(d => d.name.toLowerCase() === searchTerm);
-
-          if (matchingNode) {
-            focusNode(matchingNode);
-            autocompleteResults.style("display", "none"); // Hide the autocomplete dropdown
-          } else {
-            alert("No matching chapter found!"); // Notify the user if no match is found
-          }
-        }
-      });
-
-      //*** Hide the autocomplete results when clicking outside the input or results
-      document.addEventListener("click", function (event) {
-        if (!chapterInput.node().contains(event.target) && !autocompleteResults.node().contains(event.target)) {
-          autocompleteResults.style("display", "none");
-        }
-      });
-
-      //*** Function to show the popup with node details
-      //*** Select the popup and its elements
-      const popup = d3.select("#popup");
-      const popupTitle = d3.select("#popup-title");
-      const popupLinks = d3.select("#popup-links");
-      const closePopup = d3.select("#close-popup");
-
-      //*** Function to show the popup with node details
-      function showPopup(nodeData) {
-        //*** Set the title of the popup
-        popupTitle.text("Connections for " + nodeData.name);
-
-        //*** Clear previous links
-        popupLinks.html("");
-
-        //*** Find all connected nodes (both source and target connections)
-        const filteredEdges = data.edges.filter(edge => {
-          const source = String(edge.source).trim().toLowerCase();
-          const target = String(edge.target).trim().toLowerCase();
-          const nodeId = String(nodeData.id).trim().toLowerCase();
-          return source === nodeId || target === nodeId;
-        });
-        console.log("Filtered Edges:", filteredEdges);
-
-        const connectedNodes = filteredEdges.map(edge => {
-          const source = String(edge.source).trim().toLowerCase();
-          const target = String(edge.target).trim().toLowerCase();
-          const nodeId = String(nodeData.id).trim().toLowerCase();
-          const connectedNodeId = source === nodeId ? target : source;
-          const connectedNode = data.nodes.find(node => String(node.id).trim().toLowerCase() === connectedNodeId);
-          if (!connectedNode) {
-            console.warn("Connected node not found:", connectedNodeId);
-          }
-          return connectedNode;
-        }).filter(node => node); // Remove undefined values
-        console.log("Connected Nodes:", connectedNodes);
-
-        //*** Display a message if no connections are found
-        if (connectedNodes.length === 0) {
-          popupLinks.append("p")
-            .text("No connections found for this node.");
-        } else {
-          //*** Add details for each connected node
-          connectedNodes.forEach((node, index) => {
-            const nodeDiv = popupLinks.append("div")
-              .attr("class", "connected-node");
-
-            //*** Add the connected node's name
-            nodeDiv.append("p")
-              .text(`Node: ${node.name}`);
-
-            //*** Add a link if the node has a URL
-            if (node.url) {
-              nodeDiv.append("a")
-                .attr("href", node.url)
-                .attr("target", "_blank")
-                .text(`Click here to view ${node.name}`);
-            }
-
-            //*** Add other relevant data (e.g., ID, weight, etc.)
-            nodeDiv.append("p")
-              .text(`ID: ${node.id}`);
-
-            //*** Add a separator between nodes (except after the last node)
-            if (index < connectedNodes.length - 1) {
-              popupLinks.append("hr");
-            }
-          });
-        }
-
-        //*** Show the popup
-        popup.style("display", "block");
-      }
-
-      //*** Close the popup when the close button is clicked
-      closePopup.on("click", function () {
-        popup.style("display", "none");
-      });
-
-      //*** Close the popup when clicking outside of it
-      document.addEventListener("click", function (event) {
-        if (!popup.node().contains(event.target) && !d3.select(event.target).classed("node")) {
-          popup.style("display", "none");
-        }
-      });
-
-
-      
-
-      //*** Function to focus on a specific node by zooming and highlighting it
-
-      function focusNode(nodeData) {
-        const x = nodeData.x;
-        const y = nodeData.y;
-        const scale = 2; // Adjust the zoom scale as needed
-
-        // Zoom and pan to the searched node
-        svg.transition()
-          .duration(750)
-          .call(zoom.transform, d3.zoomIdentity
-            .translate(width / 2, height / 2)
-            .scale(scale)
-            .translate(-x, -y)
-          );
-
-        //*** Highlight the searched node and its target nodes
-        node.selectAll("circle")
-          .attr("fill", d => (d === nodeData ? "#ff6f61" : "#ccc")); // Highlight only the searched node
-
-        node.selectAll("text")
-          .attr("fill", d => (d === nodeData ? "#ff6f61" : "#000")); // Highlight only the searched node label
-
-        //*** Highlight outgoing edges of the searched node and dim all other edges
-        link.attr("stroke", d => (d.source === nodeData ? "#ff6f61" : "#aaa")) // Highlight outgoing edges
-          .attr("stroke-width", d => (d.source === nodeData ? 1 / d.normalized_weight + 2 : 1 / d.normalized_weight)) // Adjust stroke width
-        //.attr("opacity", d => (d.source === nodeData ? 1 : 0.3)); // Dim all other edges
-
-        //*** Highlight target nodes
-        const targetNodes = data.edges
-          .filter(edge => edge.source === nodeData.id)
-          .map(edge => data.nodes.find(node => node.id === edge.target));
-
-        targetNodes.forEach(targetNode => {
-          node.selectAll("circle")
-            .filter(d => d === targetNode)
-            .attr("fill", "#ff6f61"); // Highlight target nodes
-
-          node.selectAll("text")
-            .filter(d => d === targetNode)
-            .attr("fill", "#ff6f61"); // Highlight target node labels
-        });
-
-        //*** Set the selected node and highlight it
-        setSelectedNode(nodeData, node.select("circle").node());
-
-        //*** Show the popup with node details
-        showPopup(nodeData);
-      }
-
-      //*** Helper function to check if a node is a target of the source node
-      function isTarget(sourceNode, targetNode) {
-        return data.edges.some(edge => edge.source === sourceNode.id && edge.target === targetNode.id);
-      }
-      //*** Select the reset button
-      const resetButton = d3.select("#reset-button");
-
-      //*** Reset Graph Function (Centered)
-      function resetGraph() {
-        const transform = d3.zoomIdentity
-          .translate(width / 2, height / 2) // Move to center
-          .scale(1) // Reset scale
-          .translate(-width / 2, -height / 2); // Move back to original position
-
-        svg.transition()
-          .duration(750)
-          .call(zoom.transform, transform);
-
-        //*** Reset all nodes and edges to their original colors
-        node.selectAll("circle").attr("fill", "#69b3a2"); // Reset all nodes to original color
-        node.selectAll("text").attr("fill", "#000"); // Reset all node labels to original color
-        link.attr("stroke", "#aaa") // Reset all edges to original color
-          .attr("stroke-width", d => 1 / d.normalized_weight); // Reset edge stroke width
-
-        //*** Clear the search input
-        chapterInput.property("value", "");
-        autocompleteResults.style("display", "none");
-
-        //*** Hide the popup
-        popup.style("display", "none");
-      }
-
-      //*** Add click event listener to the reset button
-      resetButton.on("click", resetGraph);
-
-      //*** Select the zoom in and zoom out buttons
-      const zoomInButton = d3.select("#zoom-in");
-      const zoomOutButton = d3.select("#zoom-out");
-
-      //*** Define zoom scale factor
-      const zoomFactor = 1.2; // Increase or decrease scale by this factor
-      let currentTransform = d3.zoomIdentity; // Track the current zoom state
-
-      //*** Apply zoom transform to SVG
-      function applyZoom(transform) {
-        svg.transition()
-          .duration(300)
-          .call(zoom.transform, transform);
-        currentTransform = transform;
-      }
-
-      //*** Zoom In Event (Centered)
-      zoomInButton.on("click", function () {
-        const [x, y] = [width / 2, height / 2]; // Center of the viewport
-        const scale = currentTransform.k * zoomFactor; // New scale
-        const transform = d3.zoomIdentity
-          .translate(width / 2, height / 2) // Move to center
-          .scale(scale) // Apply new scale
-          .translate(-x, -y); // Move back to original position
-        applyZoom(transform);
-      });
-
-      //*** Zoom Out Event (Centered)
-      zoomOutButton.on("click", function () {
-        const [x, y] = [width / 2, height / 2]; // Center of the viewport
-        const scale = currentTransform.k / zoomFactor; // New scale
-        const transform = d3.zoomIdentity
-          .translate(width / 2, height / 2) // Move to center
-          .scale(scale) // Apply new scale
-          .translate(-x, -y); // Move back to original position
-        applyZoom(transform);
-      });
-
     });
+    this.searchButton.addEventListener('click', () => this.performSearch());
+
+    // Clear button
+    this.clearSearch.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.clearSearchBox();
+    });
+
+    // Database selection
+    this.databaseSelect.addEventListener('change', () => {
+      this.loadDatabase(this.databaseSelect.value);
+    });
+
+    // Click outside to close results
+    document.addEventListener('click', (e) => {
+      if (!this.isSearchElement(e.target)) {
+        this.closeResults();
+      }
+    }, true); // Use capture phase for reliable detection
+  }
+
+  isSearchElement(target) {
+    return this.searchBox.contains(target) ||
+           this.searchButton.contains(target) ||
+           this.clearSearch.contains(target) ||
+           this.resultsContainer.contains(target) ||
+           this.databaseSelect.contains(target);
+  }
+
+  closeResults() {
+    this.resultsContainer.style.display = 'none';
+  }
+
+  async loadDatabase(url) {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        this.currentData = data;
+        console.log("Loaded database:", url);
+
+        this.calculateWeights();
+        console.log("Node weights:", this.nodeWeights);
+      } catch (error) {
+        console.error("Error loading database:", error);
+      }
+  }
+
+  calculateWeights() {
+    const edges = this.currentData.edges || [];
+    this.nodeWeights = {};
+
+    // Sum weights for each target node
+    edges.forEach(edge => {
+      if (!this.nodeWeights[edge.target]) {
+        this.nodeWeights[edge.target] = 0;
+      }
+      this.nodeWeights[edge.target] += edge.weight;
+    });
+  }
+
+  onSearchInput() {
+    const hasValue = this.searchBox.value.trim().length > 0;
+    this.clearSearch.style.display = hasValue ? 'inline' : 'none';
+    if (!hasValue) this.closeResults();
+  }
+
+  clearSearchBox() {
+    this.searchBox.value = '';
+    this.clearSearch.style.display = 'none';
+    this.closeResults();
+  }
+
+  performSearch() {
+    const searchTerm = this.searchBox.value.trim().toLowerCase();
+    if (!searchTerm || !this.currentData) {
+      this.closeResults();
+      return;
+    }
+
+    // 1. Find matching nodes
+    const matchingNodes = this.currentData.nodes
+      .filter(node => node.text?.toLowerCase().includes(searchTerm))
+      .map(node => ({
+        ...node,
+        frequency: (node.text.toLowerCase().match(new RegExp(searchTerm, 'g')) || []).length,
+        preview: this.getTextPreview(node.text, searchTerm)
+      }));
+
+    if (matchingNodes.length === 0) {
+      this.showSearchResults([], searchTerm);
+      return;
+    }
+
+    // 2. Calculate connection weights (distance-based scoring)
+    matchingNodes.forEach(node => {
+      // Find all connections to OTHER matching nodes
+      const connections = this.currentData.edges.filter(edge => 
+        (edge.source === node.id && matchingNodes.some(n => n.id === edge.target)) ||
+        (edge.target === node.id && matchingNodes.some(n => n.id === edge.source))
+      );
+
+      // Use the SMALLEST weight (closest distance) as primary score
+      node.minWeight = connections.length > 0 
+        ? Math.min(...connections.map(c => c.weight)) 
+        : Infinity; // No connections = lowest priority
+    });
+
+    // 3. Sort by: closest first (minWeight), then by frequency
+    matchingNodes.sort((a, b) => 
+      a.minWeight - b.minWeight || // Primary: distance (ascending)
+      b.frequency - a.frequency     // Secondary: match count (descending)
+    );
+
+    this.showSearchResults(matchingNodes, searchTerm);
+  }
+
+  getTextPreview(text, searchTerm) {
+    const index = text.toLowerCase().indexOf(searchTerm);
+    if (index === -1) return text.slice(0, 50) + (text.length > 50 ? "..." : "");
+    
+    const start = Math.max(0, index - 20);
+    const end = Math.min(text.length, index + searchTerm.length + 30);
+    return (start > 0 ? "..." : "") + text.slice(start, end) + (end < text.length ? "..." : "");
+  }
+
+  showSearchResults(nodes, searchTerm) {
+    this.resultsList.innerHTML = nodes.length === 0
+      ? '<li>No results found.</li>'
+      : nodes.map(node => `
+          <li>
+            <a href="chapter.html?chapterId=${encodeURIComponent(node.id)}&chapterName=${encodeURIComponent(node.name)}&database=${encodeURIComponent(this.databaseSelect.value)}">
+              <strong>${node.name}</strong>
+              <small> [Distance: ${node.minWeight === Infinity ? "N/A" : node.minWeight} • Matches: ${node.frequency}]</small>
+              <small><p>${node.preview.replace(new RegExp(`(${searchTerm})`, 'gi'), '<mark>$1</mark>')}</p><small>
+            </a>
+          </li>
+        `).join('');
+    
+    this.resultsContainer.style.display = 'block';
+  }
+}
   </script>
 </body>
 
