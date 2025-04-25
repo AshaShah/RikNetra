@@ -8,7 +8,7 @@
             "type": "chrome",
             "request": "launch",
             "name": "Open index.html",
-            "file": "/Users/asha/Desktop/Coding Projects/Visual&Analysis/Pages/page/index.html"
+            "file": "/Users/asha/Desktop/Coding Projects/Visual&Analysis/index.html"
         }
     ]
 }
