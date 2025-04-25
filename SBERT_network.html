@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SBERT Network Visualization</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link rel="stylesheet" href="suktaconnection.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="controls">
+    <button id="backBtn"><i class="fas fa-home"></i></button>
+    <input type="text" id="search-input" placeholder="Search Sukta...">
+    <button id="zoom-in"><i class="fas fa-search-plus"></i></button>
+    <button id="zoom-out"><i class="fas fa-search-minus"></i></button>
+    <button id="resetBtn"><i class="fas fa-sync"></i></button>
+    <label>
+      <input type="checkbox" id="toggle-labels" checked> Show Labels
+    </label>
+    <label>
+      <input type="checkbox" id="isolate-node-toggle"> Show only selected Sukta
+    </label>
+    <div class="toggle-switch">
+      <input type="checkbox" id="color-toggle">
+      <label for="color-toggle" class="toggle-label">
+        <span class="toggle-text">Color</span>
+        <span class="toggle-slider"></span>
+        <span class="toggle-text">Default</span>
+      </label>
+    </div>
+    <div id="selectedOption" class="selected-option">Selected: Default color</div>
+  </div>
+
+  <div class="graph-container">
+    <svg width="100%" height="100%"></svg>
+    <div id="tooltip" class="tooltip" style="display: none;"></div>
+    <div id="popup" class="popup" style="display: none;">
+      <button id="close-popup" class="close-btn">×</button>
+      <h3 id="popup-title"></h3>
+      <ul id="popup-links"></ul>
+      <button id="read-chapter">Read this Chapter</button>
+    </div>
+  </div>
+
+  <script>
+const width = 1200;
+const height = 800;
+let selectedNode = null;
+let selectedEdge = null;
+let isolateMode = false;
+let node = null;
+let link = null;
+let label = null;
+
+const svg = d3.select("svg");
+const tooltip = d3.select("#tooltip");
+const popup = d3.select("#popup");
+const popupTitle = d3.select("#popup-title");
+const popupLinks = d3.select("#popup-links");
+
+const zoom = d3.zoom()
+  .scaleExtent([0.1, 5])
+  .on("zoom", (event) => {
+    g.attr("transform", event.transform);
+  });
+
+svg.call(zoom);
+
+const g = svg.append("g");
+
+function resetNodeColors() {
+  if (node) {
+    node.attr("fill", "#43a872");
+  }
+}
+
+function resetColorToggle() {
+  document.getElementById("color-toggle").checked = false;
+  document.getElementById("selectedOption").innerText = "Selected: Default color";
+  resetNodeColors();
+}
+
+function loadGraphData() {
+  const databasePath = "database/sbert_k4database.json";
+  
+  d3.json(databasePath).then(data => {
+    // Trim all node IDs and prepare node map
+    const processedNodes = data.nodes.map(n => {
+      return {
+        ...n,
+        id: n.id.trim(),  // Remove whitespace from node IDs
+        name: n.id.trim() // Also ensure name is set and trimmed
+      };
+    });
+    
+    const nodeMap = new Map(processedNodes.map(n => [n.id, n]));
+    
+    // Process edges - trim source/target and convert to node references
+    const processedEdges = data.edges
+      .map(e => {
+        const source = e.source.trim();
+        const target = e.target.trim();
+        
+        return {
+          source: nodeMap.get(source),
+          target: nodeMap.get(target),
+          weight: e.weight,
+          id: source + "-" + target
+        };
+      })
+      .filter(e => e.source && e.target); // Filter out edges with missing nodes
+
+    // Calculate normalized weights
+    const weights = processedEdges.map(d => d.weight);
+    const min_weight = Math.min(...weights);
+    const max_weight = Math.max(...weights);
+    
+    processedEdges.forEach(d => {
+      d.normalized_weight = max_weight === min_weight 
+        ? 5 // Default mid-range value
+        : ((d.weight - min_weight) / (max_weight - min_weight)) * 9 + 1;
+    });
+
+    createGraph({
+      nodes: processedNodes,
+      edges: processedEdges
+    });
+    
+  }).catch(error => {
+    console.error("Error loading graph data:", error);
+    alert("Failed to load graph data. See console for details.");
+  });
+}
+function createGraph(data) {
+  const nodes = data.nodes;
+  const edges = data.edges;
+
+  const xScale = d3.scaleLinear()
+    .domain([d3.min(nodes, d => d.x), d3.max(nodes, d => d.x)])
+    .range([100, width - 100]);
+
+  const yScale = d3.scaleLinear()
+    .domain([d3.min(nodes, d => d.y), d3.max(nodes, d => d.y)])
+    .range([100, height - 100]);
+
+  link = g.append("g")
+    .selectAll("line")
+    .data(edges)
+    .enter()
+    .append("line")
+    .attr("class", "edge")
+    .attr("stroke-width", d => 11 - d.normalized_weight)
+    .attr("stroke", "#aaa")
+    .on("click", (event, d) => {
+      if (selectedEdge) {
+        selectedEdge.attr("stroke", "#aaa");
+      }
+      selectedEdge = d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
+      highlightEdgeNodes(d);
+    })
+    .on("mouseover", (event, d) => {
+      d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
+    })
+    .on("mouseout", (event, d) => {
+      if (!selectedEdge || d3.select(event.target).datum() !== selectedEdge.datum()) {
+        d3.select(event.target).attr("stroke", "#aaa").attr("stroke-width", 11 - d.normalized_weight);
+      }
+    });
+
+  const drag = d3.drag()
+    .on("start", dragStarted)
+    .on("drag", dragged)
+    .on("end", dragEnded);
+
+  node = g.append("g")
+    .selectAll("circle")
+    .data(nodes)
+    .enter()
+    .append("circle")
+    .attr("class", "node")
+    .attr("r", 8)
+    .attr("fill", "#43a872")
+    .call(drag) 
+    .on("mouseover", (event, d) => {
+      tooltip.style("display", "block")
+        .html(`<strong>${d.id}</strong><br>Group: ${d.group}`)
+        .style("left", `${event.pageX + 5}px`)
+        .style("top", `${event.pageY + 5}px`);
+    })
+    .on("mouseout", () => {
+      tooltip.style("display", "none");
+    })
+    .on("click", (event, d) => {
+      selectedNode = d;
+      showPopup(d);
+      zoomToNode(d);
+      highlightNode(d);
+    });
+
+  label = g.append("g")
+    .selectAll("text")
+    .data(nodes)
+    .enter()
+    .append("text")
+    .attr("x", d => xScale(d.x) + 10)
+    .attr("y", d => yScale(d.y) + 5)
+    .text(d => d.id)
+    .style("font-size", "5px")
+    .style("fill", "black");
+
+  const simulation = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(edges).id(d => d.id).distance(50))
+    .force("charge", d3.forceManyBody().strength(-30))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("x", d3.forceX().x(d => xScale(d.x)))
+    .force("y", d3.forceY().y(d => yScale(d.y)))
+    .on("tick", ticked);
+
+  function ticked() {
+    link
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
+
+    node
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
+
+    label
+      .attr("x", d => d.x + 10)
+      .attr("y", d => d.y + 5);
+  }
+
+  function dragStarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+    simulation.alpha(0.3).restart();
+  }
+
+  function dragEnded(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+
+  function showPopup(node) {
+    popupTitle.text(`${node.id} and its related Sukta`);
+    popupLinks.html("");
+
+    const connections = edges.filter(e => e.source.id === node.id)
+                           .sort((a, b) => a.weight - b.weight);
+
+    connections.forEach(conn => {
+      popupLinks.append("li")
+        .text(`${conn.target.id} (Group ${conn.target.group})`);
+    });
+
+    popup.style("display", "block");
+  }
+
+  function zoomToNode(node) {
+    const x = node.x;
+    const y = node.y;
+    const scale = 2;
+    const transform = d3.zoomIdentity
+      .translate(width / 2, height / 2)
+      .scale(scale)
+      .translate(-x, -y);
+    svg.transition().duration(750).call(zoom.transform, transform);
+  }
+
+  function highlightNode(selectedNode) {
+    node.attr("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1)
+        .attr("stroke", d => d.id === selectedNode.id ? "red" : null)
+        .attr("stroke-width", d => d.id === selectedNode.id ? 2 : null);
+    link.attr("opacity", d => d.source.id === selectedNode.id ? 1 : 0.1)
+        .attr("stroke", d => d.source.id === selectedNode.id ? "red" : "#aaa");
+
+    label.style("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1);
+  }
+
+  function highlightEdgeNodes(edge) {
+    node.attr("fill", d => {
+      if (d.id === edge.source.id) return "blue";
+      if (d.id === edge.target.id) return "green";
+      return "grey";
+    });
+  }
+
+  function updateVisibility() {
+    const showLabels = d3.select("#toggle-labels").property("checked");
+
+    node.attr("opacity", d => {
+      if (!isolateMode) return 1;
+      return d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0;
+    });
+
+    link.attr("opacity", d => {
+      if (!isolateMode) return 1;
+      return d.source.id === selectedNode.id ? 1 : 0;
+    });
+
+    label.style("display", d => {
+      if (!showLabels) return "none";
+      if (!isolateMode) return "block";
+      return d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? "block" : "none";
+    });
+  }
+
+  function colorNodesByGroup() {
+    const customColors = [
+      "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
+      "#aec7e8", "#ffbb78", "#98df8a", "#ff9896", "#c5b0d5", "#c49c94", "#f7b6d2", "#c7c7c7", "#dbdb8d", "#9edae5",
+      "#393b79", "#637939", "#8c6d31", "#843c39", "#7b4173", "#5254a3", "#8ca252", "#bd9e39", "#ad494a", "#a55194",
+      "#6b6ecf", "#b5cf6b", "#e7ba52", "#d6616b", "#ce6dbd", "#9c9ede", "#cedb9c", "#e7cb94", "#e7969c", "#de9ed6",
+      "#3182bd", "#31a354", "#756bb1", "#6baed6", "#9e9ac8", "#969696", "#fd8d3c", "#d9d9d9"
+    ];
+    const colorScale = d3.scaleOrdinal(customColors);
+
+    node.attr("fill", d => colorScale(d.group));
+  }
+
+  d3.select("#toggle-labels").on("change", updateVisibility);
+
+  d3.select("#zoom-in").on("click", () => {
+    svg.transition().call(zoom.scaleBy, 1.2);
+  });
+
+  d3.select("#zoom-out").on("click", () => {
+    svg.transition().call(zoom.scaleBy, 0.8);
+  });
+
+  d3.select("#search-input").on("input", function () {
+    const searchTerm = this.value.toLowerCase();
+    const matchingNode = nodes.find(n => n.id.toLowerCase().includes(searchTerm));
+    if (matchingNode) {
+      selectedNode = matchingNode;
+      showPopup(matchingNode);
+      zoomToNode(matchingNode);
+      highlightNode(matchingNode);
+    }
+  });
+
+  d3.select("#isolate-node-toggle").on("change", function () {
+    isolateMode = this.checked;
+    updateVisibility();
+  });
+
+  d3.select("#close-popup").on("click", () => {
+    popup.style("display", "none");
+    isolateMode = false;
+    updateVisibility();
+  });
+
+  document.getElementById("backBtn").addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
+
+  document.getElementById("resetBtn").addEventListener("click", () => {
+    location.reload();
+  });
+
+  document.getElementById("color-toggle").addEventListener("change", function () {
+    if (this.checked) {
+      document.getElementById("selectedOption").innerText = "Selected: Color by Group";
+      colorNodesByGroup();
+    } else {
+      document.getElementById("selectedOption").innerText = "Selected: Default color";
+      resetNodeColors();
+    }
+  });
+
+  d3.select("#read-chapter").on("click", () => {
+    if (selectedNode) {
+      const chapterName = selectedNode.id;
+      const chapterId = selectedNode.id;
+      window.location.href = `chapter.html?chapterId=${encodeURIComponent(chapterId)}&chapterName=${encodeURIComponent(chapterName)}`;
+    } else {
+      alert("Please select a node first.");
+    }
+  });
+}
+
+// Initialize the graph by loading data from the database
+loadGraphData();
+  </script>
+  <script src="darkmode/darkMode.js"></script>
+</body>
+
+</html>
