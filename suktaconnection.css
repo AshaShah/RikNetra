@@ -1,59 +1,109 @@
 body {
   margin: 0;
-  padding: 20px;
+  padding: 10px;
   font-family: "Arial", sans-serif;
   background-color: #f4f7fc;
   color: #333;
+  overflow-x: hidden;
+}
+
+header {
+  background-color: #007bff;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  position: relative;
+}
+
+main {
+  padding: 15px;
+  padding-bottom: 60px;
+}
+
+/* Mobile Menu Toggle */
+.menu-toggle {
+  display: block;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1000;
+  background-color: #1f77d5;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.menu-toggle:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+}
+
+/* Sidebar Menu */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 280px;
+  height: 100vh;
+  background-color: white;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 999;
+  transition: transform 0.3s ease;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.sidebar.active {
+  transform: translateX(300px);
 }
 
 /* Graph Container */
 .graph-container {
   position: relative;
   width: 100%;
-  height: 650px;
-  border-radius: 12px;
+  height: 500px;
+  border-radius: 8px;
   background-color: white;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  transition: box-shadow 0.3s ease;
-}
-
-.graph-container:hover {
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  margin-top: 50px;
+  transition: all 0.3s ease;
 }
 
 /* Controls Section */
 .controls {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .controls button {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px;
+  padding: 10px 12px;
   border: none;
   background-color: #1f77d5;
   color: white;
-  font-size: 16px;
-  border-radius: 8px;
+  font-size: 14px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 .controls button:hover {
   background-color: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.controls button:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .controls button i {
@@ -63,48 +113,52 @@ body {
 .controls input[type="text"] {
   padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 14px;
   outline: none;
+  width: 100%;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .controls input[type="text"]:focus {
   border-color: #1f77d5;
-  box-shadow: 0 0 8px rgba(31, 119, 213, 0.2);
+  box-shadow: 0 0 5px rgba(31, 119, 213, 0.2);
 }
 
 .controls select {
-  padding: 10px 16px;
+  padding: 10px;
   border: 1px solid #ddd;
   background-color: white;
   color: black;
-  font-size: 16px;
-  border-radius: 8px;
+  font-size: 14px;
+  border-radius: 6px;
   outline: none;
   cursor: pointer;
+  width: 100%;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .controls select:focus {
-  border-color: #1f77d5;
-  box-shadow: 0 0 8px rgba(31, 119, 213, 0.2);
+  border-color: #1f77b4;
+  box-shadow: 0 0 5px rgba(31, 119, 213, 0.2);
 }
 
 .controls label {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
+  font-size: 14px;
   color: #555;
+  margin-top: 5px;
 }
 
 .controls input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
 }
 
+/* Graph Elements */
 .node {
   cursor: pointer;
   stroke-width: 2px;
@@ -123,13 +177,14 @@ body {
 .tooltip {
   position: absolute;
   background-color: white;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   pointer-events: none;
-  font-size: 14px;
+  font-size: 12px;
   color: #333;
+  max-width: 200px;
 }
 
 /* Popup Container */
@@ -232,12 +287,12 @@ body {
 /* Graph Buttons Container */
 .graph-buttons {
   position: absolute;
-  top: 570px; /* Adjust as needed */
-  right: 20px; /* Position on the right side */
+  bottom: 20px;
+  right: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px; /* Spacing between buttons */
-  align-items: flex-end; /* Align buttons to the right */
+  gap: 8px;
+  align-items: flex-end;
 }
 
 /* Color Buttons */
@@ -245,39 +300,34 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 16px;
+  padding: 8px 12px;
   border: none;
   background-color: #1f77d5;
   color: white;
-  font-size: 16px;
-  border-radius: 8px;
+  font-size: 14px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .color-btn:hover {
   background-color: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.color-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .color-btn i {
-  font-size: 16px; /* Adjust icon size */
-  margin-right: 8px; /* Add spacing between icon and text (if any) */
+  font-size: 14px;
+  margin-right: 6px;
 }
 
 /* Selected Option Text */
 .selected-option {
-  margin-top: 12px;
-  font-size: 14px;
+  margin-top: 8px;
+  font-size: 12px;
   color: #333;
-  text-align: right; /* Align text to the right */
+  text-align: right;
 }
 
 /* Toggle Switch Container */
@@ -285,74 +335,116 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  position: relative; /* Ensure relative positioning for absolute children */
+  position: relative;
+  margin-top: 10px;
 }
 
-/* Hide the checkbox input */
 .toggle-switch input[type="checkbox"] {
   display: none;
 }
 
-/* Toggle Switch Label */
 .toggle-label {
   display: flex;
   align-items: center;
   position: relative;
-  width: 100px; /* Width of the toggle switch */
-  height: 30px; /* Height of the toggle switch */
-  background-color: #1f77d5; /* Default background color */
-  border-radius: 15px; /* Rounded corners */
+  width: 80px;
+  height: 26px;
+  background-color: #1f77d5;
+  border-radius: 13px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
-/* Toggle Switch Slider */
 .toggle-slider {
   position: absolute;
-  width: 26px; /* Size of the slider */
-  height: 26px;
-  background-color: white; /* Slider color */
-  border-radius: 50%; /* Circular slider */
-  left: 2px; /* Initial position on the left */
-  transition: transform 0.3s ease; /* Smooth transition */
+  width: 22px;
+  height: 22px;
+  background-color: white;
+  border-radius: 50%;
+  left: 2px;
+  transition: transform 0.3s ease;
 }
 
-/* Toggle Switch Text */
 .toggle-text {
-  font-size: 14px;
+  font-size: 12px;
   color: white;
   transition: opacity 0.3s ease;
-  position: absolute; /* Position text absolutely */
-  top: 50%; /* Center vertically */
-  transform: translateY(-50%); /* Center vertically */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-/* Position "Default" text on the left */
 .toggle-text:first-child {
-  left: 40px; /* Adjust distance from the left */
+  left: 30px;
 }
 
-/* Position "Group" text on the right */
 .toggle-text:last-child {
-  right: 40px; /* Adjust distance from the right */
+  right: 30px;
 }
 
-/* Toggle Switch Checked State */
 #color-toggle:checked + .toggle-label {
-  background-color: #43a872; /* Change background color when checked */
+  background-color: #43a872;
 }
 
 #color-toggle:checked + .toggle-label .toggle-slider {
-  transform: translateX(70px); /* Move slider to the right */
+  transform: translateX(54px);
 }
 
 #color-toggle:checked + .toggle-label .toggle-text:first-child {
-  opacity: 0; /* Hide "Default" text when checked */
+  opacity: 0;
 }
 
 #color-toggle:not(:checked) + .toggle-label .toggle-text:last-child {
-  opacity: 0; /* Hide "Group" text when not checked */
+  opacity: 0;
 }
+
+/* Overlay for mobile menu */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  z-index: 998;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.summary-popup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  z-index: 100;
+  max-width: 80%;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.close-summary {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+}
+.close-summary:hover {
+  color: #333;
+}
+
+
 /* ==================== */
 /* DARK MODE OVERRIDES  */
 /* ==================== */
@@ -512,4 +604,114 @@ body {
 
 .dark-mode .dark-mode-toggle:hover {
   background-color: rgba(255,255,255,0.2);
+}
+
+/* Media Queries for Larger Screens */
+@media (min-width: 768px) {
+  body {
+    padding: 20px;
+  }
+  
+  .menu-toggle {
+    display: none;
+  }
+  
+  .sidebar {
+    position: static;
+    width: auto;
+    height: auto;
+    transform: none;
+    box-shadow: none;
+    padding: 0;
+    background-color: transparent;
+  }
+  
+  .graph-container {
+    height: 650px;
+    margin-top: 0;
+  }
+  
+  .controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .controls button {
+    width: auto;
+    padding: 10px 16px;
+    font-size: 16px;
+  }
+  
+  .controls input[type="text"] {
+    width: 200px;
+    font-size: 16px;
+  }
+  
+  .controls select {
+    width: 180px;
+    font-size: 16px;
+    padding: 10px 16px;
+  }
+  
+  .graph-buttons {
+    bottom: auto;
+    top: 570px;
+  }
+  
+  .tooltip {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+  
+  .popup {
+    width: 300px;
+    padding: 20px;
+  }
+  
+  .popup h3 {
+    font-size: 18px;
+  }
+  
+  .popup ul li a {
+    font-size: 16px;
+  }
+  
+  .color-btn {
+    padding: 10px 16px;
+    font-size: 16px;
+  }
+  
+  .selected-option {
+    font-size: 14px;
+  }
+  
+  .toggle-label {
+    width: 100px;
+    height: 30px;
+  }
+  
+  .toggle-slider {
+    width: 26px;
+    height: 26px;
+  }
+  
+  .toggle-text {
+    font-size: 14px;
+  }
+  
+  #color-toggle:checked + .toggle-label .toggle-slider {
+    transform: translateX(70px);
+  }
+}
+
+@media (min-width: 992px) {
+  .graph-container {
+    height: 700px;
+  }
+  
+  .controls {
+    gap: 15px;
+  }
 }
