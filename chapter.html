@@ -4,20 +4,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chapter Details</title>
+  <title>RikNetra</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="chapter.css">
+  <link rel="stylesheet" href="/css/chapter.css">
+  <link rel="icon" href="Images/riknetra.png" type="image/png">
 </head>
 
 <body>
-  <!-- Header Section -->
-  <header>
-    <!-- Back Button -->
-    <button class="back-button" onclick="goBack()">Back To Sukta-View</button>
+  <!-- Header Controls -->
+  <div class="header-controls">
+    <!-- Dark Mode Toggle -->
+    <button id="dark-mode-toggle" class="dark-mode-toggle">
+      <i class="fas fa-moon"></i> Dark Mode
+    </button>
 
-    <!-- Home Button -->
-    <button class="home-button" onclick="window.location.href='index.html'"><i class="fas fa-home"></i> Home</button>
-  </header>
+    <!-- Kebab Menu -->
+    <div class="kebab-menu" id="kebab-menu">
+      <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Database and Search Controls -->
+    <div class="controls-container">
+      <div class="controls">
+        <select id="database-select">
+          <option value="database/k3database.json">Sukta with 2 connections</option>
+          <option value="database/k4database.json">Sukta with 3 connections</option>
+          <option value="database/k5database.json" selected>Sukta with 4 connections</option>
+          <option value="database/k6database.json">Sukta with 5 connections</option>
+          <option value="database/k7database.json">Sukta with 6 connections</option>
+          <option value="database/k8database.json">Sukta with 7 connections</option>
+          <option value="database/k9database.json">Sukta with 8 connections</option>
+          <option value="database/k10database.json">Sukta with 9 connections</option>
+          <option value="database/k11database.json">Sukta with 10 connections</option>
+        </select>
+        <input type="text" id="search-input" placeholder="Search rv 1.1...">
+        <button id="search-button">Search</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Side Panel -->
+  <div class="side-panel" id="side-panel">
+    <div class="side-panel-header">
+      <h3>RiKNetra</h3>
+    </div>
+    <div class="side-panel-content">
+      <a href="index.html"><i class="fas fa-home"></i> Home</a>
+      <a href="suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
+      <a href="chapter.html" class="active"><i class="fas fa-book"></i> Read Suktas</a>
+      <a href="SBERT_network.html"><i class="fas fa-brain"></i> SBERT Network</a>
+      <a href="#"><i class="fas fa-star"></i> Popular Suktas</a>
+    </div>
+  </div>
 
   <!-- Chapter Details Container -->
   <div class="chapter-container">
@@ -40,80 +78,212 @@
   <script>
     // Get the chapter ID, name, and database from the URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const chapterId = urlParams.get('chapterId');
-    const chapterName = urlParams.get('chapterName');
-    const database = urlParams.get('database');
+    let chapterId = urlParams.get('chapterId');
+    let chapterName = urlParams.get('chapterName');
+    let database = urlParams.get('database');
 
-    // Display the chapter name
-    document.getElementById("chapter-name").textContent = chapterName;
+    // Initialize the page with the current chapter
+    function initializePage() {
+      // Display the chapter name
+      document.getElementById("chapter-name").textContent = chapterName;
+
+      // Load the chapter data
+      loadChapterData();
+    }
+
+    // Function to load chapter data
+    function loadChapterData() {
+      d3.json(database).then(data => {
+        const nodes = data.nodes;
+        const edges = data.edges;
+
+        // Find the selected chapter (node) by ID
+        const selectedChapter = nodes.find(node => node.id === chapterId);
+
+        // Display the chapter text or a placeholder if no text is available
+        const chapterInfo = document.getElementById("chapter-info");
+        chapterInfo.textContent = selectedChapter.text || `This is a placeholder for ${selectedChapter.name}. More details will be added later.`;
+
+        // Find connected chapters based on edges where the selected node is the SOURCE
+        const connectedChapters = edges
+          .filter(edge => edge.source === chapterId)
+          .map(edge => {
+            const connectedNodeId = edge.target;
+            const connectedNode = nodes.find(node => node.id === connectedNodeId);
+            return { ...connectedNode, weight: edge.weight };
+          })
+          .sort((a, b) => a.weight - b.weight);
+
+        // Display connected chapters
+        const connectList = document.getElementById("connect-list");
+        connectList.innerHTML = '';
+
+        connectedChapters.forEach(chapter => {
+          const li = document.createElement("li");
+          li.classList.add("chapter-item");
+
+
+          // Create chapter name container (clickable)
+          const chapterNameContainer = document.createElement("div");
+          chapterNameContainer.classList.add("chapter-name-container");
+
+          // Create chapter name span
+          const chapterNameSpan = document.createElement("span");
+          chapterNameSpan.textContent = chapter.name;
+          chapterNameContainer.appendChild(chapterNameSpan);
+
+          // Create dropdown toggle
+          const dropdownToggle = document.createElement("button");
+          dropdownToggle.classList.add("dropdown-toggle");
+          dropdownToggle.innerHTML = '▼';
+          chapterNameContainer.appendChild(dropdownToggle);
+
+          li.appendChild(chapterNameContainer);
+
+          // Create dropdown content
+          const dropdownContent = document.createElement("div");
+          dropdownContent.classList.add("dropdown-content");
+          dropdownContent.textContent = chapter.text || `This is some placeholder content for ${chapter.name}. More detailed information about this chapter can be added here.`;
+          li.appendChild(dropdownContent);
+
+          // Event listener for toggle
+          chapterNameContainer.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            dropdownContent.classList.toggle("active");
+
+            // Rotate arrow icon
+            dropdownToggle.innerHTML = dropdownContent.classList.contains("active") ? '▲' : '▼';
+          });
+
+          connectList.appendChild(li);
+        });
+      }).catch(error => {
+        console.error("Error loading JSON data:", error);
+      });
+    }
 
     // Function to go back to suktasconnection.html with the correct database parameter
     function goBack() {
       window.location.href = `suktasconnection.html?database=${encodeURIComponent(database)}`;
     }
+    function performSearch() {
+      const searchTerm = document.getElementById('search-input').value.trim();
+      const selectedDatabase = document.getElementById('database-select').value;
 
-    // Fetch the JSON data to get connected chapters
-    d3.json(database).then(data => {
-      const nodes = data.nodes;
-      const edges = data.edges;
+      if (searchTerm === '') {
+        alert('Please enter a search term');
+        return;
+      }
 
-      // Find the selected chapter (node) by ID
-      const selectedChapter = nodes.find(node => node.id === chapterId);
+      // Normalize the search term (remove RV/SV/YV prefix, handle different formats)
+      const normalizedSearch = searchTerm
+        .toUpperCase() // convert to uppercase
+        .replace(/^(RV|SV|YV)[\s\.]*/i, '') // remove RV/SV/YV prefix
+        .replace(/\s+/g, ' ') // normalize spaces
+        .trim();
 
-      // Display the chapter text or a placeholder if no text is available
-      const chapterInfo = document.getElementById("chapter-info");
-      chapterInfo.textContent = selectedChapter.text || `This is a placeholder for ${selectedChapter.name}. More details will be added later.`;
-
-      // Find connected chapters based on edges where the selected node is the SOURCE
-      const connectedChapters = edges
-        .filter(edge => edge.source === chapterId)
-        .map(edge => {
-          const connectedNodeId = edge.target;
-          const connectedNode = nodes.find(node => node.id === connectedNodeId);
-          return { ...connectedNode, weight: edge.weight };
-        })
-        .sort((a, b) => a.weight - b.weight);
-
-      // Display connected chapters
-      const connectList = document.getElementById("connect-list");
-      connectedChapters.forEach(chapter => {
-        const li = document.createElement("li");
-        
-        // Create link
-        const chapterLink = document.createElement("a");
-        chapterLink.href = `chapter.html?chapterId=${encodeURIComponent(chapter.id)}&chapterName=${encodeURIComponent(chapter.name)}&database=${encodeURIComponent(database)}`;
-        chapterLink.textContent = chapter.name;
-        chapterLink.classList.add("chapter-link");
-        li.appendChild(chapterLink);
-
-        // Create dropdown toggle
-        const dropdownToggle = document.createElement("button");
-        dropdownToggle.classList.add("dropdown-toggle");
-        dropdownToggle.innerHTML = '▼';
-        li.appendChild(dropdownToggle);
-
-        // Create dropdown content
-        const dropdownContent = document.createElement("div");
-        dropdownContent.classList.add("dropdown-content");
-        dropdownContent.textContent = chapter.text || `This is some placeholder content for ${chapter.name}. More detailed information about this chapter can be added here.`;
-        li.appendChild(dropdownContent);
-
-        // Event listener for toggle
-        dropdownToggle.addEventListener("click", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          dropdownContent.classList.toggle("active");
-          
-          // Rotate arrow icon
-          dropdownToggle.innerHTML = dropdownContent.classList.contains("active") ? '▲' : '▼';
+      // Load the database and search for the term
+      d3.json(selectedDatabase).then(data => {
+        // Match nodes that match the normalized search term
+        const matchingNodes = data.nodes.filter(node => {
+          // Normalize the node name for comparison
+          const normalizedName = node.name
+            .toUpperCase()
+            .replace(/^(RV|SV|YV)[\s\.]*/i, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+          return normalizedName === normalizedSearch;
         });
 
-        connectList.appendChild(li);
+        if (matchingNodes.length === 0) {
+          alert('No matching Suktas found');
+        } else if (matchingNodes.length === 1) {
+          // If only one match, load it directly
+          chapterId = matchingNodes[0].id;
+          chapterName = matchingNodes[0].name;
+          database = selectedDatabase;
+          initializePage();
+        } else {
+          // If multiple matches (like RV 1.1 and SV 1.1), let the user choose
+          const choice = prompt(`Multiple versions found. Please select one:\n\n${matchingNodes.map((node, i) => `${i + 1}. ${node.name}`).join('\n')
+            }`);
+
+          const selectedIndex = parseInt(choice) - 1;
+          if (selectedIndex >= 0 && selectedIndex < matchingNodes.length) {
+            chapterId = matchingNodes[selectedIndex].id;
+            chapterName = matchingNodes[selectedIndex].name;
+            database = selectedDatabase;
+            initializePage();
+          }
+        }
       });
-    }).catch(error => {
-      console.error("Error loading JSON data:", error);
+    }
+
+    // Search button click handler
+    document.getElementById('search-button').addEventListener('click', performSearch);
+
+    // Enter key handler for search input
+    document.getElementById('search-input').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
     });
+
+
+    // Database selection change handler
+    document.getElementById('database-select').addEventListener('change', function () {
+      database = this.value;
+      // Reset the search when database changes
+      document.getElementById('search-input').value = '';
+      // Reload the current chapter if it exists in the new database
+      if (chapterId && chapterName) {
+        d3.json(database).then(data => {
+          const nodeExists = data.nodes.some(node => node.id === chapterId);
+          if (!nodeExists) {
+            // If current chapter doesn't exist in new database, clear the display
+            document.getElementById("chapter-name").textContent = '';
+            document.getElementById("chapter-info").textContent = '';
+            document.getElementById("connect-list").innerHTML = '';
+            alert('Current Sukta not found in selected database. Please search for a new one.');
+          } else {
+            // Reload the data
+            loadChapterData();
+          }
+        });
+      }
+    });
+
+    // Set initial database selection if coming from URL
+    if (database) {
+      document.getElementById('database-select').value = database;
+    }
+
+    // Kebab menu functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const kebabMenu = document.getElementById('kebab-menu');
+      const sidePanel = document.getElementById('side-panel');
+      const chapterContainer = document.querySelector('.chapter-container');
+
+      kebabMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidePanel.classList.toggle('open');
+        chapterContainer.classList.toggle('panel-open');
+      });
+
+      // Close panel when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
+          sidePanel.classList.remove('open');
+          chapterContainer.classList.remove('panel-open');
+        }
+      });
+    });
+
+    // Initialize the page
+    initializePage();
   </script>
   <script src="darkmode/darkMode.js"></script>
 </body>
+
 </html>

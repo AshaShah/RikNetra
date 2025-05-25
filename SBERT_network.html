@@ -4,48 +4,116 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SBERT Network Visualization</title>
+  <title>RikNetra</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <link rel="stylesheet" href="suktaconnection.css">
+  <link rel="stylesheet" href="/css/suktaconnection.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="icon" href="Images/riknetra.png" type="image/png">
 </head>
 
 <body>
-  <div class="controls">
-    <button id="backBtn"><i class="fas fa-home"></i></button>
-    <input type="text" id="search-input" placeholder="Search Sukta...">
-    <button id="zoom-in"><i class="fas fa-search-plus"></i></button>
-    <button id="zoom-out"><i class="fas fa-search-minus"></i></button>
-    <button id="resetBtn"><i class="fas fa-sync"></i></button>
-    <label>
-      <input type="checkbox" id="toggle-labels" checked> Show Labels
-    </label>
-    <label>
-      <input type="checkbox" id="isolate-node-toggle"> Show only selected Sukta
-    </label>
-    <div class="toggle-switch">
-      <input type="checkbox" id="color-toggle">
-      <label for="color-toggle" class="toggle-label">
-        <span class="toggle-text">Color</span>
-        <span class="toggle-slider"></span>
-        <span class="toggle-text">Default</span>
-      </label>
+  <!-- Header Controls -->
+  <div class="header-controls">
+    <!-- Dark Mode Toggle -->
+    <button id="dark-mode-toggle" class="dark-mode-toggle">
+      <i class="fas fa-moon"></i> Dark Mode
+    </button>
+
+    <!-- Kebab Menu -->
+    <div class="kebab-menu" id="kebab-menu">
+      <i class="fas fa-bars"></i>
     </div>
-    <div id="selectedOption" class="selected-option">Selected: Default color</div>
+    <!-- Main Controls Bar -->
+    <div class="controls-container">
+      <div class="controls">
+    <button id="backBtn"><i class="fas fa-home"></i></button>
+         <input type="text" id="search-input" placeholder="Search Sukta...">
+
+        <!-- Zoom controls -->
+        <button id="zoom-in" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+        <button id="zoom-out" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+        <button id="resetBtn" title="Reset View"><i class="fas fa-sync"></i></button>
+
+        <!-- Display options -->
+        <label>
+          <input type="checkbox" id="toggle-labels" checked> Show Labels
+        </label>
+        <label>
+          <input type="checkbox" id="isolate-node-toggle"> Isolate Node
+        </label>
+
+        <!-- Color toggle -->
+        <div class="toggle-switch">
+          <input type="checkbox" id="color-toggle">
+          <label for="color-toggle" class="toggle-label">
+            <span class="toggle-text">Color</span>
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Default</span>
+          </label>
+        </div>
+        <div id="selectedOption" class="selected-option">Selected: Default color</div>
+      </div>
+    </div>
   </div>
 
-  <div class="graph-container">
-    <svg width="100%" height="100%"></svg>
-    <div id="tooltip" class="tooltip" style="display: none;"></div>
-    <div id="popup" class="popup" style="display: none;">
-      <button id="close-popup" class="close-btn">×</button>
-      <h3 id="popup-title"></h3>
-      <ul id="popup-links"></ul>
-      <button id="read-chapter">Read this Chapter</button>
+  <!-- Side Panel -->
+  <div class="side-panel" id="side-panel">
+    <div class="side-panel-header">
+      <h3>RikNetra</h3>
+    </div>
+    <div class="side-panel-content">
+      <a href="index.html"><i class="fas fa-home"></i> Home</a>
+      <a href="suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
+      <a href="chapter.html"><i class="fas fa-book"></i> Read Suktas</a>
+      <a href="SBERT_network.html" class="active"><i class="fas fa-brain"></i> SBERT Network</a>
+      <a href="#"><i class="fas fa-star"></i> Popular Suktas</a>
     </div>
   </div>
+
+  <div class="main-container" id="main-container">
+    <div class="graph-container">
+      <svg width="100%" height="100%"></svg>
+      <div id="tooltip" class="tooltip" style="display: none;"></div>
+      <div id="popup" class="popup" style="display: none;">
+        <button id="close-popup" class="close-btn">×</button>
+        <h3 id="popup-title"></h3>
+        <ul id="popup-links"></ul>
+        <button id="read-chapter">Read this Chapter</button>
+      </div>
+      <div id="summary-popup" class="summary-popup" style="display: none;">
+        <span class="close-summary">&times;</span>
+        <div class="summary-content"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="darkmode/darkMode.js"></script>
+  <script src="sukta_summary.js"></script>
 
   <script>
+    // Add side panel toggle functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const kebabMenu = document.getElementById('kebab-menu');
+      const sidePanel = document.getElementById('side-panel');
+      const mainContainer = document.getElementById('main-container');
+      const controlsContainer = document.getElementById('controls-container');
+
+      kebabMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidePanel.classList.toggle('open');
+        mainContainer.classList.toggle('panel-open');
+      });
+
+      // Close panel when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
+          sidePanel.classList.remove('open');
+          mainContainer.classList.remove('panel-open');
+        }
+      });
+    });
+    
 const width = 1200;
 const height = 800;
 let selectedNode = null;
