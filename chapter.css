@@ -1,102 +1,252 @@
+/* Chapter.css - Matching Suktaconnection.css */
+:root {
+  --primary: #581845;
+  --secondary: #900C3F;
+  --accent: #FF5733;
+  --highlight: #FFC300;
+  --light-accent: #DAF7A6;
+  --text-light: #f9f9f9;
+  --text-dark: #333333;
+  --bg-light: #ffffff;
+  --bg-dark: #121212;
+  --panel-width: 280px;
+  --card-bg-light: #ffffff;
+  --card-bg-dark: #1e1e1e;
+  --border-light: rgba(0, 0, 0, 0.1);
+  --border-dark: rgba(255, 255, 255, 0.1);
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: "Arial", sans-serif;
-  background: linear-gradient(135deg, #f4f7fc, #e2e8f0);
-  color: #333;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Header Section */
-header {
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: rgba(88, 24, 69, 0.1);
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dark-mode-toggle:hover {
+  background-color: rgba(88, 24, 69, 0.2);
+}
+
+
+/* Header Controls */
+.header-controls {
   width: 100%;
   display: flex;
-  justify-content: flex-start;
-  gap: 20px;
-  padding: 20px;
-  background-color: white;
-  color: white;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: var(--bg-light);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-header button {
-  background-color: #0056b3;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  font-size: 16px;
-  border-radius: 8px;
-  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
 }
 
-header button:hover {
-  background-color: #003f8a;
+.kebab-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  color: var(--primary);
+  font-size: 24px;
+  transition: all 0.3s ease;
+  background: rgba(88, 24, 69, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.kebab-menu:hover {
+  background: rgba(88, 24, 69, 0.2);
+}
+
+/* Controls Container */
+.controls-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin: 0 20px;
+}
+
+/* Side Panel */
+.side-panel {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: var(--panel-width);
+  height: 100vh;
+  background-color: var(--bg-light);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s ease;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-panel.open {
+  left: 0;
+}
+
+.side-panel-header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.side-panel-header h3 {
+  margin-left: 20%;
+  color: var(--primary);
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.side-panel-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-panel-content a {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  margin: 4px 0;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+  gap: 12px;
+}
+
+.side-panel-content a:hover {
+  background-color: rgba(88, 24, 69, 0.1);
+}
+
+.side-panel-content a.active {
+  background-color: rgba(88, 24, 69, 0.2);
+  color: var(--primary);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: rgba(88, 24, 69, 0.1);
+  padding: 8px 15px;
+  border-radius: 30px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.controls select,
+.controls input[type="text"] {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--card-bg-light);
+  color: var(--text-dark);
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.controls input[type="text"] {
+  flex: 1;
+  min-width: 150px;
+}
+
+.controls input[type="text"]:focus {
+  outline: 2px solid var(--primary);
+}
+
+.controls button {
+  padding: 10px 15px;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.controls button:hover {
+  background-color: var(--secondary);
+  transform: translateY(-2px);
+}
+
+
+/* Chapter Container */
 .chapter-container {
-  width: 95%;
+  width: 90%;
   max-width: 1000px;
-  background: white;
+  background-color: var(--card-bg-light);
   border-radius: 16px;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   padding: 40px;
-  margin: 30px 0;
-  animation: fadeIn 0.5s ease-in-out;
-  overflow-y: auto;
-  margin-top: 100px;
+  margin: 100px auto 40px;
+  transition: all 0.3s ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Chapter Name */
 .chapter-name {
-  font-size: 40px;
+  font-size: 2.5rem;
   font-weight: bold;
-  color: #1f77d5;
+  color: var(--primary);
   margin-bottom: 30px;
   text-align: center;
-  padding: 20px 0;
-  border-bottom: 2px solid #1f77d5;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--primary);
+  transition: all 0.3s ease;
 }
 
-/* Paragraph Section */
 .paragraph {
-  font-size: 18px;
-  line-height: 1.6;
-  color: #555;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-dark);
   margin-bottom: 30px;
-  text-align: justify;
+  transition: color 0.3s ease;
 }
 
 /* Connect Chapter Section */
 .connect-chapter {
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
 .connect-chapter h3 {
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: bold;
-  color: #1f77d5;
+  color: var(--primary);
   margin-bottom: 20px;
   text-align: center;
+  transition: color 0.3s ease;
 }
 
 .connect-chapter ul {
@@ -106,223 +256,264 @@ header button:hover {
 }
 
 .connect-chapter li {
-  background: #f9fafb;
-  margin-bottom: 10px;
+  background-color: var(--bg-light);
+  margin-bottom: 15px;
   padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 1px solid var(--border-light);
 }
 
 .connect-chapter li:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .chapter-link {
-  color: #1f77d5;
+  color: var(--primary);
   text-decoration: none;
-  font-size: 18px;
+  font-size: 1.1rem;
   font-weight: 500;
   transition: color 0.3s ease;
   display: block;
-  padding-right: 30px; /* Space for dropdown button */
+  padding-right: 30px;
 }
 
 .chapter-link:hover {
-  color: #0056b3;
+  color: var(--secondary);
   text-decoration: underline;
 }
 
-/* Dropdown Styles */
 .dropdown-toggle {
   cursor: pointer;
   font-weight: bold;
-  color: #1f77d5;
+  color: var(--primary);
   position: absolute;
   right: 15px;
   top: 15px;
   padding: 5px;
-  z-index: 2;
   background: transparent;
   border: none;
   font-size: 16px;
+  transition: color 0.3s ease;
 }
 
 .dropdown-toggle:hover {
-  color: #003f8a;
+  color: var(--secondary);
 }
 
 .dropdown-content {
   display: none;
   padding: 15px;
   margin-top: 10px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-  color: #555;
-  position: relative;
-  z-index: 1;
-  animation: fadeIn 0.2s ease-in-out;
+  background-color: var(--card-bg-light);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--text-dark);
+  transition: all 0.3s ease;
 }
 
 .dropdown-content.active {
   display: block;
 }
 
-/* Back and Home Buttons */
-.back-button, .home-button {
-  padding: 12px 24px;
-  background: #1f77d5;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-}
-
-.back-button:hover, .home-button:hover {
-  background: #0056b3;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.back-button:active, .home-button:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-
-/* common */
-.dark-mode-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  padding: 8px 12px;
-  border-radius: 4px;
-  background-color: rgba(0,0,0,0.1);
-  border: none;
-  cursor: pointer;
-  color: white;
-  transition: all 0.3s;
-  z-index: 1000;
-}
-
-.dark-mode-toggle:hover {
-  background-color: rgba(0,0,0,0.2);
-}
-
-.dark-mode .dark-mode-toggle {
-  background-color: rgba(255,255,255,0.1);
-  color: white;
-}
-
-.dark-mode .dark-mode-toggle:hover {
-  background-color: rgba(255,255,255,0.2);
-}
-
-/* ==================== */
-/* DARK MODE OVERRIDES  */
-/* ==================== */
-
+/* Dark Mode Styles */
 .dark-mode {
-  background: linear-gradient(135deg, #121212, #1a1a1a);
-  color: #e0e0e0;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
 }
 
-/* Header Section */
-.dark-mode header {
-  background-color: #1e1e1e;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+.dark-mode .header-controls {
+  background-color: var(--card-bg-dark);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.dark-mode header button {
-  background-color: #bb86fc;
-  color: #121212;
+.dark-mode .controls {
+  background-color: rgba(255, 195, 0, 0.1);
 }
 
-.dark-mode header button:hover {
-  background-color: #9c64d6;
+.dark-mode .controls select,
+.dark-mode .controls input[type="text"] {
+  background-color: var(--card-bg-dark);
+  color: var(--text-light);
+  border: 1px solid var(--border-dark);
 }
 
-/* Chapter Container */
-.dark-mode .chapter-container {
-  background-color: #1e1e1e;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+.dark-mode .controls button {
+  background-color: var(--highlight);
+  color: var(--text-dark);
 }
 
-/* Chapter Name */
-.dark-mode .chapter-name {
-  color: #bb86fc;
-  border-bottom-color: #bb86fc;
+.dark-mode .controls button:hover {
+  background-color: var(--light-accent);
 }
 
-/* Paragraph Section */
-.dark-mode .paragraph {
-  color: #e0e0e0;
-}
-
-/* Connect Chapter Section */
-.dark-mode .connect-chapter h3 {
-  color: #bb86fc;
-}
-
-.dark-mode .connect-chapter li {
-  background-color: #2d2d2d;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.dark-mode .chapter-link {
-  color: #bb86fc;
-}
-
-.dark-mode .chapter-link:hover {
-  color: #9c64d6;
-}
-
-/* Dropdown Styles */
-.dark-mode .dropdown-toggle {
-  color: #bb86fc;
-}
-
-.dark-mode .dropdown-toggle:hover {
-  color: #9c64d6;
-}
-
-.dark-mode .dropdown-content {
-  background-color: #2d2d2d;
-  border-color: #444;
-  color: #e0e0e0;
-}
-
-/* Buttons */
 .dark-mode .back-button,
 .dark-mode .home-button {
-  background-color: #bb86fc;
-  color: #121212;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background-color: var(--highlight);
+  color: var(--text-dark);
 }
 
 .dark-mode .back-button:hover,
 .dark-mode .home-button:hover {
-  background-color: #9c64d6;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  background-color: var(--light-accent);
 }
 
-/* Animation remains the same */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+.dark-mode .dark-mode-toggle {
+  background-color: rgba(255, 195, 0, 0.1);
+  color: var(--highlight);
+}
+
+.dark-mode .dark-mode-toggle:hover {
+  background-color: rgba(255, 195, 0, 0.2);
+}
+
+.dark-mode .kebab-menu {
+  color: var(--highlight);
+  background: rgba(255, 195, 0, 0.1);
+}
+
+.dark-mode .kebab-menu:hover {
+  background: rgba(255, 195, 0, 0.2);
+}
+
+.dark-mode .side-panel {
+  background-color: var(--card-bg-dark);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .side-panel-header {
+  border-bottom-color: var(--border-dark);
+}
+
+.dark-mode .side-panel-header h3 {
+  color: var(--highlight);
+}
+
+.dark-mode .side-panel-content a {
+  color: var(--text-light);
+}
+
+.dark-mode .side-panel-content a:hover {
+  background-color: rgba(255, 195, 0, 0.1);
+}
+
+.dark-mode .side-panel-content a.active {
+  background-color: rgba(255, 195, 0, 0.2);
+  color: var(--highlight);
+}
+
+.dark-mode .chapter-container {
+  background-color: var(--card-bg-dark);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .chapter-name {
+  color: var(--highlight);
+  border-bottom-color: var(--highlight);
+}
+
+.dark-mode .paragraph {
+  color: var(--text-light);
+}
+
+.dark-mode .connect-chapter h3 {
+  color: var(--highlight);
+}
+
+.dark-mode .connect-chapter li {
+  background-color: var(--card-bg-dark);
+  border-color: var(--border-dark);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .chapter-link {
+  color: var(--highlight);
+}
+
+.dark-mode .chapter-link:hover {
+  color: var(--light-accent);
+}
+
+.dark-mode .dropdown-toggle {
+  color: var(--highlight);
+}
+
+.dark-mode .dropdown-toggle:hover {
+  color: var(--light-accent);
+}
+
+.dark-mode .dropdown-content {
+  background-color: var(--card-bg-dark);
+  border-color: var(--border-dark);
+  color: var(--text-light);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .header-controls {
+    flex-wrap: wrap;
+    padding-bottom: 70px;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .controls-container {
+    order: 3;
+    width: 100%;
+    margin: 10px 0;
+  }
+  
+  .controls {
+    max-width: 100%;
+  }
+  
+  .chapter-container {
+    margin-top: 150px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chapter-container {
+    padding: 20px;
+    margin-top: 180px;
+  }
+  
+  .chapter-name {
+    font-size: 2rem;
+  }
+  
+  .paragraph {
+    font-size: 1rem;
+  }
+  
+  .connect-chapter h3 {
+    font-size: 1.3rem;
+  }
+  
+  .chapter-link {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .controls {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .controls select,
+  .controls input[type="text"],
+  .controls button {
+    width: 100%;
+  }
+  
+  .back-button, 
+  .home-button {
+    margin: 5px 0;
+  }
+  
+  .chapter-container {
+    width: 95%;
   }
 }
