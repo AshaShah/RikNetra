@@ -4,62 +4,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Network Graph Visualization</title>
+  <title>RikNetra</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <link rel="stylesheet" href="suktaconnection.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="icon" href="Images/riknetra.png" type="image/png">
 </head>
 
 <body>
-  <div class="controls">
-    <button id="backBtn"><i class="fas fa-home"></i></button>
-    <select id="database-select">
-      <option value="database/testdata.json">Test</option>
-      <option value="database/k3database.json">Sukta with 2 connections</option>
-      <option value="database/k4database.json">Sukta with 3 connections</option>
-      <option value="database/k5database.json">Sukta with 4 connections</option>
-      <option value="database/k6database.json">Sukta with 5 connections</option>
-      <option value="database/k8database.json">Sukta with 7 connections</option>
-      <option value="database/k11database.json">Sukta with 10 connections</option>
-    </select>
-    <input type="text" id="search-input" placeholder="Search Sukta...">
-    <button id="zoom-in"><i class="fas fa-search-plus"></i></button>
-    <button id="zoom-out"><i class="fas fa-search-minus"></i></button>
-    <button id="resetBtn"><i class="fas fa-sync"></i></button>
-    <label>
-      <input type="checkbox" id="toggle-labels" checked> Show Labels
-    </label>
-    <label>
-      <input type="checkbox" id="isolate-node-toggle"> Show only selected Sukta
-    </label>
-    <div class="toggle-switch">
-      <input type="checkbox" id="color-toggle">
-      <label for="color-toggle" class="toggle-label">
-        <span class="toggle-text">Color</span>
-        <span class="toggle-slider"></span>
-        <span class="toggle-text">Default</span>
-      </label>
+  <!-- Header Controls -->
+  <div class="header-controls">
+    <!-- Dark Mode Toggle -->
+    <button id="dark-mode-toggle" class="dark-mode-toggle">
+      <i class="fas fa-moon"></i> Dark Mode
+    </button>
+
+    <!-- Kebab Menu -->
+    <div class="kebab-menu" id="kebab-menu">
+      <i class="fas fa-bars"></i>
     </div>
-    <div id="selectedOption" class="selected-option">Selected: Default color</div>
+
+    <!-- Main Controls Bar -->
+    <div class="controls-container">
+      <div class="controls">
+        <!-- Database selection and search -->
+        <select id="database-select">
+          <option value="database/k3database.json">Sukta with 2 connections</option>
+          <option value="database/k4database.json">Sukta with 3 connections</option>
+          <option value="database/k5database.json" selected>Sukta with 4 connections</option>
+          <option value="database/k6database.json">Sukta with 5 connections</option>
+          <option value="database/k7database.json">Sukta with 6 connections</option>
+          <option value="database/k8database.json">Sukta with 7 connections</option>
+          <option value="database/k9database.json">Sukta with 8 connections</option>
+          <option value="database/k10database.json">Sukta with 9 connections</option>
+          <option value="database/k11database.json">Sukta with 10 connections</option>
+        </select>
+        <input type="text" id="search-input" placeholder="Search Sukta...">
+
+        <!-- Zoom controls -->
+        <button id="zoom-in" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+        <button id="zoom-out" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+        <button id="resetBtn" title="Reset View"><i class="fas fa-sync"></i></button>
+
+        <!-- Display options -->
+        <label>
+          <input type="checkbox" id="toggle-labels" checked> Show Labels
+        </label>
+        <label>
+          <input type="checkbox" id="isolate-node-toggle"> Isolate Node
+        </label>
+
+        <!-- Color toggle -->
+        <div class="toggle-switch">
+          <input type="checkbox" id="color-toggle">
+          <label for="color-toggle" class="toggle-label">
+            <span class="toggle-text">Color</span>
+            <span class="toggle-slider"></span>
+            <span class="toggle-text">Default</span>
+          </label>
+        </div>
+        <div id="selectedOption" class="selected-option">Selected: Default color</div>
+      </div>
+    </div>
   </div>
 
-  <div class="graph-container">
-    <svg width="100%" height="100%"></svg>
-    <div id="tooltip" class="tooltip" style="display: none;"></div>
-    <div id="popup" class="popup" style="display: none;">
-      <button id="close-popup" class="close-btn">×</button>
-      <h3 id="popup-title"></h3>
-      <ul id="popup-links"></ul>
-      <button id="read-chapter">Read this Chapter</button>
+  <!-- Side Panel -->
+  <div class="side-panel" id="side-panel">
+    <div class="side-panel-header">
+      <h3>RiKNetra</h3>
     </div>
-    <div id="summary-popup" class="summary-popup" style="display: none;">
-      <span class="close-summary">&times;</span>
-      <div class="summary-content"></div>
+    <div class="side-panel-content">
+      <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
+      <a href="suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
+      <a href="chapter.html"><i class="fas fa-book"></i> Read Suktas</a>
+      <a href="SBERT_network.html"><i class="fas fa-brain"></i> SBERT Network</a>
+      <a href="#"><i class="fas fa-star"></i> Popular Suktas</a>
     </div>
   </div>
+
+  <div class="main-container" id="main-container">
+    <div class="graph-container">
+      <svg width="100%" height="100%"></svg>
+      <div id="tooltip" class="tooltip" style="display: none;"></div>
+      <div id="popup" class="popup" style="display: none;">
+        <button id="close-popup" class="close-btn">×</button>
+        <h3 id="popup-title"></h3>
+        <ul id="popup-links"></ul>
+        <button id="read-chapter">Read this Chapter</button>
+      </div>
+      <div id="summary-popup" class="summary-popup" style="display: none;">
+        <span class="close-summary">&times;</span>
+        <div class="summary-content"></div>
+      </div>
+    </div>
   </div>
+
+
+  <script src="darkmode/darkMode.js"></script>
+  <script src="sukta_summary.js"></script>
 
   <script>
+    // Add side panel toggle functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const kebabMenu = document.getElementById('kebab-menu');
+      const sidePanel = document.getElementById('side-panel');
+      const mainContainer = document.getElementById('main-container');
+      const controlsContainer = document.getElementById('controls-container');
+
+      kebabMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidePanel.classList.toggle('open');
+        mainContainer.classList.toggle('panel-open');
+      });
+
+      // Close panel when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
+          sidePanel.classList.remove('open');
+          mainContainer.classList.remove('panel-open');
+        }
+      });
+    });
+
+
     const width = 1200;
     const height = 800;
     let selectedNode = null;
@@ -89,7 +156,7 @@
 
     function resetNodeColors() {
       if (node) {
-        node.attr("fill", "#43a872");
+        node.attr("fill", "#7fb3d5");
       }
     }
 
@@ -163,7 +230,7 @@
           .append("circle")
           .attr("class", "node")
           .attr("r", 8)
-          .attr("fill", "#43a872")
+          .attr("fill", "#7fb3d5")
           .call(drag)
           .on("mouseover", (event, d) => {
             tooltip.style("display", "block")
@@ -266,10 +333,6 @@
           updateVisibility();
         });
 
-        d3.select(".close-summary").on("click", function () {
-          d3.select("#summary-popup").style("display", "none");
-        });
-
         function showPopup(node) {
           popupTitle.text(`${node.name} and its related Sukta`);
           popupLinks.html("");
@@ -309,20 +372,13 @@
 
           label.style("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1);
 
-          // Get connected nodes' text content
+          // Get connected nodes and show summary
           const connectedNodes = nodes.filter(n =>
             edges.some(e => e.source.id === selectedNode.id && e.target.id === n.id)
           );
-          const connectedTexts = connectedNodes.map(n => n.text || n.description || "").filter(t => t);
-
-          // Generate and display enhanced summary
-          const summary = summarizeTexts(connectedTexts, selectedNode.name);
-          const summaryPopup = d3.select("#summary-popup");
-          summaryPopup.style("display", "block")
-            .select(".summary-content")
-            .html(`<div class="summary-header">${selectedNode.name} Connections</div>
-           <div class="summary-body">${summary}</div>`);
+          displaySummary(selectedNode, connectedNodes);
         }
+
 
         function highlightEdgeNodes(edge) {
           node.attr("fill", d => {
@@ -371,99 +427,6 @@
             });
         }
 
-        // Function to summarize the texts
-        function summarizeTexts(texts, selectedNodeName, maxLines = 2) {
-          if (!texts || texts.length === 0) return "No summary available";
-
-          // Enhanced stop words for Vedic context
-          const stopWords = new Set([
-            'the', 'and', 'with', 'their', 'this', 'that', 'for', 'are', 'has', 'have',
-            'वै', 'च', 'हि', 'तु', 'एव', 'इति', 'न', 'वा', 'यद्', 'किम्', 'अथ', 'स्म'
-          ]);
-
-          // Vedic-specific important terms to prioritize
-          const vedicTerms = new Set([
-            'agni', 'indra', 'soma', 'varuna', 'ushas', 'vayu', 'surya',
-            'ऋषि', 'देव', 'यज्ञ', 'मंत्र', 'ब्रह्म', 'ऋक्', 'साम'
-          ]);
-
-          // Process texts while preserving some structure
-          const processedTexts = texts.map(text => {
-            // Basic cleaning while preserving meaningful punctuation
-            return text.toLowerCase()
-              .replace(/[॥।]/g, '') // Remove verse separators
-              .replace(/[^\w\sअ-ह']/g, ' '); // Keep letters, spaces, and apostrophes
-          });
-
-          // Extract meaningful phrases with Vedic awareness
-          const phrases = [];
-          processedTexts.forEach(text => {
-            const words = text.match(/[अ-हa-z']+/g) || [];
-
-            for (let i = 0; i < words.length - 1; i++) {
-              if (!stopWords.has(words[i])) {
-                // Prioritize phrases containing Vedic terms
-                const isVedicPhrase = vedicTerms.has(words[i]) || vedicTerms.has(words[i + 1]);
-
-                // Add 2-word phrase
-                if (!stopWords.has(words[i + 1])) {
-                  const phrase = words[i] + ' ' + words[i + 1];
-                  if (isVedicPhrase) {
-                    phrases.unshift(phrase); // Prioritize Vedic phrases
-                  } else {
-                    phrases.push(phrase);
-                  }
-                }
-
-                // Add 3-word phrase if it contains Vedic terms
-                if (i < words.length - 2 && !stopWords.has(words[i + 2])) {
-                  const threeWordVedic = vedicTerms.has(words[i]) ||
-                    vedicTerms.has(words[i + 1]) ||
-                    vedicTerms.has(words[i + 2]);
-                  if (threeWordVedic) {
-                    phrases.unshift(words[i] + ' ' + words[i + 1] + ' ' + words[i + 2]);
-                  }
-                }
-              }
-            }
-          });
-
-          // Count and weight phrases
-          const phraseWeights = {};
-          phrases.forEach(phrase => {
-            // Higher weight for phrases containing Vedic terms
-            const weight = phrase.split(' ').some(word => vedicTerms.has(word)) ? 2 : 1;
-            phraseWeights[phrase] = (phraseWeights[phrase] || 0) + weight;
-          });
-
-          // Get top phrases with context-aware sorting
-          const topPhrases = Object.entries(phraseWeights)
-            .sort((a, b) => b[1] - a[1] || b[0].length - a[0].length)
-            .slice(0, 3)
-            .map(([phrase]) => {
-              // Capitalize and clean up phrases
-              return phrase.split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(' ');
-            });
-
-          // Generate meaningful summary
-          if (topPhrases.length > 0) {
-            const mainSubject = selectedNodeName || "These verses";
-            const summaryParts = [
-              `${mainSubject} focus on:`,
-              `• ${topPhrases[0]}`,
-              topPhrases[1] ? `• ${topPhrases[1]}` : "",
-              topPhrases[2] ? `• ${topPhrases[2]}` : ""
-            ].filter(Boolean).join("<br>");
-
-            return `${summaryParts}<br>Showing interconnected Vedic wisdom.`;
-          }
-
-          return `${selectedNodeName || "These verses"} share profound Vedic knowledge.`;
-        }
-
-
 
         function colorNodesByGroup() {
           const customColors = [
@@ -492,9 +455,6 @@
           });
         }
 
-        document.getElementById("backBtn").addEventListener("click", () => {
-          window.location.href = "index.html";
-        });
 
         document.getElementById("resetBtn").addEventListener("click", () => {
           location.reload();
@@ -535,10 +495,7 @@
       loadGraphData(d3.select("#database-select").property("value"));
     }
 
-
-
     d3.select("#database-select").on("change", function () {
-
       // Clear search input
       document.getElementById("search-input").value = "";
 
@@ -549,13 +506,12 @@
       isolateMode = false;
       d3.select("#isolate-node-toggle").property("checked", false);
 
-
       g.selectAll("*").remove();
       resetColorToggle();
       loadGraphData(this.value);
     });
   </script>
-  <script src="darkmode/darkMode.js"></script>
+
 </body>
 
 </html>
