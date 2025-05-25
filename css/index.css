@@ -1,0 +1,468 @@
+:root {
+  --primary: #581845;
+  --secondary: #900C3F;
+  --accent: #FF5733;
+  --highlight: #7F55B1; 
+  --light-accent: #DAF7A6;
+  --text-light: #f9f9f9;
+  --text-dark: #333333;
+  --bg-light: #ffffff;
+  --bg-dark: #121212;
+  --panel-width: 280px;
+  --card-bg-light: #ffffff;
+  --card-bg-dark: #1e1e1e;
+  --border-light: rgba(0, 0, 0, 0.1);
+  --border-dark: rgba(255, 255, 255, 0.1);
+  --dark-mode-button-bg: #C5B3D6; 
+  --dark-mode-button-hover-bg: #9B7EBD; 
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: rgba(88, 24, 69, 0.1);
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dark-mode-toggle:hover {
+  background-color: rgba(88, 24, 69, 0.2);
+}
+
+/* Kebab Menu */
+.kebab-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  z-index: 1000;
+  color: var(--primary);
+  font-size: 24px;
+  transition: all 0.3s ease;
+  background: rgba(88, 24, 69, 0.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kebab-menu:hover {
+  background: rgba(88, 24, 69, 0.2);
+}
+
+/* Side Panel */
+.side-panel {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: var(--panel-width);
+  height: 100vh;
+  background-color: var(--bg-light);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s ease;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-panel.open {
+  left: 0;
+}
+
+.side-panel-header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.panel-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 30%;
+  transition: all 0.3s ease;
+}
+
+.side-panel-header h3 {
+  margin-left: 20%;
+  color: var(--primary);
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.side-panel-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-panel-content a {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  margin: 4px 0;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-dark);
+  transition: all 0.3s ease;
+  gap: 12px;
+}
+
+.side-panel-content a:hover {
+  background-color: rgba(88, 24, 69, 0.1);
+}
+
+.side-panel-content a.active {
+  background-color: rgba(88, 24, 69, 0.2);
+  color: var(--primary);
+}
+
+/* Main Container */
+.main-container {
+  transition: margin-left 0.3s ease;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-container.panel-open {
+  margin-left: var(--panel-width);
+}
+
+/* Welcome Section */
+.welcome-section {
+  text-align: center;
+  margin: 60px auto 40px;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.welcome-section h1 {
+  font-size: 2.5rem;
+  color: var(--primary);
+  margin-bottom: 16px;
+  transition: color 0.3s ease;
+}
+
+.welcome-section p {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  opacity: 0.8;
+  transition: color 0.3s ease;
+}
+
+/* Search Section */
+.search-section {
+  margin: 0 auto 40px;
+  width: 100%;
+  max-width: 800px;
+  transition: all 0.3s ease;
+  padding: 0 20px;
+}
+
+.search-container {
+  background-color: transparent;
+  transition: all 0.3s ease;
+}
+
+.search-input-container {
+  position: relative;
+}
+
+#search-box {
+  width: 100%;
+  padding: 15px 20px;
+  padding-right: 50px;
+  font-size: 16px;
+  border: 2px solid var(--primary);
+  border-radius: 30px;
+  outline: none;
+  box-shadow: 0 4px 15px rgba(88, 24, 69, 0.1);
+  transition: all 0.3s ease;
+  background-color: var(--card-bg-light);
+  color: var(--text-dark);
+}
+
+#search-box:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 4px 20px rgba(144, 12, 63, 0.2);
+}
+
+#search-button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--primary);
+  font-size: 1.2rem;
+  padding: 8px;
+  transition: color 0.3s ease;
+}
+
+.clear-search {
+  position: absolute;
+  right: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+  font-size: 1.2rem;
+  padding: 8px;
+  transition: all 0.2s ease;
+}
+
+.clear-search:hover {
+  color: var(--accent);
+}
+
+.styled-select {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 16px;
+  border: 2px solid var(--primary);
+  border-radius: 30px;
+  background-color: var(--card-bg-light);
+  color: var(--text-dark);
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23581845'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 20px;
+  transition: all 0.3s ease;
+}
+
+.styled-select:focus {
+  border-color: var(--secondary);
+  box-shadow: 0 4px 20px rgba(144, 12, 63, 0.2);
+}
+
+/* Results Container */
+.results-container {
+  display: none;
+  flex: 1;
+  background-color: transparent;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+}
+
+/* Panel & Navigation */
+.dark-mode .side-panel {
+  background-color: var(--card-bg-dark);
+  box-shadow: 2px 0 15px rgba(127, 85, 177, 0.15);
+  border-right: 1px solid var(--highlight);
+}
+
+.dark-mode .side-panel-header {
+  border-bottom: 1px solid rgba(127, 85, 177, 0.3);
+}
+
+.dark-mode .side-panel-header h3 {
+  color: var(--highlight);
+  text-shadow: 0 0 8px rgba(127, 85, 177, 0.3);
+}
+
+.dark-mode .side-panel-content a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark-mode .side-panel-content a:hover {
+  background-color: rgba(127, 85, 177, 0.15);
+}
+
+.dark-mode .side-panel-content a.active {
+  background: linear-gradient(90deg, rgba(127, 85, 177, 0.3), transparent);
+  border-left: 3px solid var(--highlight);
+  color: white;
+}
+
+.dark-mode .dark-mode-toggle {
+  background-color: var(--highlight);
+  color: var(--text-light);
+}
+
+.dark-mode .dark-mode-toggle:hover {
+  background-color: var(--dark-mode-button-bg); 
+}
+
+.dark-mode .kebab-menu {
+  color: var(--text-light); 
+  background: var(--highlight); 
+}
+
+.dark-mode .kebab-menu:hover {
+  background: var(--dark-mode-button-bg);
+}
+
+/* Search & Inputs */
+.dark-mode #search-box,
+.dark-mode .styled-select {
+  background-color: var(--card-bg-dark);
+  border: 2px solid var(--highlight);
+  color: var(--text-light);
+  box-shadow: 0 0 15px rgba(127, 85, 177, 0.1);
+}
+
+.dark-mode #search-box:focus,
+.dark-mode .styled-select:focus {
+  box-shadow: 0 0 20px rgba(127, 85, 177, 0.2);
+  border-color: var(--light-accent);
+}
+
+.dark-mode #search-button {
+  color: var(--highlight);
+}
+
+.dark-mode #search-button:hover {
+  color: var(--light-accent);
+  transform: scale(1.1);
+}
+
+/* Content Areas */
+.dark-mode .welcome-section h1 {
+  color: var(--highlight);
+  text-shadow: 0 0 15px rgba(127, 85, 177, 0.4);
+}
+
+.dark-mode .welcome-section p {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Cards & Containers */
+.dark-mode .card {
+  background-color: var(--card-bg-dark);
+  border: 1px solid rgba(127, 85, 177, 0.2);
+  box-shadow: 0 5px 15px rgba(127, 85, 177, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dark-mode .card:hover {
+  border-color: var(--highlight);
+  box-shadow: 0 8px 25px rgba(127, 85, 177, 0.2);
+}
+
+/* Buttons */
+.dark-mode .btn-primary {
+  background: var(--highlight);
+  border-color: transparent;
+}
+
+.dark-mode .btn-primary:hover {
+  background: linear-gradient(135deg, var(--highlight), #9268c4);
+  box-shadow: 0 0 20px rgba(127, 85, 177, 0.4);
+}
+
+/* Special Highlights */
+.dark-mode ::selection {
+  background: var(--highlight);
+  color: white;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background-color: var(--highlight);
+}
+
+.dark-mode .active-indicator {
+  background: var(--highlight);
+  box-shadow: 0 0 10px var(--highlight);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .side-panel {
+    width: 250px;
+    left: -250px;
+  }
+  
+  .main-container.panel-open {
+    margin-left: 250px;
+  }
+  
+  .welcome-section h1 {
+    font-size: 2rem;
+  }
+  
+  .side-panel-header h3 {
+    margin-left: 10%;
+  }
+  
+  .panel-logo {
+    width: 60px;
+    height: 60px;
+  }
+
+  /* Adjust fixed positioning for smaller screens */
+  .dark-mode-toggle {
+    top: 15px;
+    right: 15px;
+    padding: 6px 12px;
+    font-size: 0.9em; /* Slightly smaller text */
+  }
+
+  .kebab-menu {
+    top: 15px;
+    left: 15px;
+    width: 35px;
+    height: 35px;
+    font-size: 20px; /* Slightly smaller icon */
+  }
+}
+
+@media (max-width: 576px) {
+  /* Further adjust fixed positioning for very small screens */
+  .dark-mode-toggle {
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    font-size: 0.8em;
+  }
+
+  .kebab-menu {
+    top: 10px;
+    left: 10px;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  .search-section {
+    padding: 0 10px; /* Reduce padding for smaller screens */
+  }
+
+  #search-box {
+    padding: 12px 15px; /* Adjust padding for search box */
+    padding-right: 45px;
+  }
+}

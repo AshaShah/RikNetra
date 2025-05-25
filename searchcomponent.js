@@ -1,396 +1,192 @@
 class RigvedaSearch {
-  constructor({ searchBox, searchButton, clearSearch, databaseSelect, resultsContainer, resultsList }) {
+  constructor(options) {
     // DOM Elements
-    this.searchBox = searchBox;
-    this.searchButton = searchButton;
-    this.clearSearch = clearSearch;
-    this.databaseSelect = databaseSelect;
-    this.resultsContainer = resultsContainer;
-    this.resultsList = resultsList;
+    this.searchBox = options.searchBox;
+    this.searchButton = options.searchButton;
+    this.clearSearch = options.clearSearch;
+    this.databaseSelect = options.databaseSelect;
+    this.resultsContainer = options.resultsContainer;
+    this.welcomeSection = options.welcomeSection;
+    this.searchSection = options.searchSection;
+    this.topResults = options.topResults;
+    this.graphSection = options.graphSection;
+    this.searchSummary = options.searchSummary;
+    this.ragSummary = options.ragSummary;
+    this.resultCards = options.resultCards;
 
-    // Data
-    this.currentData = null;
-    this.nodeWeights = {};
-    this.termClusters = {};
-    this.termFrequency = {};
-    this.termPositions = {}; // New: Stores terms per node for faster searching
-    this.bm25Stats = {
-      avgDocLength: 0,
-      docFrequencies: {},
-      totalDocs: 0
-    };
+    // Search state
+    this.currentSearchTerm = '';
+    this.searchTimeout = null;
 
     // Initialize
     this.setupEventListeners();
-    this.loadDatabase(this.databaseSelect.value);
   }
 
-  // ======================
-  //  Core Methods
-  // ======================
+  setupEventListeners() {
+    // Real-time search with debounce
+    this.searchBox.addEventListener('input', () => {
+      this.currentSearchTerm = this.searchBox.value.trim();
+      this.toggleClearButton();
+      
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
+      
+      this.searchTimeout = setTimeout(() => {
+        if (this.currentSearchTerm.length > 0) {
+          this.performSearch();
+        } else {
+          this.resetSearch();
+        }
+      }, 300);
+    });
 
-  async loadDatabase(url) {
-    try {
-      const response = await fetch(url);
-      this.currentData = await response.json();
-      
-      this.calculateWeights();
-      this.precomputeBM25Stats();
-      this.buildTermPositionIndex(); // New optimization
-      await this.optimizedAutoCluster();
-      
-      console.log("Database loaded with optimized clusters");
-    } catch (error) {
-      console.error("Error loading database:", error);
+    // Search button click
+    this.searchButton.addEventListener('click', () => {
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
+      this.performSearch();
+    });
+
+    // Clear search
+    this.clearSearch.addEventListener('click', () => {
+      this.resetSearch();
+    });
+
+    // Database change
+    this.databaseSelect.addEventListener('change', () => {
+      if (this.currentSearchTerm.length > 0) {
+        this.performSearch();
+      }
+    });
+
+    // Enter key to search
+    this.searchBox.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        if (this.searchTimeout) clearTimeout(this.searchTimeout);
+        this.performSearch();
+      }
+    });
+  }
+
+  toggleClearButton() {
+    if (this.currentSearchTerm.length > 0) {
+      this.clearSearch.classList.add('visible');
+    } else {
+      this.clearSearch.classList.remove('visible');
     }
   }
 
-  // ======================
-  //  Optimized Methods
-  // ======================
-
-  buildTermPositionIndex() {
-    // Create a quick lookup of terms for each node
-    this.termPositions = {};
-    this.currentData.nodes.forEach(node => {
-      this.termPositions[node.id] = 
-        node.text.toLowerCase().match(/[a-zāēīōūṁḥ]+/g) || [];
-    });
-  }
-
-  async optimizedAutoCluster() {
-    console.time("Optimized Clustering");
-    const termMap = new Map();
-    
-    // Phase 1: Build term frequency and document index
-    this.currentData.nodes.forEach((node, nodeIndex) => {
-      const terms = this.termPositions[node.id];
-      terms.forEach(term => {
-        if (term.length < 4) return; // Skip short terms
-        
-        if (!termMap.has(term)) {
-          termMap.set(term, {
-            count: 0,
-            docs: new Set()
-          });
-        }
-        const termData = termMap.get(term);
-        termData.count++;
-        termData.docs.add(nodeIndex);
-      });
-    });
-
-    // Phase 2: Cluster using original logic with optimized data structures
-    const processed = new Set();
-    const allTerms = Array.from(termMap.keys());
-    
-    // Process terms in order of frequency (most frequent first)
-    allTerms.sort((a, b) => termMap.get(b).count - termMap.get(a).count);
-
-    // Process in batches to avoid blocking
-    const BATCH_SIZE = 100;
-    let batchStart = 0;
-    
-    const processBatch = () => {
-      const batchEnd = Math.min(batchStart + BATCH_SIZE, allTerms.length);
-      
-      for (let i = batchStart; i < batchEnd; i++) {
-        const termA = allTerms[i];
-        if (processed.has(termA)) continue;
-
-        const cluster = [termA];
-        const cooccurrenceCounts = {};
-        const docsWithTermA = termMap.get(termA).docs;
-
-        // Check co-occurrence using pre-built index
-        for (const nodeIndex of docsWithTermA) {
-          const terms = this.termPositions[this.currentData.nodes[nodeIndex].id];
-          terms.forEach(termB => {
-            if (termA !== termB && termB.length >= 4) {
-              cooccurrenceCounts[termB] = (cooccurrenceCounts[termB] || 0) + 1;
-            }
-          });
-        }
-
-        // Original clustering criteria
-        const minCooccurrence = docsWithTermA.size * 0.05;
-        Object.entries(cooccurrenceCounts).forEach(([term, count]) => {
-          if (count > minCooccurrence) {
-            cluster.push(term);
-            processed.add(term);
-          }
-        });
-
-        if (cluster.length > 2) {
-          const clusterName = cluster[0];
-          cluster.forEach(term => {
-            this.termClusters[term] = clusterName;
-            this.termFrequency[term] = termMap.get(term).count;
-          });
-        }
-      }
-
-      batchStart = batchEnd;
-      if (batchStart < allTerms.length) {
-        setTimeout(processBatch, 0); // Yield to browser
-      } else {
-        console.timeEnd("Optimized Clustering");
-      }
-    };
-
-    processBatch();
-  }
-
-  // ======================
-  //  Search Algorithms (Preserved Quality)
-  // ======================
-
   performSearch() {
-    const searchTerm = this.searchBox.value.trim().toLowerCase();
-    if (!searchTerm || !this.currentData) {
-      this.closeResults();
+    if (this.currentSearchTerm.length === 0) {
+      this.resetSearch();
       return;
     }
 
-    const results = this.hybridSearch(searchTerm);
-    this.showResults(results, searchTerm);
+    // Show loading state
+    this.showLoading();
+
+    // In a real implementation, you would make an API call here
+    // For demo purposes, we'll simulate a search
+    setTimeout(() => {
+      this.showResults(this.currentSearchTerm);
+    }, 800);
   }
 
-  hybridSearch(searchTerm) {
-    // 1. Get BM25 base scores (unchanged)
-    const bm25Results = this.bm25Search(searchTerm);
-    const bm25Map = new Map(bm25Results.map(r => [r.id, r.score]));
-
-    // 2. Expand terms using original logic
-    const queryTerms = searchTerm.toLowerCase().match(/[a-zāēīōūṁḥ]+/g) || [];
-    const expandedTerms = [...new Set([
-      ...queryTerms,
-      ...this.getRelatedTerms(queryTerms)
-    ])];
-
-    // 3. Optimized filtering using termPositions
-    const matchingNodes = [];
+  showLoading() {
+    // Activate search mode
+    document.body.classList.add('search-active');
     
-    this.currentData.nodes.forEach(node => {
-      const nodeTerms = this.termPositions[node.id];
-      let hasTerm = false;
-      
-      // Check terms in order of length (longer terms first)
-      for (const term of expandedTerms.sort((a, b) => b.length - a.length)) {
-        if (nodeTerms.includes(term)) {
-          hasTerm = true;
-          break;
-        }
-      }
-
-      if (hasTerm) {
-        matchingNodes.push({
-          ...node,
-          algorithm: 'Hybrid',
-          ...this.calculateScores(node, bm25Map, queryTerms),
-          preview: this.getTextPreview(node.text, searchTerm)
-        });
-      }
-    });
-
-    return matchingNodes.sort((a, b) => b.score - a.score);
-  }
-
-  // ======================
-  //  Scoring Components (Unchanged)
-  // ======================
-
-  calculateScores(node, bm25Map, queryTerms) {
-    // BM25 Component (0-1 range)
-    const bm25Score = bm25Map.get(node.id) || 0;
-
-    // Semantic Component (50 points for cluster matches)
-    const semanticBonus = queryTerms.some(term => 
-      this.termClusters[term] && node.text.toLowerCase().includes(term)
-    ) ? 50 : 0;
-
-    // Group Connection Component
-    const connections = this.currentData.edges.filter(e => 
-      e.source === node.id || e.target === node.id
-    );
-    const graphScore = connections.length > 0 
-      ? (1 / Math.min(...connections.map(c => c.weight))) * 10 
-      : 0;
-
-    // Final Weighted Score
-    const score = (bm25Score * 100) + semanticBonus + graphScore;
-
-    return {
-      score: parseFloat(score.toFixed(2)),
-      bm25Score: parseFloat(bm25Score.toFixed(4)),
-      semanticBonus,
-      graphScore: parseFloat(graphScore.toFixed(2)),
-      frequency: [...queryTerms].reduce((sum, term) => 
-        sum + (node.text.toLowerCase().match(new RegExp(term, 'g')) || []).length, 0)
-    };
-  }
-
-  getRelatedTerms(terms) {
-    const related = [];
-    terms.forEach(term => {
-      if (this.termClusters[term]) {
-        related.push(...Object.keys(this.termClusters)
-          .filter(t => this.termClusters[t] === this.termClusters[term]));
-      }
-    });
-    return related;
-  }
-
-  // ======================
-  //  BM25 Implementation (Unchanged)
-  // ======================
-
-  precomputeBM25Stats() {
-    const nodes = this.currentData.nodes;
-    const textLengths = nodes.map(node => node.text.length);
-    
-    const docFrequencies = {};
-    nodes.forEach(node => {
-      const terms = new Set(node.text.toLowerCase().match(/\w+/g) || []);
-      terms.forEach(term => {
-        docFrequencies[term] = (docFrequencies[term] || 0) + 1;
-      });
-    });
-
-    this.bm25Stats = {
-      avgDocLength: textLengths.reduce((a, b) => a + b, 0) / textLengths.length,
-      docFrequencies,
-      totalDocs: nodes.length
-    };
-  }
-
-  bm25Search(searchTerm, k1 = 1.2, b = 0.75) {
-    const { avgDocLength, docFrequencies, totalDocs } = this.bm25Stats;
-    const terms = searchTerm.toLowerCase().match(/\w+/g) || [];
-    
-    return this.currentData.nodes
-      .map(node => {
-        const docLength = node.text.length;
-        let score = 0;
-        
-        terms.forEach(term => {
-          const tf = (node.text.toLowerCase().match(new RegExp(term, 'g')) || []).length;
-          if (tf === 0) return;
-          
-          const df = docFrequencies[term] || 0;
-          const idf = Math.log((totalDocs - df + 0.5) / (df + 0.5) + 1);
-          const numerator = tf * (k1 + 1);
-          const denominator = tf + k1 * (1 - b + b * (docLength / avgDocLength));
-          
-          score += idf * (numerator / denominator);
-        });
-
-        return score > 0 ? {
-          ...node,
-          algorithm: 'BM25',
-          score: parseFloat(score.toFixed(4)),
-          preview: this.getTextPreview(node.text, searchTerm)
-        } : null;
-      })
-      .filter(Boolean)
-      .sort((a, b) => b.score - a.score);
-  }
-
-  // ======================
-  //  UI Methods (Unchanged)
-  // ======================
-
-  showResults(results, searchTerm) {
-    const queryTerms = searchTerm.toLowerCase().match(/[a-zāēīōūṁḥ]+/g) || [];
-    const relatedClusters = new Set();
-    
-    queryTerms.forEach(term => {
-      if (this.termClusters[term]) {
-        relatedClusters.add(this.termClusters[term]);
-      }
-    });
-
-    this.resultsList.innerHTML = `
-      <div class="search-header">
-        <h3>Results for "${searchTerm}"</h3>
-      </div>
-      <ol class="result-list">
-        ${results.slice(0, 10).map(node => `
-          <li>
-            <a href="chapter.html?chapterId=${encodeURIComponent(node.id)}&chapterName=${encodeURIComponent(node.name)}&database=${encodeURIComponent(this.databaseSelect.value)}">
-              <strong>${node.name}</strong>
-              <div class="score-breakdown">
-                <span>Score: ${node.score.toFixed(2)}</span>
-                <span>BM25: ${(node.bm25Score * 100).toFixed(2)}</span>
-                ${node.semanticBonus ? `<span>Semantic: +${node.semanticBonus}</span>` : ''}
-                <span>Graph: ${node.graphScore.toFixed(2)}</span>
-                <span>Matches: ${node.frequency}</span>
-              </div>
-              <p class="preview">${node.preview.replace(new RegExp(`(${searchTerm})`, 'gi'), '<mark>$1</mark>')}</p>
-            </a>
-          </li>
-        `).join('')}
-      </ol>
+    // Show loading in results
+    this.searchSummary.innerHTML = `
+      <h2>Searching for "${this.currentSearchTerm}"</h2>
+      <p>Loading results...</p>
     `;
-    this.resultsContainer.style.display = 'block';
-  }
-
-  getTextPreview(text, highlightTerm) {
-    const index = text.toLowerCase().indexOf(highlightTerm.toLowerCase());
-    if (index === -1) return text.slice(0, 100) + (text.length > 100 ? "..." : "");
     
-    const start = Math.max(0, index - 30);
-    const end = Math.min(text.length, index + highlightTerm.length + 70);
-    return (start > 0 ? "..." : "") + text.slice(start, end) + (end < text.length ? "..." : "");
+    this.ragSummary.querySelector('.summary-content').innerHTML = `
+      <p>Generating summary for "${this.currentSearchTerm}"...</p>
+    `;
+    
+    this.resultCards.innerHTML = `
+      <div class="result-card loading">
+        <div class="loading-line" style="width: 80%"></div>
+        <div class="loading-line" style="width: 60%"></div>
+        <div class="loading-line" style="width: 70%"></div>
+      </div>
+      <div class="result-card loading">
+        <div class="loading-line" style="width: 75%"></div>
+        <div class="loading-line" style="width: 65%"></div>
+        <div class="loading-line" style="width: 50%"></div>
+      </div>
+      <div class="result-card loading">
+        <div class="loading-line" style="width: 70%"></div>
+        <div class="loading-line" style="width: 80%"></div>
+        <div class="loading-line" style="width: 60%"></div>
+      </div>
+    `;
   }
 
-  calculateWeights() {
-    this.currentData.edges.forEach(edge => {
-      this.nodeWeights[edge.target] = (this.nodeWeights[edge.target] || 0) + edge.weight;
-    });
+  showResults(searchTerm) {
+    // Update search summary
+    this.searchSummary.innerHTML = `
+      <h2>Results for "${searchTerm}"</h2>
+      <p>Found 24 matching verses</p>
+    `;
+    
+    // Update RAG summary (simulated)
+    this.ragSummary.querySelector('.summary-content').innerHTML = `
+      <p>The search for "${searchTerm}" revealed several important verses in the Rigveda that discuss this concept. The most relevant appear in Mandala 10, with connections to creation hymns and philosophical verses.</p>
+      <p>Key themes include cosmic order, divine power, and the nature of existence.</p>
+    `;
+    
+    // Update top results (simulated)
+    this.resultCards.innerHTML = `
+      <div class="result-card">
+        <h3>RV 10.129 - Nasadiya Sukta</h3>
+        <span class="score">Relevance: 98%</span>
+        <p>The famous Creation Hymn that describes the origin of the universe, with philosophical questioning about creation...</p>
+        <div class="actions">
+          <button><i class="fas fa-link"></i> View Connections</button>
+          <button><i class="fas fa-book-open"></i> Read Full</button>
+        </div>
+      </div>
+      <div class="result-card">
+        <h3>RV 10.90 - Purusha Sukta</h3>
+        <span class="score">Relevance: 92%</span>
+        <p>The cosmic man hymn describing the sacrifice of Purusha and the creation of the universe and social order...</p>
+        <div class="actions">
+          <button><i class="fas fa-link"></i> View Connections</button>
+          <button><i class="fas fa-book-open"></i> Read Full</button>
+        </div>
+      </div>
+      <div class="result-card">
+        <h3>RV 1.164 - Asya Vamiya Sukta</h3>
+        <span class="score">Relevance: 88%</span>
+        <p>A philosophical hymn containing famous riddles about the nature of the universe and the supreme reality...</p>
+        <div class="actions">
+          <button><i class="fas fa-link"></i> View Connections</button>
+          <button><i class="fas fa-book-open"></i> Read Full</button>
+        </div>
+      </div>
+    `;
+    
+    // In a real implementation, you would render the graph here
+    this.renderGraph();
   }
 
-
-  // ======================
-  //  Event Handlers
-  // ======================
-
-  setupEventListeners() {
-    this.searchBox.addEventListener('input', () => this.onSearchInput());
-    this.searchBox.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') this.performSearch();
-    });
-    this.searchButton.addEventListener('click', () => this.performSearch());
-    this.clearSearch.addEventListener('click', () => this.clearSearchBox());
-    this.databaseSelect.addEventListener('change', () => {
-      this.loadDatabase(this.databaseSelect.value);
-    });
-    document.addEventListener('click', (e) => {
-      if (!this.isSearchElement(e.target)) this.closeResults();
-    }, true);
+  renderGraph() {
+    // This would be replaced with actual D3.js graph rendering
+    const graphContainer = document.getElementById('graph-visualization');
+    graphContainer.innerHTML = `
+      <div class="graph-message">
+        <i class="fas fa-project-diagram"></i>
+        <h3>Connections Graph</h3>
+        <p>Visualizing relationships between verses containing "${this.currentSearchTerm}"</p>
+      </div>
+    `;
   }
 
-  isSearchElement(target) {
-    return this.searchBox.contains(target) ||
-           this.searchButton.contains(target) ||
-           this.clearSearch.contains(target) ||
-           this.resultsContainer.contains(target) ||
-           this.databaseSelect.contains(target);
-  }
-
-  onSearchInput() {
-    const hasValue = this.searchBox.value.trim().length > 0;
-    this.clearSearch.style.display = hasValue ? 'block' : 'none';
-    if (!hasValue) this.closeResults();
-  }
-
-  clearSearchBox() {
+  resetSearch() {
+    this.currentSearchTerm = '';
     this.searchBox.value = '';
-    this.clearSearch.style.display = 'none';
-    this.closeResults();
-  }
-
-  closeResults() {
-    this.resultsContainer.style.display = 'none';
+    this.clearSearch.classList.remove('visible');
+    document.body.classList.remove('search-active');
   }
 }
