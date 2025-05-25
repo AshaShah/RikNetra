@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RikNetra</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="chapter.css">
+  <link rel="stylesheet" href="/css/chapter.css">
   <link rel="icon" href="Images/riknetra.png" type="image/png">
 </head>
 
@@ -116,23 +116,29 @@
 
         // Display connected chapters
         const connectList = document.getElementById("connect-list");
-        connectList.innerHTML = ''; // Clear previous results
+        connectList.innerHTML = '';
 
         connectedChapters.forEach(chapter => {
           const li = document.createElement("li");
+          li.classList.add("chapter-item");
 
-          // Create link
-          const chapterLink = document.createElement("a");
-          chapterLink.href = `chapter.html?chapterId=${encodeURIComponent(chapter.id)}&chapterName=${encodeURIComponent(chapter.name)}&database=${encodeURIComponent(database)}`;
-          chapterLink.textContent = chapter.name;
-          chapterLink.classList.add("chapter-link");
-          li.appendChild(chapterLink);
+
+          // Create chapter name container (clickable)
+          const chapterNameContainer = document.createElement("div");
+          chapterNameContainer.classList.add("chapter-name-container");
+
+          // Create chapter name span
+          const chapterNameSpan = document.createElement("span");
+          chapterNameSpan.textContent = chapter.name;
+          chapterNameContainer.appendChild(chapterNameSpan);
 
           // Create dropdown toggle
           const dropdownToggle = document.createElement("button");
           dropdownToggle.classList.add("dropdown-toggle");
           dropdownToggle.innerHTML = '▼';
-          li.appendChild(dropdownToggle);
+          chapterNameContainer.appendChild(dropdownToggle);
+
+          li.appendChild(chapterNameContainer);
 
           // Create dropdown content
           const dropdownContent = document.createElement("div");
@@ -141,7 +147,7 @@
           li.appendChild(dropdownContent);
 
           // Event listener for toggle
-          dropdownToggle.addEventListener("click", (event) => {
+          chapterNameContainer.addEventListener("click", (event) => {
             event.preventDefault();
             event.stopPropagation();
             dropdownContent.classList.toggle("active");
@@ -161,48 +167,58 @@
     function goBack() {
       window.location.href = `suktasconnection.html?database=${encodeURIComponent(database)}`;
     }
-function performSearch() {
-  const searchTerm = document.getElementById('search-input').value.trim();
-  const selectedDatabase = document.getElementById('database-select').value;
+    function performSearch() {
+      const searchTerm = document.getElementById('search-input').value.trim();
+      const selectedDatabase = document.getElementById('database-select').value;
 
-  if (searchTerm === '') {
-    alert('Please enter a search term');
-    return;
-  }
-
-  // Load the database and search for the term
-  d3.json(selectedDatabase).then(data => {
-    // Match nodes that exactly match the search term (with or without RV prefix)
-    const matchingNodes = data.nodes.filter(node => {
-      // Remove RV/SV/YV prefix and trim whitespace
-      const cleanName = node.name.replace(/^(RV|SV|YV)\s*/i, '').trim();
-      return cleanName === searchTerm;
-    });
-
-    if (matchingNodes.length === 0) {
-      alert('No matching Suktas found');
-    } else if (matchingNodes.length === 1) {
-      // If only one match, load it directly
-      chapterId = matchingNodes[0].id;
-      chapterName = matchingNodes[0].name;
-      database = selectedDatabase;
-      initializePage();
-    } else {
-      // If multiple matches (like RV 1.1 and SV 1.1), let the user choose
-      const choice = prompt(`Multiple versions found. Please select one:\n\n${
-        matchingNodes.map((node, i) => `${i+1}. ${node.name}`).join('\n')
-      }`);
-      
-      const selectedIndex = parseInt(choice) - 1;
-      if (selectedIndex >= 0 && selectedIndex < matchingNodes.length) {
-        chapterId = matchingNodes[selectedIndex].id;
-        chapterName = matchingNodes[selectedIndex].name;
-        database = selectedDatabase;
-        initializePage();
+      if (searchTerm === '') {
+        alert('Please enter a search term');
+        return;
       }
+
+      // Normalize the search term (remove RV/SV/YV prefix, handle different formats)
+      const normalizedSearch = searchTerm
+        .toUpperCase() // convert to uppercase
+        .replace(/^(RV|SV|YV)[\s\.]*/i, '') // remove RV/SV/YV prefix
+        .replace(/\s+/g, ' ') // normalize spaces
+        .trim();
+
+      // Load the database and search for the term
+      d3.json(selectedDatabase).then(data => {
+        // Match nodes that match the normalized search term
+        const matchingNodes = data.nodes.filter(node => {
+          // Normalize the node name for comparison
+          const normalizedName = node.name
+            .toUpperCase()
+            .replace(/^(RV|SV|YV)[\s\.]*/i, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+          return normalizedName === normalizedSearch;
+        });
+
+        if (matchingNodes.length === 0) {
+          alert('No matching Suktas found');
+        } else if (matchingNodes.length === 1) {
+          // If only one match, load it directly
+          chapterId = matchingNodes[0].id;
+          chapterName = matchingNodes[0].name;
+          database = selectedDatabase;
+          initializePage();
+        } else {
+          // If multiple matches (like RV 1.1 and SV 1.1), let the user choose
+          const choice = prompt(`Multiple versions found. Please select one:\n\n${matchingNodes.map((node, i) => `${i + 1}. ${node.name}`).join('\n')
+            }`);
+
+          const selectedIndex = parseInt(choice) - 1;
+          if (selectedIndex >= 0 && selectedIndex < matchingNodes.length) {
+            chapterId = matchingNodes[selectedIndex].id;
+            chapterName = matchingNodes[selectedIndex].name;
+            database = selectedDatabase;
+            initializePage();
+          }
+        }
+      });
     }
-  });
-}
 
     // Search button click handler
     document.getElementById('search-button').addEventListener('click', performSearch);
