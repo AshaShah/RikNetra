@@ -1,9 +1,8 @@
-/* Base Styles */
 :root {
   --primary: #581845;
   --secondary: #900C3F;
   --accent: #FF5733;
-  --highlight: #FFC300;
+  --highlight: #7F55B1; 
   --light-accent: #DAF7A6;
   --text-light: #f9f9f9;
   --text-dark: #333333;
@@ -14,6 +13,9 @@
   --card-bg-dark: #1e1e1e;
   --border-light: rgba(0, 0, 0, 0.1);
   --border-dark: rgba(255, 255, 255, 0.1);
+  --dark-mode-button-bg: #b796d6; 
+  --dark-mode-button-hover-bg: #9B7EBD; 
+  --header-height: 70px;
 }
 
 body {
@@ -25,6 +27,23 @@ body {
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Header Controls */
+.header-controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: var(--bg-light);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
 
 /* Dark Mode Toggle */
 .dark-mode-toggle {
@@ -38,10 +57,7 @@ body {
   cursor: pointer;
   color: var(--primary);
   transition: all 0.3s ease;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  z-index: 1001; /* Above everything */
 }
 
 .dark-mode-toggle:hover {
@@ -71,6 +87,11 @@ body {
   background: rgba(88, 24, 69, 0.2);
 }
 
+/* Adjust kebab menu position when panel is open */
+.side-panel.open ~ .kebab-menu {
+  left: calc(var(--panel-width) + 20px);
+}
+
 /* Side Panel */
 .side-panel {
   position: fixed;
@@ -96,6 +117,10 @@ body {
   align-items: center;
   gap: 15px;
   border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  background-color: var(--bg-light);
+  z-index: 1;
 }
 
 .side-panel-header h3 {
@@ -110,6 +135,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .side-panel-content a {
@@ -135,10 +161,9 @@ body {
 
 /* Main Container */
 .main-container {
-  transition: margin-left 0.3s ease;
-  min-height: 100vh;
+  margin-top: 120px;
   padding: 20px;
-  padding-top: 80px;
+  transition: margin-left 0.3s ease;
 }
 
 .main-container.panel-open {
@@ -158,34 +183,27 @@ body {
 }
 
 /* Controls Section */
-.control-container {
-  transition: margin-left 0.3s ease;
-  min-height: 100vh;
-  padding: 20px;
-  padding-top: 80px;
-}
-
-.control-container.panel-open {
-  margin-left: var(--panel-width);
+.controls-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin: 0 20px;
 }
 
 .controls {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  gap: 8px;
+  gap: 10px;
   padding: 8px 15px;
-  background-color: #f5f5f5;
+  background-color: rgba(88, 24, 69, 0.1);
   border-radius: 30px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  max-width: calc(100% - 120px); 
-  overflow-x: auto; 
-  white-space: nowrap; 
-  transition: max-width 0.3s ease;
-  pointer-events: all; 
-  position: fixed;
-  margin-left: 60px;
-  transition: all 0.3s ease
+  max-width: 1500px;
+  overflow-x: auto;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  pointer-events: all;
 }
 
 .controls button {
@@ -201,7 +219,7 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: auto;               /* important: don't force full width */
+  width: auto;
 }
 
 .controls button:hover {
@@ -480,12 +498,6 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.dark-mode .summary-popup {
-  background: #2c3e50;
-  color: #ecf0f1;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-
 .summary-header {
   font-size: 1.2em;
   font-weight: bold;
@@ -496,20 +508,11 @@ body {
   transition: color 0.3s ease;
 }
 
-.dark-mode .summary-header {
-  color: #6abaf0;
-  border-bottom-color: #34495e;
-}
-
 .summary-body {
   font-size: 0.9em;
   line-height: 1.6;
   color: #34495e;
   transition: color 0.3s ease;
-}
-
-.dark-mode .summary-body {
-  color: #ecf0f1;
 }
 
 .close-summary {
@@ -522,12 +525,13 @@ body {
   transition: color 0.3s ease;
 }
 
-.dark-mode .close-summary {
-  color: #bdc3c7;
-}
-
 .close-summary:hover {
   color: #e74c3c;
+}
+
+/* Animation classes */
+.transition-all {
+  transition: all 0.3s ease;
 }
 
 /* ==================== */
@@ -539,10 +543,16 @@ body {
   color: var(--text-light);
 }
 
+
+body.dark-mode .header-controls,
+body.dark-mode .side-panel {
+  background-color: var(--bg-dark);
+}
+
 /* Graph Container */
 .dark-mode .graph-container {
   background-color: var(--card-bg-dark);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  box-shadow:  0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .dark-mode .controls {
@@ -552,23 +562,23 @@ body {
 
 /* Controls Section */
 .dark-mode .controls button {
-  background-color: var(--secondary);
+  background-color: var(--highlight);
   color: var(--text-light);
 }
 
 .dark-mode .controls button:hover {
-  background-color: var(--primary);
+  background-color: var(--dark-mode-button-hover-bg);
 }
 
-.dark-mode .controls input[type="text"],
-.dark-mode .controls select {
+.dark-mode .controls select,
+.dark-mode .controls input[type="text"] {
   background-color: var(--card-bg-dark);
   color: var(--text-light);
-  border-color: var(--secondary);
+  border: 1px solid var(--border-dark);
 }
 
 .dark-mode .controls label {
-  color: var(--light-accent);
+  color: var(--text-light);
 }
 
 .dark-mode .node text {
@@ -587,7 +597,7 @@ body {
 .dark-mode .tooltip {
   background-color: var(--card-bg-dark);
   color: var(--text-light);
-  border-color: var(--secondary);
+  border-color: var(--highlight);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
@@ -595,12 +605,13 @@ body {
 .dark-mode .popup {
   background-color: var(--card-bg-dark);
   color: var(--text-light);
-  border: 1px solid var(--secondary);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--highlight);
+  box-shadow: 0 4px 20px rgba(127, 85, 177, 0.2);
 }
 
 .dark-mode .popup h3 {
-  color: var(--light-accent);
+  color: var(--highlight);
+  text-shadow: 0 0 8px rgba(127, 85, 177, 0.3);
 }
 
 .dark-mode .popup ul li a {
@@ -618,11 +629,11 @@ body {
 }
 
 .dark-mode #read-chapter:hover {
-  background-color: var(--light-accent);
+  background-color: #9268c4;
 }
 
 .dark-mode .close-btn {
-  background-color: var(--secondary);
+  background-color: var(--highlight);
   color: var(--text-light);
 }
 
@@ -633,15 +644,15 @@ body {
 
 /* Toggle Switch */
 .dark-mode .toggle-label {
-  background-color: var(--secondary);
-}
-
-.dark-mode #color-toggle:checked + .toggle-label {
   background-color: var(--highlight);
 }
 
+.dark-mode #color-toggle:checked + .toggle-label {
+  background-color: var(--light-accent);
+}
+
 .dark-mode .selected-option {
-  color: var(--light-accent);
+  color: var(--text-light);
 }
 
 /* Text Elements */
@@ -657,49 +668,78 @@ body {
   paint-order: stroke;
 }
 
-/* Side Panel Dark Mode */
-.dark-mode .side-panel {
-  background-color: var(--card-bg-dark);
-  border-right: 1px solid var(--secondary);
-}
-
-.dark-mode .side-panel-header {
-  border-bottom-color: var(--border-dark);
-}
-
-.dark-mode .side-panel-header h3 {
-  color: var(--light-accent);
-}
-
-.dark-mode .side-panel-content a {
-  color: var(--text-light);
-}
-
-.dark-mode .side-panel-content a:hover {
-  background-color: rgba(255, 195, 0, 0.1);
-}
-
-.dark-mode .side-panel-content a.active {
-  background-color: rgba(255, 195, 0, 0.2);
-  color: var(--highlight);
-}
-
 .dark-mode .kebab-menu {
-  color: var(--light-accent);
-  background: rgba(255, 195, 0, 0.1);
+  color: var(--text-light); 
+  background: var(--highlight); 
 }
 
 .dark-mode .kebab-menu:hover {
-  background: rgba(255, 195, 0, 0.2);
+  background: var(--dark-mode-button-bg);
 }
 
-.dark-mode .dark-mode-toggle {
-  background-color: rgba(255, 195, 0, 0.1);
+/* Panel & Navigation */
+.dark-mode .side-panel {
+  background-color: var(--card-bg-dark);
+  box-shadow: 2px 0 15px rgba(127, 85, 177, 0.15);
+  border-right: 1px solid var(--highlight);
+}
+
+.dark-mode .side-panel-header {
+  border-bottom: 1px solid rgba(127, 85, 177, 0.3);
+}
+
+.dark-mode .side-panel-header h3 {
   color: var(--highlight);
+  text-shadow: 0 0 8px rgba(127, 85, 177, 0.3);
+}
+
+.dark-mode .side-panel-content a {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dark-mode .side-panel-content a:hover {
+  background-color: rgba(127, 85, 177, 0.15);
+}
+
+.dark-mode .side-panel-content a.active {
+  background: linear-gradient(90deg, rgba(127, 85, 177, 0.3), transparent);
+  border-left: 3px solid var(--highlight);
+  color: white;
+}
+
+
+.dark-mode .dark-mode-toggle {
+  background-color: var(--highlight);
+  color: var(--text-light);
 }
 
 .dark-mode .dark-mode-toggle:hover {
-  background-color: rgba(255, 195, 0, 0.2);
+  background-color: var(--dark-mode-button-bg); 
+}
+
+/* Summary Popup */
+.dark-mode .summary-popup {
+  background: var(--card-bg-dark);
+  color: var(--text-light);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--highlight);
+}
+
+.dark-mode .summary-header {
+  color: var(--highlight);
+  border-bottom-color: rgba(127, 85, 177, 0.3);
+}
+
+.dark-mode .summary-body {
+  color: var(--text-light);
+}
+
+.dark-mode .close-summary {
+  color: #bdc3c7;
+}
+
+.dark-mode .close-summary:hover {
+  color: #e74c3c;
 }
 
 /* Media Queries for Larger Screens */

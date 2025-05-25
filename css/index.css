@@ -1,9 +1,8 @@
-/* Base Styles */
 :root {
   --primary: #581845;
   --secondary: #900C3F;
   --accent: #FF5733;
-  --highlight: #FFC300;
+  --highlight: #7F55B1; 
   --light-accent: #DAF7A6;
   --text-light: #f9f9f9;
   --text-dark: #333333;
@@ -14,6 +13,8 @@
   --card-bg-dark: #1e1e1e;
   --border-light: rgba(0, 0, 0, 0.1);
   --border-dark: rgba(255, 255, 255, 0.1);
+  --dark-mode-button-bg: #C5B3D6; 
+  --dark-mode-button-hover-bg: #9B7EBD; 
 }
 
 body {
@@ -277,68 +278,125 @@ body.dark-mode {
   color: var(--text-light);
 }
 
+/* Panel & Navigation */
 .dark-mode .side-panel {
   background-color: var(--card-bg-dark);
-  border-right: 1px solid var(--secondary);
+  box-shadow: 2px 0 15px rgba(127, 85, 177, 0.15);
+  border-right: 1px solid var(--highlight);
 }
 
 .dark-mode .side-panel-header {
-  border-bottom-color: var(--border-dark);
+  border-bottom: 1px solid rgba(127, 85, 177, 0.3);
 }
 
 .dark-mode .side-panel-header h3 {
-  color: var(--light-accent);
+  color: var(--highlight);
+  text-shadow: 0 0 8px rgba(127, 85, 177, 0.3);
 }
 
 .dark-mode .side-panel-content a {
-  color: var(--text-light);
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .dark-mode .side-panel-content a:hover {
-  background-color: rgba(187, 134, 252, 0.1);
+  background-color: rgba(127, 85, 177, 0.15);
 }
 
 .dark-mode .side-panel-content a.active {
-  background-color: rgba(187, 134, 252, 0.2);
-  color: var(--light-accent);
-}
-
-.dark-mode .kebab-menu {
-  color: var(--light-accent);
-  background: rgba(187, 134, 252, 0.1);
-}
-
-.dark-mode .kebab-menu:hover {
-  background: rgba(187, 134, 252, 0.2);
+  background: linear-gradient(90deg, rgba(127, 85, 177, 0.3), transparent);
+  border-left: 3px solid var(--highlight);
+  color: white;
 }
 
 .dark-mode .dark-mode-toggle {
-  background-color: rgba(255, 195, 0, 0.1);
-  color: var(--highlight);
+  background-color: var(--highlight);
+  color: var(--text-light);
 }
 
 .dark-mode .dark-mode-toggle:hover {
-  background-color: rgba(255, 195, 0, 0.2);
+  background-color: var(--dark-mode-button-bg); 
 }
 
+.dark-mode .kebab-menu {
+  color: var(--text-light); 
+  background: var(--highlight); 
+}
+
+.dark-mode .kebab-menu:hover {
+  background: var(--dark-mode-button-bg);
+}
+
+/* Search & Inputs */
 .dark-mode #search-box,
 .dark-mode .styled-select {
   background-color: var(--card-bg-dark);
+  border: 2px solid var(--highlight);
   color: var(--text-light);
-  border-color: var(--secondary);
+  box-shadow: 0 0 15px rgba(127, 85, 177, 0.1);
+}
+
+.dark-mode #search-box:focus,
+.dark-mode .styled-select:focus {
+  box-shadow: 0 0 20px rgba(127, 85, 177, 0.2);
+  border-color: var(--light-accent);
 }
 
 .dark-mode #search-button {
+  color: var(--highlight);
+}
+
+.dark-mode #search-button:hover {
   color: var(--light-accent);
+  transform: scale(1.1);
 }
 
-.dark-mode .welcome-section h1,
-.dark-mode .welcome-section p {
-  color: var(--text-light);
+/* Content Areas */
+.dark-mode .welcome-section h1 {
+  color: var(--highlight);
+  text-shadow: 0 0 15px rgba(127, 85, 177, 0.4);
 }
 
 .dark-mode .welcome-section p {
-  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Cards & Containers */
+.dark-mode .card {
+  background-color: var(--card-bg-dark);
+  border: 1px solid rgba(127, 85, 177, 0.2);
+  box-shadow: 0 5px 15px rgba(127, 85, 177, 0.1);
+  transition: all 0.3s ease;
+}
+
+.dark-mode .card:hover {
+  border-color: var(--highlight);
+  box-shadow: 0 8px 25px rgba(127, 85, 177, 0.2);
+}
+
+/* Buttons */
+.dark-mode .btn-primary {
+  background: var(--highlight);
+  border-color: transparent;
+}
+
+.dark-mode .btn-primary:hover {
+  background: linear-gradient(135deg, var(--highlight), #9268c4);
+  box-shadow: 0 0 20px rgba(127, 85, 177, 0.4);
+}
+
+/* Special Highlights */
+.dark-mode ::selection {
+  background: var(--highlight);
+  color: white;
+}
+
+.dark-mode ::-webkit-scrollbar-thumb {
+  background-color: var(--highlight);
+}
+
+.dark-mode .active-indicator {
+  background: var(--highlight);
+  box-shadow: 0 0 10px var(--highlight);
 }
 
 /* Responsive Design */
@@ -363,5 +421,48 @@ body.dark-mode {
   .panel-logo {
     width: 60px;
     height: 60px;
+  }
+
+  /* Adjust fixed positioning for smaller screens */
+  .dark-mode-toggle {
+    top: 15px;
+    right: 15px;
+    padding: 6px 12px;
+    font-size: 0.9em; /* Slightly smaller text */
+  }
+
+  .kebab-menu {
+    top: 15px;
+    left: 15px;
+    width: 35px;
+    height: 35px;
+    font-size: 20px; /* Slightly smaller icon */
+  }
+}
+
+@media (max-width: 576px) {
+  /* Further adjust fixed positioning for very small screens */
+  .dark-mode-toggle {
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    font-size: 0.8em;
+  }
+
+  .kebab-menu {
+    top: 10px;
+    left: 10px;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+
+  .search-section {
+    padding: 0 10px; /* Reduce padding for smaller screens */
+  }
+
+  #search-box {
+    padding: 12px 15px; /* Adjust padding for search box */
+    padding-right: 45px;
   }
 }
