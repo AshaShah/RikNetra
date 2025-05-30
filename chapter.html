@@ -23,6 +23,22 @@
       <i class="fas fa-bars"></i>
     </div>
 
+    <!-- Side Panel -->
+    <div class="side-panel" id="side-panel">
+      <div class="side-panel-header">
+        <h3>RikNetra</h3>
+      </div>
+      <div class="side-panel-content">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
+        <a href="chapter.html" class="active"><i class="fas fa-book"></i> Read Suktas</a>
+      </div>
+    </div>
+
+    <a href="index.html" class="home-logo" id="home-logo">
+      <img src="Images/riknetra.png" alt="Home" class="logo-img">
+    </a>
+
     <!-- Database and Search Controls -->
     <div class="controls-container">
       <div class="controls">
@@ -40,20 +56,6 @@
         <input type="text" id="search-input" placeholder="Search rv 1.1...">
         <button id="search-button">Search</button>
       </div>
-    </div>
-  </div>
-
-  <!-- Side Panel -->
-  <div class="side-panel" id="side-panel">
-    <div class="side-panel-header">
-      <h3>RiKNetra</h3>
-    </div>
-    <div class="side-panel-content">
-      <a href="index.html"><i class="fas fa-home"></i> Home</a>
-      <a href="suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
-      <a href="chapter.html" class="active"><i class="fas fa-book"></i> Read Suktas</a>
-      <a href="SBERT_network.html"><i class="fas fa-brain"></i> SBERT Network</a>
-      <a href="#"><i class="fas fa-star"></i> Popular Suktas</a>
     </div>
   </div>
 
@@ -264,11 +266,13 @@
       const kebabMenu = document.getElementById('kebab-menu');
       const sidePanel = document.getElementById('side-panel');
       const chapterContainer = document.querySelector('.chapter-container');
+      const homeLogo = document.getElementById('home-logo');
 
       kebabMenu.addEventListener('click', (e) => {
         e.stopPropagation();
         sidePanel.classList.toggle('open');
         chapterContainer.classList.toggle('panel-open');
+        homeLogo.style.display = sidePanel.classList.contains('open') ? 'none' : 'flex';
       });
 
       // Close panel when clicking outside
@@ -276,6 +280,7 @@
         if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
           sidePanel.classList.remove('open');
           chapterContainer.classList.remove('panel-open');
+          homeLogo.style.display = 'flex';
         }
       });
     });
