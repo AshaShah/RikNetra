@@ -1,63 +1,44 @@
 :root {
-  --primary: #581845;
-  --secondary: #900C3F;
-  --accent: #FF5733;
+  --primary: #521C0D;
+  --secondary: #D5451B;
+  --accent: #FF9B45;
   --highlight: #7F55B1;
-  --light-accent: #DAF7A6;
+  --light-accent: #F4E7E1;
   --text-light: #f9f9f9;
   --text-dark: #333333;
-  --bg-light: #ffffff;
+  --bg-light: #F4E7E1;
   --bg-dark: #121212;
   --panel-width: 280px;
-  --card-bg-light: #ffffff;
+  --card-bg-light: #FFFFFF;
   --card-bg-dark: #1e1e1e;
   --border-light: rgba(0, 0, 0, 0.1);
   --border-dark: rgba(255, 255, 255, 0.1);
   --dark-mode-button-bg: #C5B3D6;
   --dark-mode-button-hover-bg: #9B7EBD;
+  --header-height: 70px;
 }
 
 body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-dark);
+  background-color: var(--bg-light);
   margin: 0;
   padding: 0;
-  font-family: "Arial", sans-serif;
-  background-color: var(--bg-light);
-  color: var(--text-dark);
-  overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
-
-/* Dark Mode Toggle */
-.dark-mode-toggle {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  padding: 8px 16px;
-  border-radius: 20px;
-  background-color: rgba(88, 24, 69, 0.1);
-  border: none;
-  cursor: pointer;
-  color: var(--primary);
-  transition: all 0.3s ease;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.dark-mode-toggle:hover {
-  background-color: rgba(88, 24, 69, 0.2);
-}
-
 
 /* Header Controls */
 .header-controls {
   width: 100%;
+  height: var(--header-height);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background-color: var(--bg-light);
+  background-color: var(--accent);
   position: fixed;
   top: 0;
   left: 0;
@@ -66,44 +47,91 @@ body {
   transition: background-color 0.3s ease;
 }
 
+.dark-mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: var(--primary);
+  border: none;
+  cursor: pointer;
+  color: var(--text-light);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dark-mode-toggle:hover {
+  background-color: var(--secondary);
+}
+
 .kebab-menu {
   position: fixed;
   top: 20px;
   left: 20px;
   cursor: pointer;
   z-index: 1000;
-  color: var(--primary);
+  color: var(--text-light);
   font-size: 24px;
-  transition: all 0.3s ease;
-  background: rgba(88, 24, 69, 0.1);
+  background-color: var(--primary);
   width: 40px;
   height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
 }
 
 .kebab-menu:hover {
-  background: rgba(88, 24, 69, 0.2);
+  background-color: var(--secondary);
 }
 
-/* Controls Container */
-.controls-container {
-  flex: 1;
+.home-logo {
+  position: fixed;
+  top: 20px;
+  left: 80px;
+  cursor: pointer;
+  z-index: 1000;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin: 0 20px;
+  background: rgba(82, 28, 13, 0.1);
+  transition: all 0.3s ease;
 }
 
-/* Side Panel */
+.home-logo:hover {
+  background: rgba(82, 28, 13, 0.2);
+}
+
+.logo-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.side-panel.open ~ .home-logo {
+  display: none;
+}
+
+.side-panel:not(.open) ~ .home-logo {
+  display: flex;
+}
+
 .side-panel {
   position: fixed;
   top: 0;
   left: -280px;
   width: var(--panel-width);
   height: 100vh;
-  background-color: var(--bg-light);
+  background-color: var(--accent);
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   transition: left 0.3s ease;
   z-index: 999;
@@ -121,6 +149,13 @@ body {
   align-items: center;
   gap: 15px;
   border-bottom: 1px solid var(--border-light);
+}
+
+.panel-logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 30%;
+  transition: all 0.3s ease;
 }
 
 .side-panel-header h3 {
@@ -144,7 +179,7 @@ body {
   margin: 4px 0;
   border-radius: 8px;
   text-decoration: none;
-  color: var(--text-dark);
+  color: var(--primary);
   transition: all 0.3s ease;
   gap: 12px;
 }
@@ -154,8 +189,16 @@ body {
 }
 
 .side-panel-content a.active {
-  background-color: rgba(88, 24, 69, 0.2);
-  color: var(--primary);
+  background-color: var(--secondary);
+  color: var(--text-light);
+}
+
+/* Controls Container */
+.controls-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin: 0 20px;
 }
 
 .controls {
@@ -169,8 +212,7 @@ body {
   width: 100%;
 }
 
-.controls select,
-.controls input[type="text"] {
+.controls select {
   padding: 10px 15px;
   border: none;
   border-radius: 6px;
@@ -181,6 +223,12 @@ body {
 }
 
 .controls input[type="text"] {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  background-color: var(--card-bg-light);
+  color: var(--text-dark);
+  font-size: 14px;
   flex: 1;
   min-width: 150px;
 }
@@ -204,17 +252,19 @@ body {
   transform: translateY(-2px);
 }
 
-
-/* Chapter Container */
+/* Chapter Container - Full Styles */
 .chapter-container {
+  min-height: 500px;
   width: 90%;
   max-width: 1000px;
+  margin: calc(var(--header-height) + 40px) auto 40px;
+  padding: 40px;
   background-color: var(--card-bg-light);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 40px;
-  margin: 100px auto 40px;
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .chapter-name {
@@ -230,7 +280,7 @@ body {
 
 .paragraph {
   font-size: 1.1rem;
-  line-height: 1.8;
+  line-height: 2;
   color: var(--text-dark);
   margin-bottom: 30px;
   transition: color 0.3s ease;
@@ -257,6 +307,7 @@ body {
 }
 
 .connect-chapter li {
+  position: relative;
   background-color: var(--bg-light);
   margin-bottom: 15px;
   padding: 15px;
@@ -278,38 +329,31 @@ body {
   font-weight: 500;
   transition: color 0.3s ease;
   display: block;
-  padding-right: 30px;
 }
 
 .chapter-link:hover {
   color: var(--secondary);
-  text-decoration: underline;
 }
 
-.chapter-name-container span:first-child {
-  font-weight: bold;
-  color: var(--primary);
-}
-
-.dropdown-toggle {
+.connect-chapter .dropdown-toggle {
   cursor: pointer;
-  font-weight: bold;
-  color: var(--primary);
   position: absolute;
   right: 15px;
-  top: 15px;
-  padding: 5px;
+  top: 15px; /* Fixed position instead of centered */
   background: transparent;
   border: none;
+  color: var(--primary);
   font-size: 16px;
   transition: color 0.3s ease;
+  padding: 5px;
+  z-index: 1; /* Ensure it stays above other content */
 }
 
-.dropdown-toggle:hover {
+.connect-chapter .dropdown-toggle:hover {
   color: var(--secondary);
 }
 
-.dropdown-content {
+.connect-chapter .dropdown-content {
   display: none;
   padding: 15px;
   margin-top: 10px;
@@ -319,9 +363,11 @@ body {
   font-size: 1rem;
   color: var(--text-dark);
   transition: all 0.3s ease;
+  position: relative; /* Keep content flow normal */
+  z-index: 0; /* Below the toggle */
 }
 
-.dropdown-content.active {
+.connect-chapter .dropdown-content.active {
   display: block;
 }
 
@@ -341,11 +387,16 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-.dark-mode .controls select,
+.dark-mode .controls select {
+  background-color: var(--card-bg-dark);
+  color: var(--text-light);
+  border: 1px solid var(--highlight);
+}
+
 .dark-mode .controls input[type="text"] {
   background-color: var(--card-bg-dark);
   color: var(--text-light);
-  border: 1px solid var(--border-dark);
+  border: 1px solid var(--highlight);
 }
 
 .dark-mode .controls button {
@@ -375,7 +426,6 @@ body {
   background: var(--dark-mode-button-bg);
 }
 
-/* Panel & Navigation */
 .dark-mode .side-panel {
   background-color: var(--card-bg-dark);
   box-shadow: 2px 0 15px rgba(127, 85, 177, 0.15);
@@ -412,9 +462,7 @@ body {
 
 .dark-mode .chapter-name {
   color: var(--highlight);
-  /* Highlight color */
   border-bottom-color: var(--highlight);
-  /* Highlight color */
 }
 
 .dark-mode .paragraph {
@@ -423,7 +471,6 @@ body {
 
 .dark-mode .connect-chapter h3 {
   color: var(--highlight);
-  /* Highlight color */
 }
 
 .dark-mode .connect-chapter li {
@@ -434,35 +481,21 @@ body {
 
 .dark-mode .chapter-link {
   color: var(--highlight);
-  /* Highlight color */
 }
 
 .dark-mode .chapter-link:hover {
   color: var(--light-accent);
-  /* Keep light accent for hover */
 }
 
-.dark-mode .chapter-name-container {
+.dark-mode .connect-chapter .dropdown-toggle {
   color: var(--highlight);
-  /* Highlight color */
 }
 
-.dark-mode .chapter-name-container span:first-child {
-  color: var(--highlight);
-  /* Highlight color */
-}
-
-.dark-mode .dropdown-toggle {
-  color: var(--highlight);
-  /* Highlight color */
-}
-
-.dark-mode .dropdown-toggle:hover {
+.dark-mode .connect-chapter .dropdown-toggle:hover {
   color: var(--light-accent);
-  /* Keep light accent for hover */
 }
 
-.dark-mode .dropdown-content {
+.dark-mode .connect-chapter .dropdown-content {
   background-color: var(--card-bg-dark);
   border-color: var(--border-dark);
   color: var(--text-light);
@@ -489,13 +522,11 @@ body {
     margin-top: 150px;
   }
 
-  /* Adjust fixed positioning for smaller screens */
   .dark-mode-toggle {
     top: 15px;
     right: 15px;
     padding: 6px 12px;
     font-size: 0.9em;
-    /* Slightly smaller text */
   }
 
   .kebab-menu {
@@ -504,7 +535,6 @@ body {
     width: 35px;
     height: 35px;
     font-size: 20px;
-    /* Slightly smaller icon */
   }
 }
 
@@ -525,10 +555,6 @@ body {
   .connect-chapter h3 {
     font-size: 1.3rem;
   }
-
-  .chapter-link {
-    font-size: 1rem;
-  }
 }
 
 @media (max-width: 576px) {
@@ -547,7 +573,6 @@ body {
     width: 95%;
   }
 
-  /* Further adjust fixed positioning for very small screens */
   .dark-mode-toggle {
     top: 10px;
     right: 10px;
