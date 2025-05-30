@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,84 +9,97 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="icon" href="Images/riknetra.png" type="image/png">
 </head>
+
 <body>
-  <!-- Dark Mode Toggle -->
-  <button id="dark-mode-toggle" class="dark-mode-toggle">
-    <i class="fas fa-moon"></i> Dark Mode
-  </button>
+  <div class="header-controls">
+    <button id="dark-mode-toggle" class="dark-mode-toggle">
+      <i class="fas fa-moon"></i> Dark Mode
+    </button>
 
-  <!-- Kebab Menu -->
-  <div class="kebab-menu" id="kebab-menu">
-    <i class="fas fa-bars"></i>
+    <div class="kebab-menu" id="kebab-menu">
+      <i class="fas fa-bars"></i>
+    </div>
+
+    <a href="index.html" class="home-logo" id="home-logo">
+      <img src="Images/riknetra.png" alt="Home" class="logo-img">
+    </a>
+
+    <div class="side-panel" id="side-panel">
+      <div class="side-panel-header">
+
+        <h3>RikNetra</h3>
+      </div>
+      <div class="side-panel-content">
+        <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
+        <a href="suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
+        <a href="chapter.html"><i class="fas fa-book"></i> Read Suktas</a>
+      </div>
+    </div>
   </div>
 
-  <!-- Side Panel -->
-  <div class="side-panel" id="side-panel">
-    <div class="side-panel-header">
-      <h3>RikNetra</h3>
-    </div>
-    <div class="side-panel-content">
-      <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
-      <a href="suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
-      <a href="chapter.html"><i class="fas fa-book"></i> Read Suktas</a>
-      <a href="SBERT_network.html"><i class="fas fa-brain"></i> SBERT Network</a>
-      <a href="#"><i class="fas fa-star"></i> Popular Suktas</a>
-    </div>
-  </div>
-
-  <!-- Main Content -->
   <div class="main-container" id="main-container">
-    <!-- Welcome Section -->
     <header class="welcome-section" id="welcome-section">
-      <img src="Images/riknetra.png" alt="RiKNetra Logo" class="panel-logo">
+      <img src="Images/riknetra.png" alt="RiKNetra Logo" class="welcome-logo">
       <h1>Welcome to RikNetra</h1>
       <p>Explore the ancient wisdom of the Rigveda through interconnected verses</p>
     </header>
 
-    <!-- Search Section -->
     <section class="search-section" id="search-section">
-      <div class="search-container">
-        <div class="search-input-container">
-          <input type="text" id="search-box" placeholder="Search here...">
+      <div class="search-controls-wrapper">
+        <div class="search-input-group">
+          <input type="text" id="search-box" placeholder="Search for Suktas, keywords, or query..." aria-label="Search">
           <span class="clear-search" id="clear-search">×</span>
           <button id="search-button"><i class="fas fa-search"></i></button>
         </div>
-        <select id="database-select" class="styled-select">
-          <option value="database/k5database.json" selected>Sukta with 4 connections</option>
-          <option value="database/k3database.json">Sukta with 2 connections</option>
-          <option value="database/k10database.json">Sukta with 9 connections</option>
-        </select>
+        <div class="styled-select-container">
+          <select id="database-select" class="styled-select">
+            <option value="database/k3database.json">Sukta with 2 connections</option>
+            <option value="database/k4database.json">Sukta with 3 connections</option>
+            <option value="database/k5database.json" selected>Sukta with 4 connections</option>
+            <option value="database/k6database.json">Sukta with 5 connections</option>
+            <option value="database/k7database.json">Sukta with 6 connections</option>
+            <option value="database/k8database.json">Sukta with 7 connections</option>
+            <option value="database/k9database.json">Sukta with 8 connections</option>
+            <option value="database/k10database.json">Sukta with 9 connections</option>
+            <option value="database/k11database.json">Sukta with 10 connections</option>
+          </select>
+        </div>
       </div>
     </section>
 
-    <!-- Results Section -->
     <div class="results-container" id="results-container">
-      <div class="results-header">
-        <div class="search-summary" id="search-summary"></div>
-        <div class="rag-summary" id="rag-summary">
-          <h3>Summary</h3>
-          <div class="summary-content">
-            <p>Loading summary of search results...</p>
+      <div class="results-layout">
+        <div class="results-left">
+          <div class="search-summary" id="search-summary"></div>
+          <div class="top-results" id="top-results">
+            <h2>Top Results</h2>
+            <div class="result-cards" id="result-cards"></div>
+          </div>
+        </div>
+        <div class="results-right">
+          <div class="rag-summary" id="rag-summary">
+            <h3>Summary</h3>
+            <div class="summary-content">
+              <p>Summary of search results will appear here.</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="results-content">
-        <!-- Top Results -->
-        <div class="top-results" id="top-results">
-          <h2>Top Results</h2>
-          <div class="result-cards" id="result-cards"></div>
-        </div>
-
-        <!-- Graph Visualization -->
-        <div class="graph-section" id="graph-section">
-          <h2>Connections Visualization</h2>
-          <div class="graph-container" id="graph-visualization">
-            <!-- Graph will be rendered here -->
-            <div class="graph-placeholder">
-              <i class="fas fa-project-diagram"></i>
-              <p>Visualization of connections will appear here</p>
-            </div>
+      <div class="graph-section" id="graph-section">
+        <h2>Connections Visualization</h2>
+        <div class="graph-visualization-container" id="graph-visualization">
+          <svg id="graph-svg"></svg>
+          <div id="tooltip" class="tooltip" style="display: none;"></div>
+          <div id="popup" class="popup" style="display: none;">
+            <button id="close-popup" class="close-btn">×</button>
+            <h3 id="popup-title"></h3>
+            <ul id="popup-links"></ul>
+            <button id="read-chapter">Read this Chapter</button>
+          </div>
+          <div id="summary-popup" class="summary-popup" style="display: none;">
+            <span class="close-summary">&times;</span>
+            <div class="summary-content"></div>
           </div>
         </div>
       </div>
@@ -93,8 +107,9 @@
   </div>
 
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="searchComponent.js"></script>
   <script src="darkmode/darkMode.js"></script>
+  <script src="sukta_summary.js"></script>
+  <script src="searchComponent.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Initialize components
@@ -110,20 +125,31 @@
         graphSection: document.getElementById('graph-section'),
         searchSummary: document.getElementById('search-summary'),
         ragSummary: document.getElementById('rag-summary'),
-        resultCards: document.getElementById('result-cards')
+        resultCards: document.getElementById('result-cards'),
+        graphSvg: document.getElementById('graph-svg') // Pass the SVG element
       });
 
       // Side panel toggle
       const kebabMenu = document.getElementById('kebab-menu');
       const sidePanel = document.getElementById('side-panel');
       const mainContainer = document.getElementById('main-container');
+      const homeLogo = document.getElementById('home-logo');
 
       kebabMenu.addEventListener('click', (e) => {
         e.stopPropagation();
         sidePanel.classList.toggle('open');
         mainContainer.classList.toggle('panel-open');
+        homeLogo.style.display = sidePanel.classList.contains('open') ? 'none' : 'flex';
       });
 
+      // Close panel when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
+          sidePanel.classList.remove('open');
+          mainContainer.classList.remove('panel-open');
+          homeLogo.style.display = 'flex';
+        }
+      });
     });
   </script>
 </body>
