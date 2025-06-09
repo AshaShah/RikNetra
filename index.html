@@ -53,18 +53,44 @@
         </div>
         <div class="styled-select-container">
           <select id="database-select" class="styled-select">
-            <option value="database/k3database.json">Sukta with 2 connections</option>
-            <option value="database/k4database.json">Sukta with 3 connections</option>
-            <option value="database/k5database.json" selected>Sukta with 4 connections</option>
-            <option value="database/k6database.json">Sukta with 5 connections</option>
-            <option value="database/k7database.json">Sukta with 6 connections</option>
-            <option value="database/k8database.json">Sukta with 7 connections</option>
-            <option value="database/k9database.json">Sukta with 8 connections</option>
-            <option value="database/k10database.json">Sukta with 9 connections</option>
-            <option value="database/k11database.json">Sukta with 10 connections</option>
+            <option value="database/k3database.json">with 2 neighbors</option>
+            <option value="database/k4database.json">with 3 neighbors</option>
+            <option value="database/k5database.json" selected>with 4 neighbors</option>
+            <option value="database/k6database.json">with 5 neighbors</option>
+            <option value="database/k7database.json">with 6 neighbors</option>
+            <option value="database/k8database.json">with 7 neighbors</option>
+            <option value="database/k9database.json">with 8 neighbors</option>
+            <option value="database/k10database.json">with 9 neighbors</option>
+            <option value="database/k11database.json">with 10 neighbors</option>
           </select>
         </div>
       </div>
+
+      <div class="search-guide-card" id="search-guide-card">
+        <div class="rv-explanation">
+          <span class="rv-badge">RV</span> = Rigveda (Ancient Hindu Scripture)
+          <div class="verse-example">
+            <span class="verse-format">Book.Hymn</span> format:
+            <strong>10.129</strong> = Book 10, Hymn 129 (Creation Hymn)
+          </div>
+        </div>
+
+        <div class="search-methods">
+          <h3><i class="fas fa-search"></i> Search Methods:</h3>
+          <div class="search-tags" id="search-tags">
+            <span class="tag verse-tag" data-search-term="RV 1.1">RV 1.1</span>
+            <span class="tag topic-tag" data-search-term="creation">creation</span>
+            <span class="tag keyword-tag" data-search-term="agni">agni</span>
+            <span class="tag question-tag" data-search-term="verses about dawn">verses about dawn</span>
+          </div>
+          <div class="search-tips">
+            <p>Try: <span class="tip-example">"10.129"</span>, <span class="tip-example">"hymns to indra"</span>, or
+              <span class="tip-example">"What is the hymn about sacrifice?"</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
     </section>
 
     <div class="results-container" id="results-container">
@@ -72,6 +98,9 @@
         <div class="results-left">
           <div class="search-summary" id="search-summary"></div>
           <div class="top-results" id="top-results">
+            <div class="scroll-controls">
+            </div>
+
             <h2>Top Results</h2>
             <div class="result-cards" id="result-cards"></div>
           </div>
@@ -110,6 +139,7 @@
   <script src="darkmode/darkMode.js"></script>
   <script src="sukta_summary.js"></script>
   <script src="searchComponent.js"></script>
+
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Initialize components
@@ -152,6 +182,12 @@
       });
     });
   </script>
+
+  <footer class="footer">
+    <p>&copy; 2025 RikNetra. All rights reserved. </p>
+    <!--Website developed by<a href="someone.html">Your Name</a></p> -->
+  </footer>
+
 </body>
 
 </html>
