@@ -1,22 +1,40 @@
 class RigvedaSearch {
   constructor(options) {
-    // DOM Elements
+    // DOM Elements initialization
+    this.initElements(options);
+
+    // D3 Graph Variables
+    this.initGraphVariables();
+
+    // Search state
+    this.currentSearchTerm = "";
+    this.searchTimeout = null;
+
+    // Initialize
+    this.setupEventListeners();
+    this.setupTagListeners();
+    this.initializeGraph();
+    this.setupScrollControls();
+  }
+
+  initElements(options) {
     this.searchBox = options.searchBox;
     this.searchButton = options.searchButton;
     this.clearSearch = options.clearSearch;
     this.databaseSelect = options.databaseSelect;
     this.resultsContainer = options.resultsContainer;
     this.welcomeSection = options.welcomeSection;
-    this.searchSection = options.searchSection; // Added for search section control
+    this.searchSection = options.searchSection;
     this.topResults = options.topResults;
     this.graphSection = options.graphSection;
     this.searchSummary = options.searchSummary;
     this.ragSummary = options.ragSummary;
     this.resultCards = options.resultCards;
-    this.graphSvg = options.graphSvg; // D3 SVG element
+    this.graphSvg = options.graphSvg;
+  }
 
-    // D3 Graph Variables
-    this.g = null; // D3 group element for graph
+  initGraphVariables() {
+    this.g = null;
     this.link = null;
     this.node = null;
     this.label = null;
@@ -32,220 +50,356 @@ class RigvedaSearch {
     this.closePopupBtn = d3.select("#close-popup");
     this.readChapterBtn = d3.select("#read-chapter");
     this.isolateMode = false;
-    this.selectedNode = null; // Currently selected node for highlighting
-    this.selectedEdge = null; // Currently selected edge
-
-    // Search state
-    this.currentSearchTerm = '';
-    this.searchTimeout = null;
-
-    // Initialize
-    this.setupEventListeners();
-    this.initializeGraph(); // Setup D3 graph initially
+    this.selectedNode = null;
+    this.selectedEdge = null;
   }
 
   setupEventListeners() {
-    // Real-time search with debounce
-    this.searchBox.addEventListener('input', () => {
-      this.currentSearchTerm = this.searchBox.value.trim();
-      this.toggleClearButton();
+    this.searchBox.addEventListener("input", this.handleSearchInput.bind(this));
+    this.searchButton.addEventListener(
+      "click",
+      this.handleSearchClick.bind(this)
+    );
+    this.clearSearch.addEventListener("click", this.resetSearch.bind(this));
+    this.databaseSelect.addEventListener(
+      "change",
+      this.handleDatabaseChange.bind(this)
+    );
+    this.searchBox.addEventListener("keydown", this.handleKeyDown.bind(this));
 
-      if (this.searchTimeout) clearTimeout(this.searchTimeout);
-
-      this.searchTimeout = setTimeout(() => {
-        if (this.currentSearchTerm.length > 0) {
-          this.performSearch();
-        } else {
-          this.resetSearch();
-        }
-      }, 300);
-    });
-
-    // Search button click
-    this.searchButton.addEventListener('click', () => {
-      if (this.searchTimeout) clearTimeout(this.searchTimeout);
-      this.performSearch();
-    });
-
-    // Clear search
-    this.clearSearch.addEventListener('click', () => {
-      this.resetSearch();
-    });
-
-    // Database change
-    this.databaseSelect.addEventListener('change', () => {
-      this.loadGraphData(this.databaseSelect.value, this.currentSearchTerm); // Reload graph data with new database
-      if (this.currentSearchTerm.length > 0) {
-        this.performSearch(); // Re-run search with new database
-      } else {
-        this.resetSearch(); // Reset if no search term but database changed
-      }
-    });
-
-    // Enter key to search
-    this.searchBox.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        if (this.searchTimeout) clearTimeout(this.searchTimeout);
-        this.performSearch();
-      }
-    });
-
-    // Graph popup close and read chapter
-    this.closePopupBtn.on("click", () => {
-      this.popup.style("display", "none");
-      this.isolateMode = false; // Reset isolate mode when popup closes
-      this.updateGraphVisibility();
-      this.resetGraphHighlights(); // Reset node/link highlights
-    });
-
-    this.readChapterBtn.on("click", () => {
-      if (this.selectedNode) {
-        const chapterName = this.selectedNode.name;
-        const chapterId = this.selectedNode.id;
-        const database = this.databaseSelect.value;
-        window.location.href = `chapter.html?chapterId=${encodeURIComponent(chapterId)}&chapterName=${encodeURIComponent(chapterName)}&database=${encodeURIComponent(database)}`;
-      } else {
-        alert("Please select a node first.");
-      }
-    });
+    // Popup/Read Chapter
+    this.closePopupBtn.on("click", this.closePopup.bind(this));
+    this.readChapterBtn.on("click", this.readChapter.bind(this));
   }
 
-  toggleClearButton() {
+  handleSearchInput() {
+    this.currentSearchTerm = this.searchBox.value.trim();
+    this.toggleClearButton();
+
+    if (this.searchTimeout) clearTimeout(this.searchTimeout);
     if (this.currentSearchTerm.length > 0) {
-      this.clearSearch.classList.add('visible');
-    } else {
-      this.clearSearch.classList.remove('visible');
+      this.searchTimeout = setTimeout(() => this.performSearch(), 300);
     }
   }
 
-  showLoading() {
-    // Activate search mode
-    document.body.classList.add('search-active');
-    this.welcomeSection.classList.add('hidden'); // Hide welcome section
-
-    // Show loading in results
-    this.searchSummary.innerHTML = `
-      <h2>Searching for "${this.currentSearchTerm}"</h2>
-      <p>Loading results...</p>
-    `;
-
-    this.ragSummary.querySelector('.summary-content').innerHTML = `
-      <p>Generating summary for "${this.currentSearchTerm}"...</p>
-    `;
-
-    this.resultCards.innerHTML = `
-      <div class="result-card loading">
-        <div class="loading-line" style="width: 80%"></div>
-        <div class="loading-line" style="width: 60%"></div>
-        <div class="loading-line" style="width: 70%"></div>
-      </div>
-      <div class="result-card loading">
-        <div class="loading-line" style="width: 75%"></div>
-        <div class="loading-line" style="width: 65%"></div>
-        <div class="loading-line" style="width: 50%"></div>
-      </div>
-      <div class="result-card loading">
-        <div class="loading-line" style="width: 70%"></div>
-        <div class="loading-line" style="width: 80%"></div>
-        <div class="loading-line" style="width: 60%"></div>
-      </div>
-    `;
-    this.resultsContainer.style.display = 'flex'; // Show results container
+  handleSearchClick() {
+    if (this.searchTimeout) clearTimeout(this.searchTimeout);
+    this.performSearch();
   }
 
-  performSearch() {
+  handleDatabaseChange() {
+    this.loadGraphData(this.databaseSelect.value, this.currentSearchTerm);
+    if (this.currentSearchTerm.length > 0) {
+      this.performSearch();
+    } else {
+      this.resetSearch();
+    }
+  }
+
+  handleKeyDown(e) {
+    if (e.key === "Enter") {
+      if (this.searchTimeout) clearTimeout(this.searchTimeout);
+      this.performSearch();
+    }
+  }
+
+    setupScrollControls() {
+    const scrollUp = document.querySelector('.scroll-up');
+    const scrollDown = document.querySelector('.scroll-down');
+    const resultsContainer = document.querySelector('.results-list-container');
+
+    if (scrollUp && scrollDown && resultsContainer) {
+      // Set initial height (can adjust as needed)
+      resultsContainer.style.maxHeight = '300px';
+
+      scrollUp.addEventListener('click', () => {
+        const currentHeight = parseInt(getComputedStyle(resultsContainer).maxHeight);
+        if (currentHeight > 200) { // Minimum height
+          resultsContainer.style.maxHeight = `${currentHeight - 50}px`;
+        }
+      });
+
+      scrollDown.addEventListener('click', () => {
+        const currentHeight = parseInt(getComputedStyle(resultsContainer).maxHeight);
+        if (currentHeight < 600) { // Maximum height
+          resultsContainer.style.maxHeight = `${currentHeight + 50}px`;
+        }
+      });
+    }
+  }
+
+
+  closePopup() {
+    this.popup.style("display", "none");
+    this.isolateMode = false;
+    this.updateGraphVisibility();
+    this.resetGraphHighlights();
+  }
+
+  readChapter() {
+    if (!this.selectedNode) {
+      alert("Please select a node first.");
+      return;
+    }
+
+    const chapterName = this.cleanSuktaName(this.selectedNode.name);
+    const chapterId = this.selectedNode.id;
+    const database = this.databaseSelect.value;
+    window.location.href = `chapter.html?chapterId=${encodeURIComponent(
+      chapterId
+    )}&chapterName=${encodeURIComponent(
+      chapterName
+    )}&database=${encodeURIComponent(database)}`;
+  }
+
+  toggleClearButton() {
+    this.clearSearch.classList.toggle(
+      "visible",
+      this.currentSearchTerm.length > 0
+    );
+  }
+
+  showLoading() {
+    document.body.classList.add("search-active");
+    this.welcomeSection.classList.add("hidden");
+    document.getElementById("search-guide-card").classList.add("hidden");
+    this.searchSummary.innerHTML = `<h2>Searching for "${this.currentSearchTerm}"</h2><p>Loading results...</p>`;
+    this.ragSummary.querySelector(
+      ".summary-content"
+    ).innerHTML = `<p>Generating summary for "${this.currentSearchTerm}"...</p>`;
+    this.resultCards.innerHTML = `
+    <div class="result-card loading"><div class="loading-line" style="width: 80%"></div></div>
+    <div class="result-card loading"><div class="loading-line" style="width: 75%"></div></div>
+    <div class="result-card loading"><div class="loading-line" style="width: 70%"></div></div>`;
+    this.resultsContainer.style.display = "flex";
+  }
+
+  async performSearch() {
     if (this.currentSearchTerm.length === 0) {
       this.resetSearch();
       return;
     }
 
     this.showLoading();
-
     const currentDatabase = this.databaseSelect.value;
 
-    // Simulate API call for search results (top 5 matching)
-    // In a real app, this would be an actual API call to your backend
-    // which returns matching suktas and their summary/connections.
-    d3.json(currentDatabase).then(data => {
-      // Filter nodes based on search term
-      const matchedNodes = data.nodes.filter(node =>
-        node.name.toLowerCase().includes(this.currentSearchTerm.toLowerCase()) ||
-        (node.content && node.content.toLowerCase().includes(this.currentSearchTerm.toLowerCase()))
-      );
+    try {
+      const data = await d3.json(currentDatabase);
+      this.nodesData = data.nodes;
+      this.edgesData = data.edges;
 
-      // Sort by relevance (e.g., if content matches more, higher relevance)
-      const topResults = matchedNodes.slice(0, 5); // Take top 5
+      const semanticData = await this.fetchSemanticResults();
+      let matchedNodes = this.processSearchResults(semanticData);
 
-      // Update UI
-      this.updateSearchResults(topResults, this.currentSearchTerm);
+      this.updateSearchResults(matchedNodes, this.currentSearchTerm);
+      this.loadGraphData(currentDatabase, this.currentSearchTerm, matchedNodes);
+    } catch (error) {
+      this.showSearchError();
+    }
+  }
 
-      // Now, load the graph based on the selected database and highlight
-      this.loadGraphData(currentDatabase, this.currentSearchTerm, topResults);
-    }).catch(error => {
-      console.error("Error loading database for search:", error);
-      this.searchSummary.innerHTML = `<h2>Error</h2><p>Could not load search results.</p>`;
-      this.ragSummary.querySelector('.summary-content').innerHTML = `<p>An error occurred while fetching data.</p>`;
-      this.resultCards.innerHTML = `<p>No results found due to an error.</p>`;
+  async fetchSemanticResults() {
+    const response = await fetch("http://localhost:5000/semantic-search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: this.currentSearchTerm,
+        top_k: 5,
+      }),
     });
+    return response.json();
+  }
+
+  processSearchResults(semanticData) {
+    let matchedNodes = [];
+
+    if (semanticData.results?.length > 0) {
+      matchedNodes = semanticData.results
+        .map((result) => this.findMatchingNode(result.sukta))
+        .filter(Boolean);
+    }
+
+    if (matchedNodes.length === 0) {
+      matchedNodes = this.nodesData
+        .filter((node) => this.matchesSearchTerm(node))
+        .slice(0, 5);
+    }
+
+    return matchedNodes;
+  }
+
+  findMatchingNode(sukta) {
+    return this.nodesData.find(
+      (node) =>
+        node.id.includes(sukta) ||
+        this.cleanSuktaName(node.name).includes(this.cleanSuktaName(sukta))
+    );
+  }
+
+  matchesSearchTerm(node) {
+    return (
+      this.cleanSuktaName(node.name)
+        .toLowerCase()
+        .includes(this.currentSearchTerm.toLowerCase()) ||
+      (node.content &&
+        node.content
+          .toLowerCase()
+          .includes(this.currentSearchTerm.toLowerCase()))
+    );
+  }
+
+  showSearchError() {
+    this.searchSummary.innerHTML = `<h2>Error</h2><p>Could not perform search.</p>`;
+    this.ragSummary.querySelector(
+      ".summary-content"
+    ).innerHTML = `<p>An error occurred while performing search.</p>`;
   }
 
   updateSearchResults(results, searchTerm) {
-    this.searchSummary.innerHTML = `
-      <h2>Results for "${searchTerm}"</h2>
-      <p>Found ${results.length} matching Suktas</p>
-    `;
+    this.searchSummary.innerHTML = "";
+    this.updateRagSummary(results, searchTerm);
+    this.renderResultsList(results);
+  }
 
-    // Simulate RAG summary (replace with actual summary generation)
-    let summaryText = `The search for "${searchTerm}" revealed connections within the selected Rigveda database. `;
+  updateRagSummary(results, searchTerm) {
+    let summaryText = `Search for "${searchTerm}" found ${results.length} matching Suktas.`;
     if (results.length > 0) {
-      summaryText += `Key verses like ${results.map(r => r.name).join(', ')} are highlighted, touching upon themes relevant to your query.`;
-    } else {
-      summaryText += `No direct matches were found, but the network might reveal indirect connections.`;
+      summaryText += ` Key verses like ${results
+        .slice(0, 3)
+        .map((r) => this.cleanSuktaName(r.name))
+        .join(", ")} are highlighted.`;
+    }
+    this.ragSummary.querySelector(
+      ".summary-content"
+    ).innerHTML = `<p>${summaryText}</p>`;
+  }
+
+  renderResultsList(results) {
+    this.resultCards.innerHTML = "";
+
+    if (results.length === 0) {
+      this.resultCards.innerHTML =
+        "<p class='no-results'>No Suktas found matching your search term.</p>";
+      return;
     }
 
-    this.ragSummary.querySelector('.summary-content').innerHTML = `<p>${summaryText}</p>`;
+    const container = document.createElement("div");
+    container.className = "results-list-container";
 
-    this.resultCards.innerHTML = '';
-    if (results.length > 0) {
-      results.forEach((sukta, index) => {
-        const card = document.createElement('div');
-        card.classList.add('result-card');
-        card.innerHTML = `
-          <h3>${sukta.name}</h3>
-          <span class="score">Relevance: ${Math.max(70, 100 - index * 5)}%</span> <p>${sukta.content ? sukta.content.substring(0, 150) + '...' : 'No summary available.'}</p>
-          <div class="actions">
-            <button class="view-connections" data-node-id="${sukta.id}"><i class="fas fa-link"></i> View Connections</button>
-            <button class="read-full" data-node-id="${sukta.id}" data-node-name="${sukta.name}"><i class="fas fa-book-open"></i> Read Full</button>
-          </div>
-        `;
-        this.resultCards.appendChild(card);
+    const list = document.createElement("ul");
+    list.className = "results-list";
 
-        // Add event listeners to the new buttons
-        card.querySelector('.view-connections').addEventListener('click', () => {
-          this.highlightGraphNode(sukta.id);
-          this.showPopup(sukta); // Show popup for the clicked node
-          this.zoomToNode(this.nodesData.find(n => n.id === sukta.id)); // Zoom to the node
-        });
-        card.querySelector('.read-full').addEventListener('click', (event) => {
-          const chapterId = event.target.dataset.nodeId;
-          const chapterName = event.target.dataset.nodeName;
-          const database = this.databaseSelect.value;
-          window.location.href = `chapter.html?chapterId=${encodeURIComponent(chapterId)}&chapterName=${encodeURIComponent(chapterName)}&database=${encodeURIComponent(database)}`;
-        });
+    results.forEach((sukta, index) => {
+      list.appendChild(this.createResultItem(sukta, index));
+    });
+
+    container.appendChild(list);
+
+    if (results.length > 3) {
+      container.appendChild(this.createToggleButton());
+    }
+
+    this.resultCards.appendChild(container);
+  }
+
+  createResultItem(sukta, index) {
+    const cleanName = this.cleanSuktaName(sukta.name);
+    const contentPreview = this.getContentPreview(sukta.text);
+
+    const item = document.createElement("li");
+    item.className = "result-item";
+    item.innerHTML = `
+      <div class="result-header">
+        <span class="result-title">${cleanName}</span>
+        <span class="result-score">${Math.max(70, 100 - index * 5)}%</span>
+      </div>
+      ${
+        contentPreview
+          ? `<div class="result-content"><p>${contentPreview}</p></div>`
+          : ""
+      }
+      <div class="result-actions">
+        <button class="view-connections" data-node-id="${sukta.id}">
+          <i class="fas fa-link"></i> Connections
+        </button>
+        <button class="read-full" data-node-id="${
+          sukta.id
+        }" data-node-name="${cleanName}">
+          <i class="fas fa-book-open"></i> Read
+        </button>
+      </div>`;
+
+    item
+      .querySelector(".view-connections")
+      .addEventListener("click", () => this.handleViewConnections(sukta.id));
+    item
+      .querySelector(".read-full")
+      .addEventListener("click", (event) =>
+        this.handleReadFull(event, cleanName)
+      );
+
+    return item;
+  }
+
+  getContentPreview(text) {
+    if (!text) return "";
+
+    const firstLine = text.split(/[\n.]/)[0].trim();
+    return firstLine.length > 0
+      ? firstLine
+      : text.substring(0, 60).trim() + (text.length > 60 ? "..." : "");
+  }
+
+  createToggleButton() {
+    const toggle = document.createElement("div");
+    toggle.className = "view-more-toggle";
+    toggle.textContent = "Show More";
+    return toggle;
+  }
+
+  handleViewConnections(nodeId) {
+    const node = this.nodesData.find((n) => n.id === nodeId);
+    if (!node) return;
+
+    this.highlightGraphNode(nodeId);
+    this.showPopup(node);
+    this.zoomToNode(node);
+  }
+
+  handleReadFull(event, chapterName) {
+    const chapterId = event.target.dataset.nodeId;
+    const database = this.databaseSelect.value;
+    window.location.href = `chapter.html?chapterId=${encodeURIComponent(
+      chapterId
+    )}&chapterName=${encodeURIComponent(
+      chapterName
+    )}&database=${encodeURIComponent(database)}`;
+  }
+
+  setupTagListeners() {
+    const tagsContainer = document.getElementById("search-tags");
+    if (tagsContainer) {
+      tagsContainer.addEventListener("click", (event) => {
+        const tag = event.target.closest(".tag");
+        if (tag) {
+          const searchTerm = tag.dataset.searchTerm;
+          this.searchBox.value = searchTerm;
+          this.currentSearchTerm = searchTerm;
+          this.performSearch();
+        }
       });
-    } else {
-      this.resultCards.innerHTML = '<p>No Suktas found matching your search term.</p>';
     }
   }
 
   resetSearch() {
-    this.currentSearchTerm = '';
-    this.searchBox.value = '';
-    this.clearSearch.classList.remove('visible');
-    document.body.classList.remove('search-active');
-    this.welcomeSection.classList.remove('hidden'); // Show welcome section
-    this.resultsContainer.style.display = 'none'; // Hide results container
-    this.resetGraph(); // Reset the graph view
+  this.currentSearchTerm = "";
+  this.searchBox.value = "";
+  this.clearSearch.classList.remove("visible");
+  document.body.classList.remove("search-active");
+  this.welcomeSection.classList.remove("hidden");
+  document.getElementById('search-guide-card').classList.remove('hidden');
+  this.resultsContainer.style.display = "none";
+  this.resetGraph();
   }
 
   // --- D3 Graph Initialization and Rendering ---
@@ -256,174 +410,169 @@ class RigvedaSearch {
 
     this.svg.attr("width", width).attr("height", height);
 
-    this.zoom = d3.zoom()
+    this.zoom = d3
+      .zoom()
       .scaleExtent([0.1, 5])
       .on("zoom", (event) => {
         this.g.attr("transform", event.transform);
       });
-
     this.svg.call(this.zoom);
-
-    // Append group element once
     this.g = this.svg.append("g");
-
-    // Load initial graph data when the component initializes
     this.loadGraphData(this.databaseSelect.value);
   }
 
-  resetGraphHighlights() {
-    if (this.node) {
-      this.node
-        .attr("fill", "#7fb3d5") // Default color
-        .attr("stroke", null)
-        .attr("stroke-width", null);
-    }
-    if (this.link) {
-      this.link
-        .attr("stroke", "#aaa") // Default color
-        .attr("stroke-width", d => 11 - d.normalized_weight);
-    }
-    if (this.label) {
-        this.label.style("fill", "black");
-    }
-    this.selectedNode = null;
-    this.selectedEdge = null;
-    this.isolateMode = false; // Ensure isolate mode is off
-    this.updateGraphVisibility(); // Update visibility to show all
-  }
+  loadGraphData(database, searchTerm = null, highlightNodes = []) {
+    this.g.selectAll("*").remove();
+    d3.json(database)
+      .then((data) => {
+        this.nodesData = data.nodes;
+        this.edgesData = data.edges;
 
-  loadGraphData(database, searchTerm = null, initialHighlightNodes = []) {
-    this.g.selectAll("*").remove(); // Clear previous graph elements
-    this.resetGraphHighlights(); // Reset highlights and colors
+        const width = this.graphSvg.parentElement.clientWidth;
+        const height = this.graphSvg.parentElement.clientHeight;
 
-    d3.json(database).then(data => {
-      this.nodesData = data.nodes;
-      this.edgesData = data.edges;
+        const weights = this.edgesData.map((d) => d.weight);
+        const min_weight = Math.min(...weights);
+        const max_weight = Math.max(...weights);
+        const new_min = 1;
+        const new_max = 10;
 
-      const width = this.graphSvg.parentElement.clientWidth;
-      const height = this.graphSvg.parentElement.clientHeight;
+        this.edgesData.forEach((d) => {
+          if (max_weight === min_weight) {
+            d.normalized_weight = new_max;
+          } else {
+            d.normalized_weight =
+              ((d.weight - min_weight) / (max_weight - min_weight)) *
+                (new_max - new_min) +
+              new_min;
+          }
+        });
 
-      const weights = this.edgesData.map(d => d.weight);
-      const min_weight = Math.min(...weights);
-      const max_weight = Math.max(...weights);
-      const new_min = 1;
-      const new_max = 10;
+        // No fixed positions, let force simulation handle it
+        this.simulation = d3
+          .forceSimulation(this.nodesData)
+          .force(
+            "link",
+            d3
+              .forceLink(this.edgesData)
+              .id((d) => d.id)
+              .distance(50)
+          )
+          .force("charge", d3.forceManyBody().strength(-30))
+          .force("center", d3.forceCenter(width / 2, height / 2))
+          .on("tick", () => this.ticked());
 
-      this.edgesData.forEach(d => {
-        if (max_weight === min_weight) {
-          d.normalized_weight = new_max;
+        this.link = this.g
+          .append("g")
+          .selectAll("line")
+          .data(this.edgesData)
+          .enter()
+          .append("line")
+          .attr("class", "edge")
+          .attr("stroke-width", (d) => 11 - d.normalized_weight)
+          .attr("stroke", "#aaa")
+          .on("click", (event, d) => {
+            if (this.selectedEdge) {
+              this.selectedEdge.attr("stroke", "#aaa");
+            }
+            this.selectedEdge = d3
+              .select(event.target)
+              .attr("stroke", "red")
+              .attr("stroke-width", 11 - d.normalized_weight);
+            this.highlightEdgeNodes(d);
+          })
+          .on("mouseover", (event, d) => {
+            d3.select(event.target)
+              .attr("stroke", "red")
+              .attr("stroke-width", 11 - d.normalized_weight);
+          })
+          .on("mouseout", (event, d) => {
+            if (
+              !this.selectedEdge ||
+              d3.select(event.target).datum() !== this.selectedEdge.datum()
+            ) {
+              d3.select(event.target)
+                .attr("stroke", "#aaa")
+                .attr("stroke-width", 11 - d.normalized_weight);
+            }
+          });
+
+        const drag = d3
+          .drag()
+          .on("start", (event, d) => this.dragStarted(event, d))
+          .on("drag", (event, d) => this.dragged(event, d))
+          .on("end", (event, d) => this.dragEnded(event, d));
+
+        this.node = this.g
+          .append("g")
+          .selectAll("circle")
+          .data(this.nodesData)
+          .enter()
+          .append("circle")
+          .attr("class", "node")
+          .attr("r", 8)
+          .attr("fill", "#7fb3d5")
+          .call(drag)
+          .on("mouseover", (event, d) => {
+            this.tooltip
+              .style("display", "block")
+              .html(`<strong>${this.cleanSuktaName(d.name)}</strong>`)
+              .style("left", `${event.pageX + 5}px`)
+              .style("top", `${event.pageY + 5}px`);
+          })
+          .on("mouseout", () => {
+            this.tooltip.style("display", "none");
+          })
+          .on("click", (event, d) => {
+            this.selectedNode = d;
+            this.showPopup(d);
+            this.zoomToNode(d);
+            this.highlightGraphNode(d.id); // Highlight selected node and its connections
+            this.displaySummary(d); // Display summary for the clicked node
+          });
+
+        this.label = this.g
+          .append("g")
+          .selectAll("text")
+          .data(this.nodesData)
+          .enter()
+          .append("text")
+          .attr("x", (d) => d.x + 10)
+          .attr("y", (d) => d.y + 5)
+          .text((d) => this.cleanSuktaName(d.name))
+          .style("font-size", "5px")
+          .style("fill", "black");
+
+        // Initial highlighting based on search results
+        if (highlightNodes && highlightNodes.length > 0) {
+          this.highlightGraphNode(highlightNodes[0].id);
+        } else if (searchTerm) {
+          this.ragSummary.querySelector(
+            ".summary-content"
+          ).innerHTML = `<p>No direct matches found in graph. Click on nodes to explore connections.</p>`;
         } else {
-          d.normalized_weight = ((d.weight - min_weight) / (max_weight - min_weight)) * (new_max - new_min) + new_min;
+          this.ragSummary.querySelector(
+            ".summary-content"
+          ).innerHTML = `<p>Summary of search results will appear here.</p>`;
         }
+
+        this.updateGraphVisibility(); // Apply initial visibility (all visible)
+      })
+      .catch((error) => {
+        console.error("Error loading the graph data:", error);
       });
-
-      // No fixed positions, let force simulation handle it
-      this.simulation = d3.forceSimulation(this.nodesData)
-        .force("link", d3.forceLink(this.edgesData).id(d => d.id).distance(50))
-        .force("charge", d3.forceManyBody().strength(-30))
-        .force("center", d3.forceCenter(width / 2, height / 2))
-        .on("tick", () => this.ticked());
-
-      this.link = this.g.append("g")
-        .selectAll("line")
-        .data(this.edgesData)
-        .enter()
-        .append("line")
-        .attr("class", "edge")
-        .attr("stroke-width", d => 11 - d.normalized_weight)
-        .attr("stroke", "#aaa")
-        .on("click", (event, d) => {
-          if (this.selectedEdge) {
-            this.selectedEdge.attr("stroke", "#aaa");
-          }
-          this.selectedEdge = d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
-          this.highlightEdgeNodes(d);
-        })
-        .on("mouseover", (event, d) => {
-          d3.select(event.target).attr("stroke", "red").attr("stroke-width", 11 - d.normalized_weight);
-        })
-        .on("mouseout", (event, d) => {
-          if (!this.selectedEdge || d3.select(event.target).datum() !== this.selectedEdge.datum()) {
-            d3.select(event.target).attr("stroke", "#aaa").attr("stroke-width", 11 - d.normalized_weight);
-          }
-        });
-
-      const drag = d3.drag()
-        .on("start", (event, d) => this.dragStarted(event, d))
-        .on("drag", (event, d) => this.dragged(event, d))
-        .on("end", (event, d) => this.dragEnded(event, d));
-
-      this.node = this.g.append("g")
-        .selectAll("circle")
-        .data(this.nodesData)
-        .enter()
-        .append("circle")
-        .attr("class", "node")
-        .attr("r", 8)
-        .attr("fill", "#7fb3d5")
-        .call(drag)
-        .on("mouseover", (event, d) => {
-          this.tooltip.style("display", "block")
-            .html(`<strong>${d.name}</strong>`)
-            .style("left", `${event.pageX + 5}px`)
-            .style("top", `${event.pageY + 5}px`);
-        })
-        .on("mouseout", () => {
-          this.tooltip.style("display", "none");
-        })
-        .on("click", (event, d) => {
-          this.selectedNode = d;
-          this.showPopup(d);
-          this.zoomToNode(d);
-          this.highlightGraphNode(d.id); // Highlight selected node and its connections
-          this.displaySummary(d); // Display summary for the clicked node
-        });
-
-      this.label = this.g.append("g")
-        .selectAll("text")
-        .data(this.nodesData)
-        .enter()
-        .append("text")
-        .attr("x", d => d.x + 10)
-        .attr("y", d => d.y + 5)
-        .text(d => d.name)
-        .style("font-size", "5px")
-        .style("fill", "black");
-
-      // Initial highlighting based on search results
-      if (initialHighlightNodes.length > 0) {
-        this.highlightGraphNode(initialHighlightNodes[0].id); // Highlight the first result by default
-        this.displaySummary(initialHighlightNodes[0]); // Display summary for the first result
-      } else if (searchTerm) {
-        // If no direct matches but a search term was provided,
-        // you might want to show a general summary or instruct user to click nodes.
-        this.ragSummary.querySelector('.summary-content').innerHTML = `<p>No direct matches found in graph. Click on nodes to explore connections.</p>`;
-      } else {
-        // Default state when no search is active
-        this.ragSummary.querySelector('.summary-content').innerHTML = `<p>Summary of search results will appear here.</p>`;
-      }
-
-      this.updateGraphVisibility(); // Apply initial visibility (all visible)
-
-    }).catch(error => {
-      console.error("Error loading the graph data:", error);
-    });
   }
 
   ticked() {
     this.link
-      .attr("x1", d => d.source.x)
-      .attr("y1", d => d.source.y)
-      .attr("x2", d => d.target.x)
-      .attr("y2", d => d.target.y);
+      .attr("x1", (d) => d.source.x)
+      .attr("y1", (d) => d.source.y)
+      .attr("x2", (d) => d.target.x)
+      .attr("y2", (d) => d.target.y);
 
-    this.node
-      .attr("cx", d => d.x)
-      .attr("cy", d => d.y);
+    this.node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 
-    this.label
-      .attr("x", d => d.x + 10)
-      .attr("y", d => d.y + 5);
+    this.label.attr("x", (d) => d.x + 10).attr("y", (d) => d.y + 5);
   }
 
   dragStarted(event, d) {
@@ -445,7 +594,7 @@ class RigvedaSearch {
   }
 
   highlightGraphNode(nodeId) {
-    this.selectedNode = this.nodesData.find(n => n.id === nodeId);
+    this.selectedNode = this.nodesData.find((n) => n.id === nodeId);
     if (!this.selectedNode) return;
 
     // Determine nodes to highlight up to 3 levels
@@ -455,83 +604,91 @@ class RigvedaSearch {
 
     let head = 0;
     while (head < queue.length) {
-        const { id, level } = queue[head++];
+      const { id, level } = queue[head++];
 
-        if (level < 3) {
-            this.edgesData.forEach(edge => {
-                let connectedNodeId = null;
-                if (edge.source.id === id) {
-                    connectedNodeId = edge.target.id;
-                } else if (edge.target.id === id) {
-                    connectedNodeId = edge.source.id;
-                }
+      if (level < 3) {
+        this.edgesData.forEach((edge) => {
+          let connectedNodeId = null;
+          if (edge.source.id === id) {
+            connectedNodeId = edge.target.id;
+          } else if (edge.target.id === id) {
+            connectedNodeId = edge.source.id;
+          }
 
-                if (connectedNodeId && !highlightedNodeIds.has(connectedNodeId)) {
-                    highlightedNodeIds.add(connectedNodeId);
-                    queue.push({ id: connectedNodeId, level: level + 1 });
-                }
-            });
-        }
+          if (connectedNodeId && !highlightedNodeIds.has(connectedNodeId)) {
+            highlightedNodeIds.add(connectedNodeId);
+            queue.push({ id: connectedNodeId, level: level + 1 });
+          }
+        });
+      }
     }
 
-    this.node.attr("opacity", d => highlightedNodeIds.has(d.id) ? 1 : 0.1)
-      .attr("stroke", d => d.id === this.selectedNode.id ? "red" : (highlightedNodeIds.has(d.id) ? "orange" : null))
-      .attr("stroke-width", d => d.id === this.selectedNode.id ? 3 : (highlightedNodeIds.has(d.id) ? 1.5 : null))
-      .attr("fill", d => d.id === this.selectedNode.id ? "darkred" : (highlightedNodeIds.has(d.id) ? "darkblue" : "#7fb3d5"));
+    this.node
+      .attr("opacity", (d) => (highlightedNodeIds.has(d.id) ? 1 : 0.1))
+      .attr("stroke", (d) =>
+        d.id === this.selectedNode.id
+          ? "red"
+          : highlightedNodeIds.has(d.id)
+          ? "orange"
+          : null
+      )
+      .attr("stroke-width", (d) =>
+        d.id === this.selectedNode.id
+          ? 3
+          : highlightedNodeIds.has(d.id)
+          ? 1.5
+          : null
+      )
+      .attr("fill", (d) =>
+        d.id === this.selectedNode.id
+          ? "darkred"
+          : highlightedNodeIds.has(d.id)
+          ? "darkblue"
+          : "#7fb3d5"
+      );
 
-    this.link.attr("opacity", d =>
-      (highlightedNodeIds.has(d.source.id) && highlightedNodeIds.has(d.target.id)) ? 1 : 0.1
-    ).attr("stroke", d =>
-      (d.source.id === this.selectedNode.id || d.target.id === this.selectedNode.id) ? "red" : "#aaa"
-    );
+    this.link
+      .attr("opacity", (d) =>
+        highlightedNodeIds.has(d.source.id) &&
+        highlightedNodeIds.has(d.target.id)
+          ? 1
+          : 0.1
+      )
+      .attr("stroke", (d) =>
+        d.source.id === this.selectedNode.id ||
+        d.target.id === this.selectedNode.id
+          ? "red"
+          : "#aaa"
+      );
 
-    this.label.style("opacity", d => highlightedNodeIds.has(d.id) ? 1 : 0.1)
-        .style("fill", d => highlightedNodeIds.has(d.id) ? "red" : "black");
+    this.label
+      .style("opacity", (d) => (highlightedNodeIds.has(d.id) ? 1 : 0.1))
+      .style("fill", (d) => (highlightedNodeIds.has(d.id) ? "red" : "black"));
 
     this.displaySummary(this.selectedNode); // Update summary for the highlighted node
   }
 
   highlightEdgeNodes(edge) {
-    this.node.attr("fill", d => {
+    this.node.attr("fill", (d) => {
       if (d.id === edge.source.id) return "blue";
       if (d.id === edge.target.id) return "green";
       return "#7fb3d5"; // Default color for others
     });
-    this.node.attr("stroke", d => {
+    this.node
+      .attr("stroke", (d) => {
         if (d.id === edge.source.id || d.id === edge.target.id) return "red";
         return null;
-    }).attr("stroke-width", d => {
+      })
+      .attr("stroke-width", (d) => {
         if (d.id === edge.source.id || d.id === edge.target.id) return 2;
         return null;
+      });
+
+    this.link.attr("stroke", (l) => (l === edge ? "red" : "#aaa"));
+    this.label.style("fill", (d) => {
+      if (d.id === edge.source.id || d.id === edge.target.id) return "red";
+      return "black";
     });
-
-    this.link.attr("stroke", l => l === edge ? "red" : "#aaa");
-    this.label.style("fill", d => {
-        if (d.id === edge.source.id || d.id === edge.target.id) return "red";
-        return "black";
-    });
-  }
-
-
-  showPopup(node) {
-    this.popupTitle.text(`${node.name} and its related Sukta`);
-    this.popupLinks.html("");
-
-    const connections = this.edgesData.filter(e => e.source.id === node.id || e.target.id === node.id)
-      .map(e => (e.source.id === node.id ? e.target : e.source))
-      .sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
-
-    // Remove duplicates
-    const uniqueConnections = Array.from(new Set(connections.map(c => c.id)))
-        .map(id => this.nodesData.find(n => n.id === id));
-
-
-    uniqueConnections.forEach(conn => {
-      this.popupLinks.append("li")
-        .text(`${conn.name}`);
-    });
-
-    this.popup.style("display", "block");
   }
 
   zoomToNode(node) {
@@ -539,54 +696,72 @@ class RigvedaSearch {
     const y = node.y;
     const scale = 2; // Zoom level
     const transform = d3.zoomIdentity
-      .translate(this.graphSvg.parentElement.clientWidth / 2, this.graphSvg.parentElement.clientHeight / 2)
+      .translate(
+        this.graphSvg.parentElement.clientWidth / 2,
+        this.graphSvg.parentElement.clientHeight / 2
+      )
       .scale(scale)
       .translate(-x, -y);
     this.svg.transition().duration(750).call(this.zoom.transform, transform);
   }
 
   updateGraphVisibility() {
-    // For now, this is simpler, just showing all.
-    // If you re-introduce isolate mode, this function will become more complex.
     if (this.node) {
-        this.node.attr("opacity", 1);
+      this.node.attr("opacity", 1);
     }
     if (this.link) {
-        this.link.attr("opacity", 1);
+      this.link.attr("opacity", 1);
     }
     if (this.label) {
-        this.label.style("opacity", 1).style("display", "block"); // Ensure labels are visible
+      this.label.style("opacity", 1).style("display", "block"); // Ensure labels are visible
     }
   }
 
   displaySummary(node) {
-    // This function will fetch and display summary from sukta_summary.js
-    // Assuming sukta_summary.js has a global function `getSuktaSummary`
-    // or you pass the summary data through your database.
-    const summaryContentDiv = this.ragSummary.querySelector('.summary-content');
-    if (window.getSuktaSummary) { // Check if the function exists
-        const summary = window.getSuktaSummary(node.id);
-        summaryContentDiv.innerHTML = `
-            <h4>Summary for ${node.name}</h4>
+    const cleanName = this.cleanSuktaName(node.name);
+    const summaryContentDiv = this.ragSummary.querySelector(".summary-content");
+    if (window.getSuktaSummary) {
+      // Check if the function exists
+      const summary = window.getSuktaSummary(node.id);
+      summaryContentDiv.innerHTML = `
+            <h4>Summary for ${cleanName}</h4>
             <p>${summary || "Summary not available for this Sukta."}</p>
         `;
     } else {
-        summaryContentDiv.innerHTML = `<p>Summary for ${node.name} will appear here. (sukta_summary.js not loaded or function missing)</p>`;
+      summaryContentDiv.innerHTML = `<p>Summary for ${cleanName} will appear here. (sukta_summary.js not loaded or function missing)</p>`;
     }
   }
 
   resetGraph() {
-      // Clear graph elements
-      this.g.selectAll("*").remove();
-      // Reload initial graph data (resets colors, positions, etc.)
-      this.loadGraphData(this.databaseSelect.value);
-      // Reset zoom/pan
-      this.svg.transition().duration(750).call(this.zoom.transform, d3.zoomIdentity);
-      // Reset selection
-      this.selectedNode = null;
-      this.selectedEdge = null;
-      this.isolateMode = false;
-      this.popup.style("display", "none");
-      this.ragSummary.querySelector('.summary-content').innerHTML = `<p>Summary of search results will appear here.</p>`;
+    // Clear graph elements
+    this.g.selectAll("*").remove();
+    // Reload initial graph data (resets colors, positions, etc.)
+    this.loadGraphData(this.databaseSelect.value);
+    // Reset zoom/pan
+    this.svg
+      .transition()
+      .duration(750)
+      .call(this.zoom.transform, d3.zoomIdentity);
+    // Reset selection
+    this.selectedNode = null;
+    this.selectedEdge = null;
+    this.isolateMode = false;
+    this.popup.style("display", "none");
+    this.ragSummary.querySelector(
+      ".summary-content"
+    ).innerHTML = `<p>Summary of search results will appear here.</p>`;
+  }
+
+  cleanSuktaName(name) {
+    if (!name) return name;
+    // Remove extra "RV" prefixes and trim whitespace
+    let cleanName = name.replace(/^(RV\s*)+/i, "RV ").trim();
+    // Ensure "RV" is followed by a space if not already
+    if (!cleanName.startsWith("RV ")) {
+      cleanName = "RV " + cleanName;
+    }
+    // Remove any remaining duplicate "RV"
+    cleanName = cleanName.replace(/(RV\s+)+/g, "RV ");
+    return cleanName.trim();
   }
 }
