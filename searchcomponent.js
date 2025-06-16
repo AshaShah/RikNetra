@@ -14,7 +14,6 @@ class RigvedaSearch {
     this.setupEventListeners();
     this.setupTagListeners();
     this.initializeGraph();
-    this.setupScrollControls();
   }
 
   initElements(options) {
@@ -103,32 +102,6 @@ class RigvedaSearch {
     }
   }
 
-    setupScrollControls() {
-    const scrollUp = document.querySelector('.scroll-up');
-    const scrollDown = document.querySelector('.scroll-down');
-    const resultsContainer = document.querySelector('.results-list-container');
-
-    if (scrollUp && scrollDown && resultsContainer) {
-      // Set initial height (can adjust as needed)
-      resultsContainer.style.maxHeight = '300px';
-
-      scrollUp.addEventListener('click', () => {
-        const currentHeight = parseInt(getComputedStyle(resultsContainer).maxHeight);
-        if (currentHeight > 200) { // Minimum height
-          resultsContainer.style.maxHeight = `${currentHeight - 50}px`;
-        }
-      });
-
-      scrollDown.addEventListener('click', () => {
-        const currentHeight = parseInt(getComputedStyle(resultsContainer).maxHeight);
-        if (currentHeight < 600) { // Maximum height
-          resultsContainer.style.maxHeight = `${currentHeight + 50}px`;
-        }
-      });
-    }
-  }
-
-
   closePopup() {
     this.popup.style("display", "none");
     this.isolateMode = false;
@@ -189,11 +162,19 @@ class RigvedaSearch {
       this.edgesData = data.edges;
 
       const semanticData = await this.fetchSemanticResults();
+      console.log("RAG data received:", semanticData.rag_summary); // Debug
+
       let matchedNodes = this.processSearchResults(semanticData);
 
-      this.updateSearchResults(matchedNodes, this.currentSearchTerm);
+      // Pass semanticData to update results
+      this.updateSearchResults(
+        matchedNodes,
+        this.currentSearchTerm,
+        semanticData
+      );
       this.loadGraphData(currentDatabase, this.currentSearchTerm, matchedNodes);
     } catch (error) {
+      console.error("Search error:", error);
       this.showSearchError();
     }
   }
@@ -205,6 +186,7 @@ class RigvedaSearch {
       body: JSON.stringify({
         query: this.currentSearchTerm,
         top_k: 5,
+        include_rag: true, // Request RAG summary from backend
       }),
     });
     return response.json();
@@ -255,92 +237,140 @@ class RigvedaSearch {
     ).innerHTML = `<p>An error occurred while performing search.</p>`;
   }
 
-  updateSearchResults(results, searchTerm) {
-    this.searchSummary.innerHTML = "";
-    this.updateRagSummary(results, searchTerm);
+  updateSearchResults(results, searchTerm, semanticData) {
+    this.searchSummary.innerHTML = `<h2>Results for "${searchTerm}"</h2>`;
+
+    // Update RAG summary with the semanticData
+    this.updateRagSummary(results, searchTerm, semanticData);
+
+    // Render regular results (unchanged)
     this.renderResultsList(results);
   }
 
-  updateRagSummary(results, searchTerm) {
-    let summaryText = `Search for "${searchTerm}" found ${results.length} matching Suktas.`;
-    if (results.length > 0) {
-      summaryText += ` Key verses like ${results
-        .slice(0, 3)
-        .map((r) => this.cleanSuktaName(r.name))
-        .join(", ")} are highlighted.`;
+  updateRagSummary(results, searchTerm, semanticData) {
+    const ragContainer = this.ragSummary.querySelector(".summary-content");
+
+    if (semanticData?.rag_summary) {
+      ragContainer.innerHTML = `
+            <div class="rag-container">
+                <h3>AI Analysis</h3>
+                <div class="rag-content">${semanticData.rag_summary}</div>
+                ${
+                  semanticData.text_dict
+                    ? `
+                <div class="source-suktas">
+                    <h4>Based on:</h4>
+                    <ul>
+                        ${Object.entries(semanticData.text_dict)
+                          .map(
+                            ([key, text]) => `
+                        <li>
+                            <strong>Sukta ${key}:</strong> 
+                            ${this.getContentPreview(text)}
+                        </li>`
+                          )
+                          .join("")}
+                    </ul>
+                </div>`
+                    : ""
+                }
+            </div>`;
+    } else {
+      // Fallback to basic summary
+      let summaryText = `Found ${results.length} matching Suktas for "${searchTerm}"`;
+      if (results.length > 0) {
+        summaryText += ` including ${results
+          .slice(0, 3)
+          .map((r) => this.cleanSuktaName(r.name))
+          .join(", ")}`;
+      }
+      ragContainer.innerHTML = `<p>${summaryText}</p>`;
     }
-    this.ragSummary.querySelector(
-      ".summary-content"
-    ).innerHTML = `<p>${summaryText}</p>`;
   }
 
   renderResultsList(results) {
     this.resultCards.innerHTML = "";
 
-    if (results.length === 0) {
+    if (!results || results.length === 0) {
       this.resultCards.innerHTML =
         "<p class='no-results'>No Suktas found matching your search term.</p>";
       return;
     }
 
+    // Create horizontal container
     const container = document.createElement("div");
-    container.className = "results-list-container";
+    container.className = "horizontal-results-container";
 
-    const list = document.createElement("ul");
-    list.className = "results-list";
+    // Add results to horizontal container
+    results.forEach((result, index) => {
+      // Use the EXACT same name handling as original createResultItem
+      const cleanName = this.cleanSuktaName(
+        result.name || `RV ${result.index || ""}`
+      );
+      const contentPreview =
+        result.text || this.getContentPreview(result.content);
 
-    results.forEach((sukta, index) => {
-      list.appendChild(this.createResultItem(sukta, index));
+      const item = document.createElement("div");
+      item.className = "horizontal-result-item";
+      item.innerHTML = `
+            <div class="horizontal-result-header">
+                <span class="horizontal-result-title">${cleanName}</span>
+                <span class="horizontal-result-score">${Math.max(
+                  70,
+                  100 - index * 5
+                )}%</span>
+            </div>
+            <div class="horizontal-result-content">
+                ${contentPreview || "No preview available"}
+            </div>
+            <div class="horizontal-result-actions">
+                <button class="view-connections" data-node-id="${
+                  result.id || result.index
+                }">
+                    <i class="fas fa-link"></i> Connections
+                </button>
+                <button class="read-full" data-node-id="${
+                  result.id || result.index
+                }" 
+                        data-node-name="${cleanName}">
+                    <i class="fas fa-book-open"></i> Read
+                </button>
+            </div>
+        `;
+
+      // Maintain original event listeners
+      item
+        .querySelector(".view-connections")
+        .addEventListener("click", () =>
+          this.handleViewConnections(result.id || result.index)
+        );
+      item
+        .querySelector(".read-full")
+        .addEventListener("click", (event) =>
+          this.handleReadFull(event, cleanName)
+        );
+
+      container.appendChild(item);
     });
-
-    container.appendChild(list);
-
-    if (results.length > 3) {
-      container.appendChild(this.createToggleButton());
-    }
 
     this.resultCards.appendChild(container);
   }
 
-  createResultItem(sukta, index) {
-    const cleanName = this.cleanSuktaName(sukta.name);
-    const contentPreview = this.getContentPreview(sukta.text);
-
-    const item = document.createElement("li");
-    item.className = "result-item";
-    item.innerHTML = `
-      <div class="result-header">
-        <span class="result-title">${cleanName}</span>
-        <span class="result-score">${Math.max(70, 100 - index * 5)}%</span>
-      </div>
-      ${
-        contentPreview
-          ? `<div class="result-content"><p>${contentPreview}</p></div>`
-          : ""
-      }
-      <div class="result-actions">
-        <button class="view-connections" data-node-id="${sukta.id}">
-          <i class="fas fa-link"></i> Connections
-        </button>
-        <button class="read-full" data-node-id="${
-          sukta.id
-        }" data-node-name="${cleanName}">
-          <i class="fas fa-book-open"></i> Read
-        </button>
-      </div>`;
-
-    item
-      .querySelector(".view-connections")
-      .addEventListener("click", () => this.handleViewConnections(sukta.id));
-    item
-      .querySelector(".read-full")
-      .addEventListener("click", (event) =>
-        this.handleReadFull(event, cleanName)
-      );
-
-    return item;
+  // Keep your original cleanSuktaName method exactly as is
+  cleanSuktaName(name) {
+    if (!name) return name;
+    // Remove extra "RV" prefixes and trim whitespace
+    let cleanName = name.replace(/^(RV\s*)+/i, "RV ").trim();
+    // Ensure "RV" is followed by a space if not already
+    if (!cleanName.startsWith("RV ")) {
+      cleanName = "RV " + cleanName;
+    }
+    // Remove any remaining duplicate "RV"
+    cleanName = cleanName.replace(/(RV\s+)+/g, "RV ");
+    return cleanName.trim();
   }
 
+  // Keep your original getContentPreview method exactly as is
   getContentPreview(text) {
     if (!text) return "";
 
@@ -350,20 +380,25 @@ class RigvedaSearch {
       : text.substring(0, 60).trim() + (text.length > 60 ? "..." : "");
   }
 
-  createToggleButton() {
-    const toggle = document.createElement("div");
-    toggle.className = "view-more-toggle";
-    toggle.textContent = "Show More";
-    return toggle;
+  handleViewSukta(suktaId) {
+    const node = this.nodesData.find((n) => n.id.includes(suktaId));
+    if (node) {
+      this.zoomToNode(node);
+      this.highlightGraphNode(node.id);
+      this.showPopup(node);
+    }
   }
 
   handleViewConnections(nodeId) {
     const node = this.nodesData.find((n) => n.id === nodeId);
     if (!node) return;
-
+    this.zoomToNode(node);
     this.highlightGraphNode(nodeId);
     this.showPopup(node);
-    this.zoomToNode(node);
+    this.ragSummary.querySelector(".summary-content").innerHTML = `
+      <h4>Showing connections for: ${this.cleanSuktaName(node.name)}</h4>
+      <p>Direct connections in dark blue, secondary in light blue, tertiary in gray.</p>
+    `;
   }
 
   handleReadFull(event, chapterName) {
@@ -392,24 +427,37 @@ class RigvedaSearch {
   }
 
   resetSearch() {
-  this.currentSearchTerm = "";
-  this.searchBox.value = "";
-  this.clearSearch.classList.remove("visible");
-  document.body.classList.remove("search-active");
-  this.welcomeSection.classList.remove("hidden");
-  document.getElementById('search-guide-card').classList.remove('hidden');
-  this.resultsContainer.style.display = "none";
-  this.resetGraph();
+    this.currentSearchTerm = "";
+    this.searchBox.value = "";
+    this.clearSearch.classList.remove("visible");
+    document.body.classList.remove("search-active");
+    this.welcomeSection.classList.remove("hidden");
+    document.getElementById("search-guide-card").classList.remove("hidden");
+    this.resultsContainer.style.display = "none";
+    this.resetGraph();
   }
 
   // --- D3 Graph Initialization and Rendering ---
   initializeGraph() {
     const container = this.graphSvg.parentElement;
+    if (!container) {
+      console.error("Container element not found!");
+      return;
+    }
+    // Set SVG size based on container
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    this.svg.attr("width", width).attr("height", height);
+    this.svg = d3
+      .select(this.graphSvg)
+      .attr("width", width)
+      .attr("height", height);
 
+    // Remove any previous group, then create new 'g'
+    this.svg.selectAll("g").remove();
+    this.g = this.svg.append("g");
+
+    // Setup zoom
     this.zoom = d3
       .zoom()
       .scaleExtent([0.1, 5])
@@ -417,12 +465,41 @@ class RigvedaSearch {
         this.g.attr("transform", event.transform);
       });
     this.svg.call(this.zoom);
-    this.g = this.svg.append("g");
+
+    // Load graph data
     this.loadGraphData(this.databaseSelect.value);
+  }
+
+  getConnectedNodes(nodeId) {
+    const connectedNodes = new Set();
+
+    this.edgesData.forEach((edge) => {
+      if (edge.source.id === nodeId) {
+        const targetNode = this.nodesData.find((n) => n.id === edge.target.id);
+        if (targetNode) connectedNodes.add(targetNode);
+      } else if (edge.target.id === nodeId) {
+        const sourceNode = this.nodesData.find((n) => n.id === edge.source.id);
+        if (sourceNode) connectedNodes.add(sourceNode);
+      }
+    });
+
+    return Array.from(connectedNodes);
+  }
+
+  getNodeLevel(nodeId) {
+    if (!this.selectedNode) return -1;
+    if (nodeId === this.selectedNode.id) return 0;
+    if (this.levels[1].has(nodeId)) return 1;
+    if (this.levels[2].has(nodeId)) return 2;
+    if (this.levels[3].has(nodeId)) return 3;
+    return -1;
   }
 
   loadGraphData(database, searchTerm = null, highlightNodes = []) {
     this.g.selectAll("*").remove();
+
+    // Example data fallback, replace with your d3.json(database) logic
+    // d3.json(database)...
     d3.json(database)
       .then((data) => {
         this.nodesData = data.nodes;
@@ -431,24 +508,7 @@ class RigvedaSearch {
         const width = this.graphSvg.parentElement.clientWidth;
         const height = this.graphSvg.parentElement.clientHeight;
 
-        const weights = this.edgesData.map((d) => d.weight);
-        const min_weight = Math.min(...weights);
-        const max_weight = Math.max(...weights);
-        const new_min = 1;
-        const new_max = 10;
-
-        this.edgesData.forEach((d) => {
-          if (max_weight === min_weight) {
-            d.normalized_weight = new_max;
-          } else {
-            d.normalized_weight =
-              ((d.weight - min_weight) / (max_weight - min_weight)) *
-                (new_max - new_min) +
-              new_min;
-          }
-        });
-
-        // No fixed positions, let force simulation handle it
+        // D3 simulation
         this.simulation = d3
           .forceSimulation(this.nodesData)
           .force(
@@ -456,47 +516,25 @@ class RigvedaSearch {
             d3
               .forceLink(this.edgesData)
               .id((d) => d.id)
-              .distance(50)
+              .distance(80)
           )
-          .force("charge", d3.forceManyBody().strength(-30))
+          .force("charge", d3.forceManyBody().strength(-120))
           .force("center", d3.forceCenter(width / 2, height / 2))
           .on("tick", () => this.ticked());
 
+        // Draw edges
         this.link = this.g
           .append("g")
+          .attr("stroke", "#999")
+          .attr("stroke-opacity", 0.6)
           .selectAll("line")
           .data(this.edgesData)
           .enter()
           .append("line")
-          .attr("class", "edge")
-          .attr("stroke-width", (d) => 11 - d.normalized_weight)
-          .attr("stroke", "#aaa")
-          .on("click", (event, d) => {
-            if (this.selectedEdge) {
-              this.selectedEdge.attr("stroke", "#aaa");
-            }
-            this.selectedEdge = d3
-              .select(event.target)
-              .attr("stroke", "red")
-              .attr("stroke-width", 11 - d.normalized_weight);
-            this.highlightEdgeNodes(d);
-          })
-          .on("mouseover", (event, d) => {
-            d3.select(event.target)
-              .attr("stroke", "red")
-              .attr("stroke-width", 11 - d.normalized_weight);
-          })
-          .on("mouseout", (event, d) => {
-            if (
-              !this.selectedEdge ||
-              d3.select(event.target).datum() !== this.selectedEdge.datum()
-            ) {
-              d3.select(event.target)
-                .attr("stroke", "#aaa")
-                .attr("stroke-width", 11 - d.normalized_weight);
-            }
-          });
+          .attr("class", "link")
+          .attr("stroke-width", 2);
 
+        // Draw nodes
         const drag = d3
           .drag()
           .on("start", (event, d) => this.dragStarted(event, d))
@@ -510,15 +548,15 @@ class RigvedaSearch {
           .enter()
           .append("circle")
           .attr("class", "node")
-          .attr("r", 8)
+          .attr("r", 12)
           .attr("fill", "#7fb3d5")
           .call(drag)
           .on("mouseover", (event, d) => {
             this.tooltip
               .style("display", "block")
               .html(`<strong>${this.cleanSuktaName(d.name)}</strong>`)
-              .style("left", `${event.pageX + 5}px`)
-              .style("top", `${event.pageY + 5}px`);
+              .style("left", `${event.pageX + 10}px`)
+              .style("top", `${event.pageY + 10}px`);
           })
           .on("mouseout", () => {
             this.tooltip.style("display", "none");
@@ -527,52 +565,43 @@ class RigvedaSearch {
             this.selectedNode = d;
             this.showPopup(d);
             this.zoomToNode(d);
-            this.highlightGraphNode(d.id); // Highlight selected node and its connections
-            this.displaySummary(d); // Display summary for the clicked node
+            this.highlightGraphNode(d.id);
           });
 
+        // Draw labels
         this.label = this.g
           .append("g")
           .selectAll("text")
           .data(this.nodesData)
           .enter()
           .append("text")
-          .attr("x", (d) => d.x + 10)
-          .attr("y", (d) => d.y + 5)
+          .attr("dy", 4)
+          .attr("x", 16)
           .text((d) => this.cleanSuktaName(d.name))
-          .style("font-size", "5px")
-          .style("fill", "black");
+          .style("font-size", "11px")
+          .style("fill", "black")
+          .style("pointer-events", "none");
 
-        // Initial highlighting based on search results
-        if (highlightNodes && highlightNodes.length > 0) {
-          this.highlightGraphNode(highlightNodes[0].id);
-        } else if (searchTerm) {
-          this.ragSummary.querySelector(
-            ".summary-content"
-          ).innerHTML = `<p>No direct matches found in graph. Click on nodes to explore connections.</p>`;
-        } else {
-          this.ragSummary.querySelector(
-            ".summary-content"
-          ).innerHTML = `<p>Summary of search results will appear here.</p>`;
-        }
-
-        this.updateGraphVisibility(); // Apply initial visibility (all visible)
+        this.updateGraphVisibility();
       })
-      .catch((error) => {
-        console.error("Error loading the graph data:", error);
+      .catch((err) => {
+        console.error("Graph data load error", err);
       });
   }
 
   ticked() {
+    // Position edges
     this.link
       .attr("x1", (d) => d.source.x)
       .attr("y1", (d) => d.source.y)
       .attr("x2", (d) => d.target.x)
       .attr("y2", (d) => d.target.y);
 
+    // Position nodes
     this.node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
 
-    this.label.attr("x", (d) => d.x + 10).attr("y", (d) => d.y + 5);
+    // Position labels
+    this.label.attr("x", (d) => d.x + 16).attr("y", (d) => d.y);
   }
 
   dragStarted(event, d) {
@@ -580,13 +609,10 @@ class RigvedaSearch {
     d.fx = d.x;
     d.fy = d.y;
   }
-
   dragged(event, d) {
     d.fx = event.x;
     d.fy = event.y;
-    this.simulation.alpha(0.3).restart();
   }
-
   dragEnded(event, d) {
     if (!event.active) this.simulation.alphaTarget(0);
     d.fx = null;
@@ -597,75 +623,111 @@ class RigvedaSearch {
     this.selectedNode = this.nodesData.find((n) => n.id === nodeId);
     if (!this.selectedNode) return;
 
-    // Determine nodes to highlight up to 3 levels
-    const highlightedNodeIds = new Set();
-    const queue = [{ id: this.selectedNode.id, level: 0 }];
-    highlightedNodeIds.add(this.selectedNode.id);
+    // Reset levels
+    this.levels = { 1: new Set(), 2: new Set(), 3: new Set() };
 
-    let head = 0;
-    while (head < queue.length) {
-      const { id, level } = queue[head++];
+    // 1st level connections (direct neighbors)
+    this.edgesData.forEach((edge) => {
+      if (edge.source.id === nodeId) this.levels[1].add(edge.target.id);
+      if (edge.target.id === nodeId) this.levels[1].add(edge.source.id);
+    });
 
-      if (level < 3) {
-        this.edgesData.forEach((edge) => {
-          let connectedNodeId = null;
-          if (edge.source.id === id) {
-            connectedNodeId = edge.target.id;
-          } else if (edge.target.id === id) {
-            connectedNodeId = edge.source.id;
-          }
+    // 2nd level connections (friends of friends)
+    this.levels[1].forEach((id) => {
+      this.edgesData.forEach((edge) => {
+        if (edge.source.id === id && edge.target.id !== nodeId) {
+          this.levels[2].add(edge.target.id);
+        }
+        if (edge.target.id === id && edge.source.id !== nodeId) {
+          this.levels[2].add(edge.source.id);
+        }
+      });
+    });
 
-          if (connectedNodeId && !highlightedNodeIds.has(connectedNodeId)) {
-            highlightedNodeIds.add(connectedNodeId);
-            queue.push({ id: connectedNodeId, level: level + 1 });
-          }
-        });
-      }
-    }
+    // 3rd level connections (friends of friends of friends)
+    this.levels[2].forEach((id) => {
+      this.edgesData.forEach((edge) => {
+        if (edge.source.id === id && !this.levels[1].has(edge.target.id)) {
+          this.levels[3].add(edge.target.id);
+        }
+        if (edge.target.id === id && !this.levels[1].has(edge.source.id)) {
+          this.levels[3].add(edge.source.id);
+        }
+      });
+    });
 
+    // Remove duplicates (a node shouldn't appear in multiple levels)
+    this.levels[2] = new Set(
+      [...this.levels[2]].filter((id) => !this.levels[1].has(id))
+    );
+    this.levels[3] = new Set(
+      [...this.levels[3]].filter(
+        (id) => !this.levels[1].has(id) && !this.levels[2].has(id)
+      )
+    );
+
+    // Apply visual styling
     this.node
-      .attr("opacity", (d) => (highlightedNodeIds.has(d.id) ? 1 : 0.1))
-      .attr("stroke", (d) =>
-        d.id === this.selectedNode.id
-          ? "red"
-          : highlightedNodeIds.has(d.id)
-          ? "orange"
-          : null
-      )
-      .attr("stroke-width", (d) =>
-        d.id === this.selectedNode.id
-          ? 3
-          : highlightedNodeIds.has(d.id)
-          ? 1.5
-          : null
-      )
-      .attr("fill", (d) =>
-        d.id === this.selectedNode.id
-          ? "darkred"
-          : highlightedNodeIds.has(d.id)
-          ? "darkblue"
-          : "#7fb3d5"
-      );
+      .attr("opacity", (d) => {
+        if (d.id === nodeId) return 1;
+        if (this.levels[1].has(d.id)) return 1;
+        if (this.levels[2].has(d.id)) return 1;
+        if (this.levels[3].has(d.id)) return 1;
+        return 0.1;
+      })
+      .attr("fill", (d) => {
+        if (d.id === nodeId) return "#ff0000"; // Red for selected node
+        if (this.levels[1].has(d.id)) return "#1f77b4"; // Blue for 1st level
+        if (this.levels[2].has(d.id)) return "#ff7f0e"; // Orange for 2nd level
+        if (this.levels[3].has(d.id)) return "#2ca02c"; // Green for 3rd level
+        return "#7fb3d5"; // Default color
+      })
+      .attr("stroke", (d) => (d.id === nodeId ? "#000" : "none"))
+      .attr("stroke-width", (d) => (d.id === nodeId ? 2 : 0))
+      .attr("r", (d) => {
+        if (d.id === nodeId) return 12;
+        if (this.levels[1].has(d.id)) return 10;
+        return 8;
+      });
 
+    // Style links
     this.link
-      .attr("opacity", (d) =>
-        highlightedNodeIds.has(d.source.id) &&
-        highlightedNodeIds.has(d.target.id)
-          ? 1
-          : 0.1
-      )
-      .attr("stroke", (d) =>
-        d.source.id === this.selectedNode.id ||
-        d.target.id === this.selectedNode.id
-          ? "red"
-          : "#aaa"
-      );
+      .attr("stroke", (d) => {
+        const sourceLevel = this.getNodeLevel(d.source.id);
+        const targetLevel = this.getNodeLevel(d.target.id);
 
+        if (sourceLevel === 1 && targetLevel === 1) return "#1f77b4";
+        if (
+          (sourceLevel === 1 && targetLevel === 2) ||
+          (sourceLevel === 2 && targetLevel === 1)
+        )
+          return "#ff7f0e";
+        if (sourceLevel > 0 && targetLevel > 0) return "#2ca02c";
+        return "#aaa";
+      })
+      .attr("stroke-opacity", (d) => {
+        const sourceVisible = this.getNodeLevel(d.source.id) > -1;
+        const targetVisible = this.getNodeLevel(d.target.id) > -1;
+        return sourceVisible && targetVisible ? 0.6 : 0.1;
+      })
+      .attr("stroke-width", (d) => {
+        const sourceLevel = this.getNodeLevel(d.source.id);
+        const targetLevel = this.getNodeLevel(d.target.id);
+        if (sourceLevel === 1 && targetLevel === 1) return 3;
+        if (sourceLevel > 0 && targetLevel > 0) return 2;
+        return 1;
+      });
+
+    // Style labels
     this.label
-      .style("opacity", (d) => (highlightedNodeIds.has(d.id) ? 1 : 0.1))
-      .style("fill", (d) => (highlightedNodeIds.has(d.id) ? "red" : "black"));
-
-    this.displaySummary(this.selectedNode); // Update summary for the highlighted node
+      .style("opacity", (d) => {
+        if (d.id === nodeId) return 1;
+        if (this.levels[1].has(d.id)) return 0.9;
+        if (this.levels[2].has(d.id)) return 0.7;
+        if (this.levels[3].has(d.id)) return 0.5;
+        return 0;
+      })
+      .style("font-weight", (d) => (d.id === nodeId ? "bold" : "normal"));
   }
 
   highlightEdgeNodes(edge) {
@@ -717,21 +779,6 @@ class RigvedaSearch {
     }
   }
 
-  displaySummary(node) {
-    const cleanName = this.cleanSuktaName(node.name);
-    const summaryContentDiv = this.ragSummary.querySelector(".summary-content");
-    if (window.getSuktaSummary) {
-      // Check if the function exists
-      const summary = window.getSuktaSummary(node.id);
-      summaryContentDiv.innerHTML = `
-            <h4>Summary for ${cleanName}</h4>
-            <p>${summary || "Summary not available for this Sukta."}</p>
-        `;
-    } else {
-      summaryContentDiv.innerHTML = `<p>Summary for ${cleanName} will appear here. (sukta_summary.js not loaded or function missing)</p>`;
-    }
-  }
-
   resetGraph() {
     // Clear graph elements
     this.g.selectAll("*").remove();
@@ -746,6 +793,7 @@ class RigvedaSearch {
     this.selectedNode = null;
     this.selectedEdge = null;
     this.isolateMode = false;
+    this.levels = { 1: new Set(), 2: new Set(), 3: new Set() };
     this.popup.style("display", "none");
     this.ragSummary.querySelector(
       ".summary-content"
