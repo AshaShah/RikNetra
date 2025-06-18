@@ -1,6 +1,8 @@
 To run locally,
 
-python -m http.server 8000   
+Run two terminal parallel,
+1. python3 pythoncode/semanticsearch.py
+2. python -m http.server 8000   
 
 ___________________________________
 
