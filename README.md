@@ -1,7 +1,10 @@
 To run locally,
 
-python -m http.server 8000   
+1. Install all the dependency: pip3 install -r requirements.txt
 
+2. Run two terminal parallel
+- python3 pythoncode/semanticsearch.py
+- python3 -m http.server 8000
 ___________________________________
 
 # RikNetra: Rigveda Knowledge Network

@@ -59,7 +59,7 @@ class RigvedaSearch {
       "click",
       this.handleSearchClick.bind(this)
     );
-    this.clearSearch.addEventListener("click", this.resetSearch.bind(this));
+    // this.clearSearch.addEventListener("click", this.resetSearch.bind(this));
     this.databaseSelect.addEventListener(
       "change",
       this.handleDatabaseChange.bind(this)
@@ -251,40 +251,18 @@ class RigvedaSearch {
     const ragContainer = this.ragSummary.querySelector(".summary-content");
 
     if (semanticData?.rag_summary) {
+      // Remove **text** and format bullets
+      let formattedSummary = semanticData.rag_summary
+        .replace(/\*\*(.*?)\*\*/g, "$1") // Remove **bold**
+        .replace(/^\s*-\s*/gm, "<br>• ") // Replace - with • and new line
+        .replace(/\n/g, "<br>"); // Preserve other line breaks
+
       ragContainer.innerHTML = `
             <div class="rag-container">
-                <h3>AI Analysis</h3>
-                <div class="rag-content">${semanticData.rag_summary}</div>
-                ${
-                  semanticData.text_dict
-                    ? `
-                <div class="source-suktas">
-                    <h4>Based on:</h4>
-                    <ul>
-                        ${Object.entries(semanticData.text_dict)
-                          .map(
-                            ([key, text]) => `
-                        <li>
-                            <strong>Sukta ${key}:</strong> 
-                            ${this.getContentPreview(text)}
-                        </li>`
-                          )
-                          .join("")}
-                    </ul>
-                </div>`
-                    : ""
-                }
+                <div class="rag-content">${formattedSummary}</div>
             </div>`;
     } else {
-      // Fallback to basic summary
-      let summaryText = `Found ${results.length} matching Suktas for "${searchTerm}"`;
-      if (results.length > 0) {
-        summaryText += ` including ${results
-          .slice(0, 3)
-          .map((r) => this.cleanSuktaName(r.name))
-          .join(", ")}`;
-      }
-      ragContainer.innerHTML = `<p>${summaryText}</p>`;
+      ragContainer.innerHTML = `<p>Found ${results.length} results for "${searchTerm}"</p>`;
     }
   }
 
@@ -297,13 +275,11 @@ class RigvedaSearch {
       return;
     }
 
-    // Create horizontal container
+    // VERTICAL container
     const container = document.createElement("div");
-    container.className = "horizontal-results-container";
+    container.className = "vertical-result-list";
 
-    // Add results to horizontal container
     results.forEach((result, index) => {
-      // Use the EXACT same name handling as original createResultItem
       const cleanName = this.cleanSuktaName(
         result.name || `RV ${result.index || ""}`
       );
@@ -311,32 +287,31 @@ class RigvedaSearch {
         result.text || this.getContentPreview(result.content);
 
       const item = document.createElement("div");
-      item.className = "horizontal-result-item";
+      item.className = "vertical-result-item";
       item.innerHTML = `
-            <div class="horizontal-result-header">
-                <span class="horizontal-result-title">${cleanName}</span>
-                <span class="horizontal-result-score">${Math.max(
-                  70,
-                  100 - index * 5
-                )}%</span>
-            </div>
-            <div class="horizontal-result-content">
-                ${contentPreview || "No preview available"}
-            </div>
-            <div class="horizontal-result-actions">
-                <button class="view-connections" data-node-id="${
-                  result.id || result.index
-                }">
-                    <i class="fas fa-link"></i> Connections
-                </button>
-                <button class="read-full" data-node-id="${
-                  result.id || result.index
-                }" 
-                        data-node-name="${cleanName}">
-                    <i class="fas fa-book-open"></i> Read
-                </button>
-            </div>
-        `;
+      <div class="vertical-result-header">
+        <span class="vertical-result-title">${cleanName}</span>
+        <span class="vertical-result-score">${Math.max(
+          70,
+          100 - index * 5
+        )}%</span>
+      </div>
+      <div class="vertical-result-content">
+        ${contentPreview || "No preview available"}
+      </div>
+      <div class="vertical-result-actions">
+        <button class="view-connections" data-node-id="${
+          result.id || result.index
+        }">
+          <i class="fas fa-link"></i> View Graph
+        </button>
+        <button class="read-full" data-node-id="${
+          result.id || result.index
+        }" data-node-name="${cleanName}">
+          <i class="fas fa-book-open"></i> Read Full
+        </button>
+      </div>
+    `;
 
       // Maintain original event listeners
       item
@@ -385,20 +360,22 @@ class RigvedaSearch {
     if (node) {
       this.zoomToNode(node);
       this.highlightGraphNode(node.id);
-      this.showPopup(node);
     }
   }
 
   handleViewConnections(nodeId) {
-    const node = this.nodesData.find((n) => n.id === nodeId);
+    let node = this.nodesData.find((n) => n.id === nodeId);
+    if (!node) {
+      node = this.nodesData.find((n) => n.id.includes(nodeId));
+    }
+    if (!node) {
+      node = this.nodesData.find((n) =>
+        this.cleanSuktaName(n.name).includes(this.cleanSuktaName(nodeId))
+      );
+    }
     if (!node) return;
     this.zoomToNode(node);
-    this.highlightGraphNode(nodeId);
-    this.showPopup(node);
-    this.ragSummary.querySelector(".summary-content").innerHTML = `
-      <h4>Showing connections for: ${this.cleanSuktaName(node.name)}</h4>
-      <p>Direct connections in dark blue, secondary in light blue, tertiary in gray.</p>
-    `;
+    this.highlightGraphNode(node.id);
   }
 
   handleReadFull(event, chapterName) {
@@ -495,11 +472,10 @@ class RigvedaSearch {
     return -1;
   }
 
+  // --- THE MAIN CHANGE: ADD forceX/forceY and xScale/yScale for fixed layout ---
   loadGraphData(database, searchTerm = null, highlightNodes = []) {
     this.g.selectAll("*").remove();
 
-    // Example data fallback, replace with your d3.json(database) logic
-    // d3.json(database)...
     d3.json(database)
       .then((data) => {
         this.nodesData = data.nodes;
@@ -508,33 +484,102 @@ class RigvedaSearch {
         const width = this.graphSvg.parentElement.clientWidth;
         const height = this.graphSvg.parentElement.clientHeight;
 
-        // D3 simulation
-        this.simulation = d3
+        // Normalize edge weights exactly like the reference code
+        const weights = this.edgesData.map((d) => d.weight);
+        const min_weight = Math.min(...weights);
+        const max_weight = Math.max(...weights);
+        const new_min = 1;
+        const new_max = 10;
+
+        this.edgesData.forEach((d) => {
+          if (max_weight === min_weight) {
+            d.normalized_weight = new_max;
+          } else {
+            d.normalized_weight =
+              ((d.weight - min_weight) / (max_weight - min_weight)) *
+                (new_max - new_min) +
+              new_min;
+          }
+        });
+
+        // Use the same scaling approach as reference code
+        const xScale = d3
+          .scaleLinear()
+          .domain([
+            d3.min(this.nodesData, (d) => d.x),
+            d3.max(this.nodesData, (d) => d.x),
+          ])
+          .range([100, width - 100]);
+
+        const yScale = d3
+          .scaleLinear()
+          .domain([
+            d3.min(this.nodesData, (d) => d.y),
+            d3.max(this.nodesData, (d) => d.y),
+          ])
+          .range([100, height - 100]);
+
+
+
+        this.link = this.g
+          .append("g")
+          .selectAll("line")
+          .data(this.edgesData)
+          .enter()
+          .append("line")
+          .attr("class", "link")
+          .attr("stroke-width", 2) // Constant width
+          .attr("stroke", "#aaa")
+          .attr("stroke-opacity", 0.6)
+          .on("click", (event, d) => {
+            this.selectedEdge = d3.select(event.target);
+            this.highlightEdgeNodes(d);
+            this.selectedEdge
+              .attr("stroke", "red")
+              .attr("stroke-width", 2); // Constant width
+          })
+          .on("mouseover", (event, d) => {
+            d3.select(event.target)
+              .attr("stroke", "red")
+              .attr("stroke-width", 2); // Constant width
+          })
+          .on("mouseout", (event, d) => {
+            if (
+              !this.selectedEdge ||
+              d3.select(event.target).datum() !== this.selectedEdge.datum()
+            ) {
+              d3.select(event.target)
+                .attr("stroke", "#aaa")
+                .attr("stroke-width", 2); // Constant width
+            }
+          });
+
+  this.simulation = d3
           .forceSimulation(this.nodesData)
           .force(
             "link",
             d3
               .forceLink(this.edgesData)
               .id((d) => d.id)
-              .distance(80)
+              .distance(50)
           )
-          .force("charge", d3.forceManyBody().strength(-120))
+          .force("charge", d3.forceManyBody().strength(-30))
           .force("center", d3.forceCenter(width / 2, height / 2))
+          .force(
+            "x",
+            d3.forceX().x((d) => xScale(d.x))
+          )
+          .force(
+            "y",
+            d3.forceY().y((d) => yScale(d.y))
+          )
           .on("tick", () => this.ticked());
 
-        // Draw edges
-        this.link = this.g
-          .append("g")
-          .attr("stroke", "#999")
-          .attr("stroke-opacity", 0.6)
-          .selectAll("line")
-          .data(this.edgesData)
-          .enter()
-          .append("line")
-          .attr("class", "link")
-          .attr("stroke-width", 2);
+        this.nodesData.forEach((node) => {
+          node.x = xScale(node.x);
+          node.y = yScale(node.y);
+        });
 
-        // Draw nodes
         const drag = d3
           .drag()
           .on("start", (event, d) => this.dragStarted(event, d))
@@ -548,7 +593,7 @@ class RigvedaSearch {
           .enter()
           .append("circle")
           .attr("class", "node")
-          .attr("r", 12)
+          .attr("r", 8)
           .attr("fill", "#7fb3d5")
           .call(drag)
           .on("mouseover", (event, d) => {
@@ -562,46 +607,61 @@ class RigvedaSearch {
             this.tooltip.style("display", "none");
           })
           .on("click", (event, d) => {
+            event.stopPropagation();
+            if (this.selectedEdge) {
+              this.selectedEdge.attr("stroke", "#aaa");
+              this.selectedEdge = null;
+            }
+            if (this.selectedNode && this.selectedNode.id === d.id) {
+              this.resetGraphHighlights();
+              this.selectedNode = null;
+              this.popup.style("display", "none");
+              return;
+            }
             this.selectedNode = d;
-            this.showPopup(d);
-            this.zoomToNode(d);
             this.highlightGraphNode(d.id);
+            this.zoomToNode(d);
           });
 
-        // Draw labels
         this.label = this.g
           .append("g")
           .selectAll("text")
           .data(this.nodesData)
           .enter()
           .append("text")
-          .attr("dy", 4)
-          .attr("x", 16)
+          .attr("x", (d) => d.x + 10)
+          .attr("y", (d) => d.y + 5)
           .text((d) => this.cleanSuktaName(d.name))
-          .style("font-size", "11px")
+          .style("font-size", "6px")
           .style("fill", "black")
           .style("pointer-events", "none");
 
-        this.updateGraphVisibility();
+        if (highlightNodes && highlightNodes.length > 0) {
+          this.highlightGraphNode(highlightNodes[0].id);
+          this.zoomToNode(highlightNodes[0].id);
+        }
       })
       .catch((err) => {
         console.error("Graph data load error", err);
       });
   }
 
+  // --- END MAIN CHANGE ---
+
   ticked() {
-    // Position edges
-    this.link
-      .attr("x1", (d) => d.source.x)
-      .attr("y1", (d) => d.source.y)
-      .attr("x2", (d) => d.target.x)
-      .attr("y2", (d) => d.target.y);
+    try {
+      this.link
+        .attr("x1", (d) => d.source.x || 0)
+        .attr("y1", (d) => d.source.y || 0)
+        .attr("x2", (d) => d.target.x || 0)
+        .attr("y2", (d) => d.target.y || 0);
 
-    // Position nodes
-    this.node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+      this.node.attr("cx", (d) => d.x || 0).attr("cy", (d) => d.y || 0);
 
-    // Position labels
-    this.label.attr("x", (d) => d.x + 16).attr("y", (d) => d.y);
+      this.label.attr("x", (d) => (d.x || 0) + 16).attr("y", (d) => d.y || 0);
+    } catch (e) {
+      console.error("Tick error:", e);
+    }
   }
 
   dragStarted(event, d) {
@@ -623,150 +683,150 @@ class RigvedaSearch {
     this.selectedNode = this.nodesData.find((n) => n.id === nodeId);
     if (!this.selectedNode) return;
 
-    // Reset levels
-    this.levels = { 1: new Set(), 2: new Set(), 3: new Set() };
+    // Create connection levels
+    const level1 = new Set(); // Direct connections
+    const level2 = new Set(); // Friends of friends
+    const level3 = new Set(); // Friends of friends of friends
 
-    // 1st level connections (direct neighbors)
+    // Find level 1 connections
     this.edgesData.forEach((edge) => {
-      if (edge.source.id === nodeId) this.levels[1].add(edge.target.id);
-      if (edge.target.id === nodeId) this.levels[1].add(edge.source.id);
+      if (edge.source.id === nodeId) level1.add(edge.target.id);
+      if (edge.target.id === nodeId) level1.add(edge.source.id);
     });
 
-    // 2nd level connections (friends of friends)
-    this.levels[1].forEach((id) => {
+    // Find level 2 connections
+    level1.forEach((id) => {
       this.edgesData.forEach((edge) => {
-        if (edge.source.id === id && edge.target.id !== nodeId) {
-          this.levels[2].add(edge.target.id);
-        }
-        if (edge.target.id === id && edge.source.id !== nodeId) {
-          this.levels[2].add(edge.source.id);
-        }
+        if (edge.source.id === id && edge.target.id !== nodeId)
+          level2.add(edge.target.id);
+        if (edge.target.id === id && edge.source.id !== nodeId)
+          level2.add(edge.source.id);
       });
     });
 
-    // 3rd level connections (friends of friends of friends)
-    this.levels[2].forEach((id) => {
+    // Find level 3 connections
+    level2.forEach((id) => {
       this.edgesData.forEach((edge) => {
-        if (edge.source.id === id && !this.levels[1].has(edge.target.id)) {
-          this.levels[3].add(edge.target.id);
-        }
-        if (edge.target.id === id && !this.levels[1].has(edge.source.id)) {
-          this.levels[3].add(edge.source.id);
-        }
+        if (edge.source.id === id && !level1.has(edge.target.id))
+          level3.add(edge.target.id);
+        if (edge.target.id === id && !level1.has(edge.source.id))
+          level3.add(edge.source.id);
       });
     });
 
-    // Remove duplicates (a node shouldn't appear in multiple levels)
-    this.levels[2] = new Set(
-      [...this.levels[2]].filter((id) => !this.levels[1].has(id))
-    );
-    this.levels[3] = new Set(
-      [...this.levels[3]].filter(
-        (id) => !this.levels[1].has(id) && !this.levels[2].has(id)
-      )
-    );
+    // Remove duplicates from higher levels
+    level2.forEach((id) => {
+      if (level1.has(id)) level2.delete(id);
+    });
+    level3.forEach((id) => {
+      if (level1.has(id) || level2.has(id)) level3.delete(id);
+    });
 
-    // Apply visual styling
-    this.node
+    // Color scheme - matching suktaconnection.html
+    const colors = {
+      selected: "#E57373", // Selected node color
+      level1: "#FFB74D", // Direct connections color
+      level2: "#64B5F6", // Friends of friends color
+      level3: "#81C784", // Friends of friends of friends color
+      default: "#7fb3d5", // Default node color
+      edgeDefault: "#aaa", // Default edge color
+      edgeHighlight: "#E97777", // Edge highlight color (matches selected node)
+    };
+
+    // Style nodes - matching opacity and sizing from suktaconnection.html
+     this.node
       .attr("opacity", (d) => {
         if (d.id === nodeId) return 1;
-        if (this.levels[1].has(d.id)) return 1;
-        if (this.levels[2].has(d.id)) return 1;
-        if (this.levels[3].has(d.id)) return 1;
-        return 0.1;
+        if (level1.has(d.id)) return 1;
+        if (level2.has(d.id)) return 0.8;
+        if (level3.has(d.id)) return 0.6;
+        return 0.07;
       })
       .attr("fill", (d) => {
-        if (d.id === nodeId) return "#ff0000"; // Red for selected node
-        if (this.levels[1].has(d.id)) return "#1f77b4"; // Blue for 1st level
-        if (this.levels[2].has(d.id)) return "#ff7f0e"; // Orange for 2nd level
-        if (this.levels[3].has(d.id)) return "#2ca02c"; // Green for 3rd level
-        return "#7fb3d5"; // Default color
+        if (d.id === nodeId) return colors.selected;
+        if (level1.has(d.id)) return colors.level1;
+        if (level2.has(d.id)) return colors.level2;
+        if (level3.has(d.id)) return colors.level3;
+        return colors.default;
       })
       .attr("stroke", (d) => (d.id === nodeId ? "#000" : "none"))
       .attr("stroke-width", (d) => (d.id === nodeId ? 2 : 0))
       .attr("r", (d) => {
-        if (d.id === nodeId) return 12;
-        if (this.levels[1].has(d.id)) return 10;
-        return 8;
+        if (d.id === nodeId) return 8;
+        if (level1.has(d.id)) return 6;
+        if (level2.has(d.id)) return 5;
+        if (level3.has(d.id)) return 4;
+        return 3;
       });
 
-    // Style links
     this.link
       .attr("stroke", (d) => {
-        const sourceLevel = this.getNodeLevel(d.source.id);
-        const targetLevel = this.getNodeLevel(d.target.id);
-
-        if (sourceLevel === 1 && targetLevel === 1) return "#1f77b4";
-        if (
-          (sourceLevel === 1 && targetLevel === 2) ||
-          (sourceLevel === 2 && targetLevel === 1)
-        )
-          return "#ff7f0e";
-        if (sourceLevel > 0 && targetLevel > 0) return "#2ca02c";
-        return "#aaa";
+        if (d.source.id === nodeId || d.target.id === nodeId)
+          return colors.edgeHighlight;
+        if (level1.has(d.source.id) || level1.has(d.target.id))
+          return colors.level1;
+        if (level2.has(d.source.id) || level2.has(d.target.id))
+          return colors.level2;
+        if (level3.has(d.source.id) || level3.has(d.target.id))
+          return colors.level3;
+        return colors.edgeDefault;
       })
       .attr("stroke-opacity", (d) => {
-        const sourceVisible = this.getNodeLevel(d.source.id) > -1;
-        const targetVisible = this.getNodeLevel(d.target.id) > -1;
-        return sourceVisible && targetVisible ? 0.6 : 0.1;
+        if (d.source.id === nodeId || d.target.id === nodeId) return 1;
+        if (level1.has(d.source.id) || level1.has(d.target.id)) return 0.8;
+        if (level2.has(d.source.id) || level2.has(d.target.id)) return 0.6;
+        if (level3.has(d.source.id) || level3.has(d.target.id)) return 0.4;
+        return 0.07;
       })
-      .attr("stroke-width", (d) => {
-        const sourceLevel = this.getNodeLevel(d.source.id);
-        const targetLevel = this.getNodeLevel(d.target.id);
-        if (sourceLevel === 1 && targetLevel === 1) return 3;
-        if (sourceLevel > 0 && targetLevel > 0) return 2;
-        return 1;
-      });
+      .attr("stroke-width", 2) // Constant width
+      .attr("stroke-linecap", "round");
 
-    // Style labels
     this.label
       .style("opacity", (d) => {
         if (d.id === nodeId) return 1;
-        if (this.levels[1].has(d.id)) return 0.9;
-        if (this.levels[2].has(d.id)) return 0.7;
-        if (this.levels[3].has(d.id)) return 0.5;
-        return 0;
+        if (level1.has(d.id)) return 1;
+        if (level2.has(d.id)) return 0.8;
+        if (level3.has(d.id)) return 0.6;
+        return 0.07;
       })
-      .style("font-weight", (d) => (d.id === nodeId ? "bold" : "normal"));
+      .style("font-weight", (d) => (d.id === nodeId ? "bold" : "normal"))
+      .style("font-size", "6px");
   }
 
-  highlightEdgeNodes(edge) {
-    this.node.attr("fill", (d) => {
-      if (d.id === edge.source.id) return "blue";
-      if (d.id === edge.target.id) return "green";
-      return "#7fb3d5"; // Default color for others
-    });
+  resetGraphHighlights() {
     this.node
-      .attr("stroke", (d) => {
-        if (d.id === edge.source.id || d.id === edge.target.id) return "red";
-        return null;
-      })
-      .attr("stroke-width", (d) => {
-        if (d.id === edge.source.id || d.id === edge.target.id) return 2;
-        return null;
-      });
+      .attr("opacity", 1)
+      .attr("fill", "#7fb3d5")
+      .attr("stroke", "none")
+      .attr("stroke-width", 0)
+      .attr("r", 8);
 
-    this.link.attr("stroke", (l) => (l === edge ? "red" : "#aaa"));
-    this.label.style("fill", (d) => {
-      if (d.id === edge.source.id || d.id === edge.target.id) return "red";
-      return "black";
-    });
+    this.link
+      .attr("stroke", "#aaa")
+      .attr("stroke-opacity", 0.6)
+      .attr("stroke-width", 2); // Constant width
+
+    this.label.style("opacity", 1).style("font-weight", "normal");
   }
-
+  // --- Zoom to node function ---
   zoomToNode(node) {
-    const x = node.x;
-    const y = node.y;
-    const scale = 2; // Zoom level
+    if (!node || isNaN(node.x) || isNaN(node.y)) {
+      console.error("Invalid node position:", node);
+      return;
+    }
+
+    const container = this.graphSvg.parentElement;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    const scale = 2;
+
     const transform = d3.zoomIdentity
-      .translate(
-        this.graphSvg.parentElement.clientWidth / 2,
-        this.graphSvg.parentElement.clientHeight / 2
-      )
+      .translate(width / 2, height / 2)
       .scale(scale)
-      .translate(-x, -y);
+      .translate(-node.x, -node.y);
+
     this.svg.transition().duration(750).call(this.zoom.transform, transform);
   }
-
   updateGraphVisibility() {
     if (this.node) {
       this.node.attr("opacity", 1);
@@ -777,27 +837,6 @@ class RigvedaSearch {
     if (this.label) {
       this.label.style("opacity", 1).style("display", "block"); // Ensure labels are visible
     }
-  }
-
-  resetGraph() {
-    // Clear graph elements
-    this.g.selectAll("*").remove();
-    // Reload initial graph data (resets colors, positions, etc.)
-    this.loadGraphData(this.databaseSelect.value);
-    // Reset zoom/pan
-    this.svg
-      .transition()
-      .duration(750)
-      .call(this.zoom.transform, d3.zoomIdentity);
-    // Reset selection
-    this.selectedNode = null;
-    this.selectedEdge = null;
-    this.isolateMode = false;
-    this.levels = { 1: new Set(), 2: new Set(), 3: new Set() };
-    this.popup.style("display", "none");
-    this.ragSummary.querySelector(
-      ".summary-content"
-    ).innerHTML = `<p>Summary of search results will appear here.</p>`;
   }
 
   cleanSuktaName(name) {
