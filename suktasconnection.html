@@ -55,7 +55,7 @@
           <option value="database/k10database.json">Sukta with 9 connections</option>
           <option value="database/k11database.json">Sukta with 10 connections</option>
         </select>
-        <input type="text" id="search-input" placeholder="Search Sukta...">
+        <input type="text" id="search-input" placeholder="Search Sukta rv1.1...">
 
         <!-- Zoom controls -->
         <button id="zoom-in" title="Zoom In"><i class="fas fa-search-plus"></i></button>
@@ -97,16 +97,16 @@
         <ul id="popup-links"></ul>
         <button id="read-chapter">Read this Chapter</button>
       </div>
-      <div id="summary-popup" class="summary-popup" style="display: none;">
+      <!-- <div id="summary-popup" class="summary-popup" style="display: none;">
         <span class="close-summary">&times;</span>
         <div class="summary-content"></div>
-      </div>
+      </div> -->
     </div>
   </div>
 
 
   <script src="darkmode/darkMode.js"></script>
-  <script src="sukta_summary.js"></script>
+  <!-- <script src="sukta_summary.js"></script> -->
 
   <script>
     // Add side panel toggle functionality
@@ -325,8 +325,11 @@
         });
 
         d3.select("#search-input").on("input", function () {
-          const searchTerm = this.value.toLowerCase();
-          const matchingNode = nodes.find(n => n.name.toLowerCase().includes(searchTerm));
+          const searchTerm = this.value.toLowerCase().replace(/\s/g, '');
+          const matchingNode = nodes.find(n =>
+            n.name.toLowerCase().replace(/\s/g, '').includes(searchTerm)
+          );
+
           if (matchingNode) {
             selectedNode = matchingNode;
             showPopup(matchingNode);
@@ -386,10 +389,10 @@
           label.style("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1);
 
           // Get connected nodes and show summary
-          const connectedNodes = nodes.filter(n =>
-            edges.some(e => e.source.id === selectedNode.id && e.target.id === n.id)
-          );
-          displaySummary(selectedNode, connectedNodes);
+          // const connectedNodes = nodes.filter(n =>
+          //   edges.some(e => e.source.id === selectedNode.id && e.target.id === n.id)
+          // );
+          // displaySummary(selectedNode, connectedNodes);
         }
 
 

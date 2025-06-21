@@ -14,7 +14,6 @@ class RigvedaSearch {
     this.setupEventListeners();
     this.setupTagListeners();
     this.initializeGraph();
-    this.setupScrollControls();
   }
 
   initElements(options) {
@@ -60,7 +59,7 @@ class RigvedaSearch {
       "click",
       this.handleSearchClick.bind(this)
     );
-    this.clearSearch.addEventListener("click", this.resetSearch.bind(this));
+    // this.clearSearch.addEventListener("click", this.resetSearch.bind(this));
     this.databaseSelect.addEventListener(
       "change",
       this.handleDatabaseChange.bind(this)
@@ -102,32 +101,6 @@ class RigvedaSearch {
       this.performSearch();
     }
   }
-
-    setupScrollControls() {
-    const scrollUp = document.querySelector('.scroll-up');
-    const scrollDown = document.querySelector('.scroll-down');
-    const resultsContainer = document.querySelector('.results-list-container');
-
-    if (scrollUp && scrollDown && resultsContainer) {
-      // Set initial height (can adjust as needed)
-      resultsContainer.style.maxHeight = '300px';
-
-      scrollUp.addEventListener('click', () => {
-        const currentHeight = parseInt(getComputedStyle(resultsContainer).maxHeight);
-        if (currentHeight > 200) { // Minimum height
-          resultsContainer.style.maxHeight = `${currentHeight - 50}px`;
-        }
-      });
-
-      scrollDown.addEventListener('click', () => {
-        const currentHeight = parseInt(getComputedStyle(resultsContainer).maxHeight);
-        if (currentHeight < 600) { // Maximum height
-          resultsContainer.style.maxHeight = `${currentHeight + 50}px`;
-        }
-      });
-    }
-  }
-
 
   closePopup() {
     this.popup.style("display", "none");
@@ -189,11 +162,19 @@ class RigvedaSearch {
       this.edgesData = data.edges;
 
       const semanticData = await this.fetchSemanticResults();
+      console.log("RAG data received:", semanticData.rag_summary); // Debug
+
       let matchedNodes = this.processSearchResults(semanticData);
 
-      this.updateSearchResults(matchedNodes, this.currentSearchTerm);
+      // Pass semanticData to update results
+      this.updateSearchResults(
+        matchedNodes,
+        this.currentSearchTerm,
+        semanticData
+      );
       this.loadGraphData(currentDatabase, this.currentSearchTerm, matchedNodes);
     } catch (error) {
+      console.error("Search error:", error);
       this.showSearchError();
     }
   }
@@ -205,6 +186,7 @@ class RigvedaSearch {
       body: JSON.stringify({
         query: this.currentSearchTerm,
         top_k: 5,
+        include_rag: true, // Request RAG summary from backend
       }),
     });
     return response.json();
@@ -255,92 +237,115 @@ class RigvedaSearch {
     ).innerHTML = `<p>An error occurred while performing search.</p>`;
   }
 
-  updateSearchResults(results, searchTerm) {
-    this.searchSummary.innerHTML = "";
-    this.updateRagSummary(results, searchTerm);
+  updateSearchResults(results, searchTerm, semanticData) {
+    this.searchSummary.innerHTML = `<h2>Results for "${searchTerm}"</h2>`;
+
+    // Update RAG summary with the semanticData
+    this.updateRagSummary(results, searchTerm, semanticData);
+
+    // Render regular results (unchanged)
     this.renderResultsList(results);
   }
 
-  updateRagSummary(results, searchTerm) {
-    let summaryText = `Search for "${searchTerm}" found ${results.length} matching Suktas.`;
-    if (results.length > 0) {
-      summaryText += ` Key verses like ${results
-        .slice(0, 3)
-        .map((r) => this.cleanSuktaName(r.name))
-        .join(", ")} are highlighted.`;
+  updateRagSummary(results, searchTerm, semanticData) {
+    const ragContainer = this.ragSummary.querySelector(".summary-content");
+
+    if (semanticData?.rag_summary) {
+      // Remove **text** and format bullets
+      let formattedSummary = semanticData.rag_summary
+        .replace(/\*\*(.*?)\*\*/g, "$1") // Remove **bold**
+        .replace(/^\s*-\s*/gm, "<br>• ") // Replace - with • and new line
+        .replace(/\n/g, "<br>"); // Preserve other line breaks
+
+      ragContainer.innerHTML = `
+            <div class="rag-container">
+                <div class="rag-content">${formattedSummary}</div>
+            </div>`;
+    } else {
+      ragContainer.innerHTML = `<p>Found ${results.length} results for "${searchTerm}"</p>`;
     }
-    this.ragSummary.querySelector(
-      ".summary-content"
-    ).innerHTML = `<p>${summaryText}</p>`;
   }
 
   renderResultsList(results) {
     this.resultCards.innerHTML = "";
 
-    if (results.length === 0) {
+    if (!results || results.length === 0) {
       this.resultCards.innerHTML =
         "<p class='no-results'>No Suktas found matching your search term.</p>";
       return;
     }
 
+    // VERTICAL container
     const container = document.createElement("div");
-    container.className = "results-list-container";
+    container.className = "vertical-result-list";
 
-    const list = document.createElement("ul");
-    list.className = "results-list";
+    results.forEach((result, index) => {
+      const cleanName = this.cleanSuktaName(
+        result.name || `RV ${result.index || ""}`
+      );
+      const contentPreview =
+        result.text || this.getContentPreview(result.content);
 
-    results.forEach((sukta, index) => {
-      list.appendChild(this.createResultItem(sukta, index));
+      const item = document.createElement("div");
+      item.className = "vertical-result-item";
+      item.innerHTML = `
+      <div class="vertical-result-header">
+        <span class="vertical-result-title">${cleanName}</span>
+        <span class="vertical-result-score">${Math.max(
+          70,
+          100 - index * 5
+        )}%</span>
+      </div>
+      <div class="vertical-result-content">
+        ${contentPreview || "No preview available"}
+      </div>
+      <div class="vertical-result-actions">
+        <button class="view-connections" data-node-id="${
+          result.id || result.index
+        }">
+          <i class="fas fa-link"></i> View Graph
+        </button>
+        <button class="read-full" data-node-id="${
+          result.id || result.index
+        }" data-node-name="${cleanName}">
+          <i class="fas fa-book-open"></i> Read Full
+        </button>
+      </div>
+    `;
+
+      // Maintain original event listeners
+      item
+        .querySelector(".view-connections")
+        .addEventListener("click", () =>
+          this.handleViewConnections(result.id || result.index)
+        );
+      item
+        .querySelector(".read-full")
+        .addEventListener("click", (event) =>
+          this.handleReadFull(event, cleanName)
+        );
+
+      container.appendChild(item);
     });
-
-    container.appendChild(list);
-
-    if (results.length > 3) {
-      container.appendChild(this.createToggleButton());
-    }
 
     this.resultCards.appendChild(container);
   }
 
-  createResultItem(sukta, index) {
-    const cleanName = this.cleanSuktaName(sukta.name);
-    const contentPreview = this.getContentPreview(sukta.text);
-
-    const item = document.createElement("li");
-    item.className = "result-item";
-    item.innerHTML = `
-      <div class="result-header">
-        <span class="result-title">${cleanName}</span>
-        <span class="result-score">${Math.max(70, 100 - index * 5)}%</span>
-      </div>
-      ${
-        contentPreview
-          ? `<div class="result-content"><p>${contentPreview}</p></div>`
-          : ""
-      }
-      <div class="result-actions">
-        <button class="view-connections" data-node-id="${sukta.id}">
-          <i class="fas fa-link"></i> Connections
-        </button>
-        <button class="read-full" data-node-id="${
-          sukta.id
-        }" data-node-name="${cleanName}">
-          <i class="fas fa-book-open"></i> Read
-        </button>
-      </div>`;
-
-    item
-      .querySelector(".view-connections")
-      .addEventListener("click", () => this.handleViewConnections(sukta.id));
-    item
-      .querySelector(".read-full")
-      .addEventListener("click", (event) =>
-        this.handleReadFull(event, cleanName)
-      );
-
-    return item;
+  // Keep your original cleanSuktaName method exactly as is
+  cleanSuktaName(name) {
+    if (!name) return name;
+    // Remove extra "RV" prefixes and trim whitespace
+    let cleanName = name.replace(/^(RV\s*)+/i, "RV ").trim();
+    // Ensure "RV" is followed by a space if not already
+    if (!cleanName.startsWith("RV ")) {
+      cleanName = "RV " + cleanName;
+    }
+    // Remove any remaining duplicate "RV"
+    cleanName = cleanName.replace(/(RV\s+)+/g, "RV ");
+    return cleanName.trim();
   }
 
+  // Keep your original getContentPreview method exactly as is
   getContentPreview(text) {
     if (!text) return "";
 
@@ -350,20 +355,27 @@ class RigvedaSearch {
       : text.substring(0, 60).trim() + (text.length > 60 ? "..." : "");
   }
 
-  createToggleButton() {
-    const toggle = document.createElement("div");
-    toggle.className = "view-more-toggle";
-    toggle.textContent = "Show More";
-    return toggle;
+  handleViewSukta(suktaId) {
+    const node = this.nodesData.find((n) => n.id.includes(suktaId));
+    if (node) {
+      this.zoomToNode(node);
+      this.highlightGraphNode(node.id);
+    }
   }
 
   handleViewConnections(nodeId) {
-    const node = this.nodesData.find((n) => n.id === nodeId);
+    let node = this.nodesData.find((n) => n.id === nodeId);
+    if (!node) {
+      node = this.nodesData.find((n) => n.id.includes(nodeId));
+    }
+    if (!node) {
+      node = this.nodesData.find((n) =>
+        this.cleanSuktaName(n.name).includes(this.cleanSuktaName(nodeId))
+      );
+    }
     if (!node) return;
-
-    this.highlightGraphNode(nodeId);
-    this.showPopup(node);
     this.zoomToNode(node);
+    this.highlightGraphNode(node.id);
   }
 
   handleReadFull(event, chapterName) {
@@ -392,24 +404,37 @@ class RigvedaSearch {
   }
 
   resetSearch() {
-  this.currentSearchTerm = "";
-  this.searchBox.value = "";
-  this.clearSearch.classList.remove("visible");
-  document.body.classList.remove("search-active");
-  this.welcomeSection.classList.remove("hidden");
-  document.getElementById('search-guide-card').classList.remove('hidden');
-  this.resultsContainer.style.display = "none";
-  this.resetGraph();
+    this.currentSearchTerm = "";
+    this.searchBox.value = "";
+    this.clearSearch.classList.remove("visible");
+    document.body.classList.remove("search-active");
+    this.welcomeSection.classList.remove("hidden");
+    document.getElementById("search-guide-card").classList.remove("hidden");
+    this.resultsContainer.style.display = "none";
+    this.resetGraph();
   }
 
   // --- D3 Graph Initialization and Rendering ---
   initializeGraph() {
     const container = this.graphSvg.parentElement;
+    if (!container) {
+      console.error("Container element not found!");
+      return;
+    }
+    // Set SVG size based on container
     const width = container.clientWidth;
     const height = container.clientHeight;
 
-    this.svg.attr("width", width).attr("height", height);
+    this.svg = d3
+      .select(this.graphSvg)
+      .attr("width", width)
+      .attr("height", height);
 
+    // Remove any previous group, then create new 'g'
+    this.svg.selectAll("g").remove();
+    this.g = this.svg.append("g");
+
+    // Setup zoom
     this.zoom = d3
       .zoom()
       .scaleExtent([0.1, 5])
@@ -417,12 +442,40 @@ class RigvedaSearch {
         this.g.attr("transform", event.transform);
       });
     this.svg.call(this.zoom);
-    this.g = this.svg.append("g");
+
+    // Load graph data
     this.loadGraphData(this.databaseSelect.value);
   }
 
+  getConnectedNodes(nodeId) {
+    const connectedNodes = new Set();
+
+    this.edgesData.forEach((edge) => {
+      if (edge.source.id === nodeId) {
+        const targetNode = this.nodesData.find((n) => n.id === edge.target.id);
+        if (targetNode) connectedNodes.add(targetNode);
+      } else if (edge.target.id === nodeId) {
+        const sourceNode = this.nodesData.find((n) => n.id === edge.source.id);
+        if (sourceNode) connectedNodes.add(sourceNode);
+      }
+    });
+
+    return Array.from(connectedNodes);
+  }
+
+  getNodeLevel(nodeId) {
+    if (!this.selectedNode) return -1;
+    if (nodeId === this.selectedNode.id) return 0;
+    if (this.levels[1].has(nodeId)) return 1;
+    if (this.levels[2].has(nodeId)) return 2;
+    if (this.levels[3].has(nodeId)) return 3;
+    return -1;
+  }
+
+  // --- THE MAIN CHANGE: ADD forceX/forceY and xScale/yScale for fixed layout ---
   loadGraphData(database, searchTerm = null, highlightNodes = []) {
     this.g.selectAll("*").remove();
+
     d3.json(database)
       .then((data) => {
         this.nodesData = data.nodes;
@@ -431,6 +484,7 @@ class RigvedaSearch {
         const width = this.graphSvg.parentElement.clientWidth;
         const height = this.graphSvg.parentElement.clientHeight;
 
+        // Normalize edge weights exactly like the reference code
         const weights = this.edgesData.map((d) => d.weight);
         const min_weight = Math.min(...weights);
         const max_weight = Math.max(...weights);
@@ -448,8 +502,59 @@ class RigvedaSearch {
           }
         });
 
-        // No fixed positions, let force simulation handle it
-        this.simulation = d3
+        // Use the same scaling approach as reference code
+        const xScale = d3
+          .scaleLinear()
+          .domain([
+            d3.min(this.nodesData, (d) => d.x),
+            d3.max(this.nodesData, (d) => d.x),
+          ])
+          .range([100, width - 100]);
+
+        const yScale = d3
+          .scaleLinear()
+          .domain([
+            d3.min(this.nodesData, (d) => d.y),
+            d3.max(this.nodesData, (d) => d.y),
+          ])
+          .range([100, height - 100]);
+
+
+
+        this.link = this.g
+          .append("g")
+          .selectAll("line")
+          .data(this.edgesData)
+          .enter()
+          .append("line")
+          .attr("class", "link")
+          .attr("stroke-width", 2) // Constant width
+          .attr("stroke", "#aaa")
+          .attr("stroke-opacity", 0.6)
+          .on("click", (event, d) => {
+            this.selectedEdge = d3.select(event.target);
+            this.highlightEdgeNodes(d);
+            this.selectedEdge
+              .attr("stroke", "red")
+              .attr("stroke-width", 2); // Constant width
+          })
+          .on("mouseover", (event, d) => {
+            d3.select(event.target)
+              .attr("stroke", "red")
+              .attr("stroke-width", 2); // Constant width
+          })
+          .on("mouseout", (event, d) => {
+            if (
+              !this.selectedEdge ||
+              d3.select(event.target).datum() !== this.selectedEdge.datum()
+            ) {
+              d3.select(event.target)
+                .attr("stroke", "#aaa")
+                .attr("stroke-width", 2); // Constant width
+            }
+          });
+
+  this.simulation = d3
           .forceSimulation(this.nodesData)
           .force(
             "link",
@@ -460,42 +565,20 @@ class RigvedaSearch {
           )
           .force("charge", d3.forceManyBody().strength(-30))
           .force("center", d3.forceCenter(width / 2, height / 2))
+          .force(
+            "x",
+            d3.forceX().x((d) => xScale(d.x))
+          )
+          .force(
+            "y",
+            d3.forceY().y((d) => yScale(d.y))
+          )
           .on("tick", () => this.ticked());
 
-        this.link = this.g
-          .append("g")
-          .selectAll("line")
-          .data(this.edgesData)
-          .enter()
-          .append("line")
-          .attr("class", "edge")
-          .attr("stroke-width", (d) => 11 - d.normalized_weight)
-          .attr("stroke", "#aaa")
-          .on("click", (event, d) => {
-            if (this.selectedEdge) {
-              this.selectedEdge.attr("stroke", "#aaa");
-            }
-            this.selectedEdge = d3
-              .select(event.target)
-              .attr("stroke", "red")
-              .attr("stroke-width", 11 - d.normalized_weight);
-            this.highlightEdgeNodes(d);
-          })
-          .on("mouseover", (event, d) => {
-            d3.select(event.target)
-              .attr("stroke", "red")
-              .attr("stroke-width", 11 - d.normalized_weight);
-          })
-          .on("mouseout", (event, d) => {
-            if (
-              !this.selectedEdge ||
-              d3.select(event.target).datum() !== this.selectedEdge.datum()
-            ) {
-              d3.select(event.target)
-                .attr("stroke", "#aaa")
-                .attr("stroke-width", 11 - d.normalized_weight);
-            }
-          });
+        this.nodesData.forEach((node) => {
+          node.x = xScale(node.x);
+          node.y = yScale(node.y);
+        });
 
         const drag = d3
           .drag()
@@ -517,18 +600,27 @@ class RigvedaSearch {
             this.tooltip
               .style("display", "block")
               .html(`<strong>${this.cleanSuktaName(d.name)}</strong>`)
-              .style("left", `${event.pageX + 5}px`)
-              .style("top", `${event.pageY + 5}px`);
+              .style("left", `${event.pageX + 10}px`)
+              .style("top", `${event.pageY + 10}px`);
           })
           .on("mouseout", () => {
             this.tooltip.style("display", "none");
           })
           .on("click", (event, d) => {
+            event.stopPropagation();
+            if (this.selectedEdge) {
+              this.selectedEdge.attr("stroke", "#aaa");
+              this.selectedEdge = null;
+            }
+            if (this.selectedNode && this.selectedNode.id === d.id) {
+              this.resetGraphHighlights();
+              this.selectedNode = null;
+              this.popup.style("display", "none");
+              return;
+            }
             this.selectedNode = d;
-            this.showPopup(d);
+            this.highlightGraphNode(d.id);
             this.zoomToNode(d);
-            this.highlightGraphNode(d.id); // Highlight selected node and its connections
-            this.displaySummary(d); // Display summary for the clicked node
           });
 
         this.label = this.g
@@ -540,39 +632,36 @@ class RigvedaSearch {
           .attr("x", (d) => d.x + 10)
           .attr("y", (d) => d.y + 5)
           .text((d) => this.cleanSuktaName(d.name))
-          .style("font-size", "5px")
-          .style("fill", "black");
+          .style("font-size", "6px")
+          .style("fill", "black")
+          .style("pointer-events", "none");
 
-        // Initial highlighting based on search results
         if (highlightNodes && highlightNodes.length > 0) {
           this.highlightGraphNode(highlightNodes[0].id);
-        } else if (searchTerm) {
-          this.ragSummary.querySelector(
-            ".summary-content"
-          ).innerHTML = `<p>No direct matches found in graph. Click on nodes to explore connections.</p>`;
-        } else {
-          this.ragSummary.querySelector(
-            ".summary-content"
-          ).innerHTML = `<p>Summary of search results will appear here.</p>`;
+          this.zoomToNode(highlightNodes[0].id);
         }
-
-        this.updateGraphVisibility(); // Apply initial visibility (all visible)
       })
-      .catch((error) => {
-        console.error("Error loading the graph data:", error);
+      .catch((err) => {
+        console.error("Graph data load error", err);
       });
   }
 
+  // --- END MAIN CHANGE ---
+
   ticked() {
-    this.link
-      .attr("x1", (d) => d.source.x)
-      .attr("y1", (d) => d.source.y)
-      .attr("x2", (d) => d.target.x)
-      .attr("y2", (d) => d.target.y);
+    try {
+      this.link
+        .attr("x1", (d) => d.source.x || 0)
+        .attr("y1", (d) => d.source.y || 0)
+        .attr("x2", (d) => d.target.x || 0)
+        .attr("y2", (d) => d.target.y || 0);
 
-    this.node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+      this.node.attr("cx", (d) => d.x || 0).attr("cy", (d) => d.y || 0);
 
-    this.label.attr("x", (d) => d.x + 10).attr("y", (d) => d.y + 5);
+      this.label.attr("x", (d) => (d.x || 0) + 16).attr("y", (d) => d.y || 0);
+    } catch (e) {
+      console.error("Tick error:", e);
+    }
   }
 
   dragStarted(event, d) {
@@ -580,13 +669,10 @@ class RigvedaSearch {
     d.fx = d.x;
     d.fy = d.y;
   }
-
   dragged(event, d) {
     d.fx = event.x;
     d.fy = event.y;
-    this.simulation.alpha(0.3).restart();
   }
-
   dragEnded(event, d) {
     if (!event.active) this.simulation.alphaTarget(0);
     d.fx = null;
@@ -597,114 +683,150 @@ class RigvedaSearch {
     this.selectedNode = this.nodesData.find((n) => n.id === nodeId);
     if (!this.selectedNode) return;
 
-    // Determine nodes to highlight up to 3 levels
-    const highlightedNodeIds = new Set();
-    const queue = [{ id: this.selectedNode.id, level: 0 }];
-    highlightedNodeIds.add(this.selectedNode.id);
+    // Create connection levels
+    const level1 = new Set(); // Direct connections
+    const level2 = new Set(); // Friends of friends
+    const level3 = new Set(); // Friends of friends of friends
 
-    let head = 0;
-    while (head < queue.length) {
-      const { id, level } = queue[head++];
-
-      if (level < 3) {
-        this.edgesData.forEach((edge) => {
-          let connectedNodeId = null;
-          if (edge.source.id === id) {
-            connectedNodeId = edge.target.id;
-          } else if (edge.target.id === id) {
-            connectedNodeId = edge.source.id;
-          }
-
-          if (connectedNodeId && !highlightedNodeIds.has(connectedNodeId)) {
-            highlightedNodeIds.add(connectedNodeId);
-            queue.push({ id: connectedNodeId, level: level + 1 });
-          }
-        });
-      }
-    }
-
-    this.node
-      .attr("opacity", (d) => (highlightedNodeIds.has(d.id) ? 1 : 0.1))
-      .attr("stroke", (d) =>
-        d.id === this.selectedNode.id
-          ? "red"
-          : highlightedNodeIds.has(d.id)
-          ? "orange"
-          : null
-      )
-      .attr("stroke-width", (d) =>
-        d.id === this.selectedNode.id
-          ? 3
-          : highlightedNodeIds.has(d.id)
-          ? 1.5
-          : null
-      )
-      .attr("fill", (d) =>
-        d.id === this.selectedNode.id
-          ? "darkred"
-          : highlightedNodeIds.has(d.id)
-          ? "darkblue"
-          : "#7fb3d5"
-      );
-
-    this.link
-      .attr("opacity", (d) =>
-        highlightedNodeIds.has(d.source.id) &&
-        highlightedNodeIds.has(d.target.id)
-          ? 1
-          : 0.1
-      )
-      .attr("stroke", (d) =>
-        d.source.id === this.selectedNode.id ||
-        d.target.id === this.selectedNode.id
-          ? "red"
-          : "#aaa"
-      );
-
-    this.label
-      .style("opacity", (d) => (highlightedNodeIds.has(d.id) ? 1 : 0.1))
-      .style("fill", (d) => (highlightedNodeIds.has(d.id) ? "red" : "black"));
-
-    this.displaySummary(this.selectedNode); // Update summary for the highlighted node
-  }
-
-  highlightEdgeNodes(edge) {
-    this.node.attr("fill", (d) => {
-      if (d.id === edge.source.id) return "blue";
-      if (d.id === edge.target.id) return "green";
-      return "#7fb3d5"; // Default color for others
+    // Find level 1 connections
+    this.edgesData.forEach((edge) => {
+      if (edge.source.id === nodeId) level1.add(edge.target.id);
+      if (edge.target.id === nodeId) level1.add(edge.source.id);
     });
-    this.node
-      .attr("stroke", (d) => {
-        if (d.id === edge.source.id || d.id === edge.target.id) return "red";
-        return null;
+
+    // Find level 2 connections
+    level1.forEach((id) => {
+      this.edgesData.forEach((edge) => {
+        if (edge.source.id === id && edge.target.id !== nodeId)
+          level2.add(edge.target.id);
+        if (edge.target.id === id && edge.source.id !== nodeId)
+          level2.add(edge.source.id);
+      });
+    });
+
+    // Find level 3 connections
+    level2.forEach((id) => {
+      this.edgesData.forEach((edge) => {
+        if (edge.source.id === id && !level1.has(edge.target.id))
+          level3.add(edge.target.id);
+        if (edge.target.id === id && !level1.has(edge.source.id))
+          level3.add(edge.source.id);
+      });
+    });
+
+    // Remove duplicates from higher levels
+    level2.forEach((id) => {
+      if (level1.has(id)) level2.delete(id);
+    });
+    level3.forEach((id) => {
+      if (level1.has(id) || level2.has(id)) level3.delete(id);
+    });
+
+    // Color scheme - matching suktaconnection.html
+    const colors = {
+      selected: "#E57373", // Selected node color
+      level1: "#FFB74D", // Direct connections color
+      level2: "#64B5F6", // Friends of friends color
+      level3: "#81C784", // Friends of friends of friends color
+      default: "#7fb3d5", // Default node color
+      edgeDefault: "#aaa", // Default edge color
+      edgeHighlight: "#E97777", // Edge highlight color (matches selected node)
+    };
+
+    // Style nodes - matching opacity and sizing from suktaconnection.html
+     this.node
+      .attr("opacity", (d) => {
+        if (d.id === nodeId) return 1;
+        if (level1.has(d.id)) return 1;
+        if (level2.has(d.id)) return 0.8;
+        if (level3.has(d.id)) return 0.6;
+        return 0.07;
       })
-      .attr("stroke-width", (d) => {
-        if (d.id === edge.source.id || d.id === edge.target.id) return 2;
-        return null;
+      .attr("fill", (d) => {
+        if (d.id === nodeId) return colors.selected;
+        if (level1.has(d.id)) return colors.level1;
+        if (level2.has(d.id)) return colors.level2;
+        if (level3.has(d.id)) return colors.level3;
+        return colors.default;
+      })
+      .attr("stroke", (d) => (d.id === nodeId ? "#000" : "none"))
+      .attr("stroke-width", (d) => (d.id === nodeId ? 2 : 0))
+      .attr("r", (d) => {
+        if (d.id === nodeId) return 8;
+        if (level1.has(d.id)) return 6;
+        if (level2.has(d.id)) return 5;
+        if (level3.has(d.id)) return 4;
+        return 3;
       });
 
-    this.link.attr("stroke", (l) => (l === edge ? "red" : "#aaa"));
-    this.label.style("fill", (d) => {
-      if (d.id === edge.source.id || d.id === edge.target.id) return "red";
-      return "black";
-    });
+    this.link
+      .attr("stroke", (d) => {
+        if (d.source.id === nodeId || d.target.id === nodeId)
+          return colors.edgeHighlight;
+        if (level1.has(d.source.id) || level1.has(d.target.id))
+          return colors.level1;
+        if (level2.has(d.source.id) || level2.has(d.target.id))
+          return colors.level2;
+        if (level3.has(d.source.id) || level3.has(d.target.id))
+          return colors.level3;
+        return colors.edgeDefault;
+      })
+      .attr("stroke-opacity", (d) => {
+        if (d.source.id === nodeId || d.target.id === nodeId) return 1;
+        if (level1.has(d.source.id) || level1.has(d.target.id)) return 0.8;
+        if (level2.has(d.source.id) || level2.has(d.target.id)) return 0.6;
+        if (level3.has(d.source.id) || level3.has(d.target.id)) return 0.4;
+        return 0.07;
+      })
+      .attr("stroke-width", 2) // Constant width
+      .attr("stroke-linecap", "round");
+
+    this.label
+      .style("opacity", (d) => {
+        if (d.id === nodeId) return 1;
+        if (level1.has(d.id)) return 1;
+        if (level2.has(d.id)) return 0.8;
+        if (level3.has(d.id)) return 0.6;
+        return 0.07;
+      })
+      .style("font-weight", (d) => (d.id === nodeId ? "bold" : "normal"))
+      .style("font-size", "6px");
   }
 
+  resetGraphHighlights() {
+    this.node
+      .attr("opacity", 1)
+      .attr("fill", "#7fb3d5")
+      .attr("stroke", "none")
+      .attr("stroke-width", 0)
+      .attr("r", 8);
+
+    this.link
+      .attr("stroke", "#aaa")
+      .attr("stroke-opacity", 0.6)
+      .attr("stroke-width", 2); // Constant width
+
+    this.label.style("opacity", 1).style("font-weight", "normal");
+  }
+  // --- Zoom to node function ---
   zoomToNode(node) {
-    const x = node.x;
-    const y = node.y;
-    const scale = 2; // Zoom level
+    if (!node || isNaN(node.x) || isNaN(node.y)) {
+      console.error("Invalid node position:", node);
+      return;
+    }
+
+    const container = this.graphSvg.parentElement;
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    const scale = 2;
+
     const transform = d3.zoomIdentity
-      .translate(
-        this.graphSvg.parentElement.clientWidth / 2,
-        this.graphSvg.parentElement.clientHeight / 2
-      )
+      .translate(width / 2, height / 2)
       .scale(scale)
-      .translate(-x, -y);
+      .translate(-node.x, -node.y);
+
     this.svg.transition().duration(750).call(this.zoom.transform, transform);
   }
-
   updateGraphVisibility() {
     if (this.node) {
       this.node.attr("opacity", 1);
@@ -715,41 +837,6 @@ class RigvedaSearch {
     if (this.label) {
       this.label.style("opacity", 1).style("display", "block"); // Ensure labels are visible
     }
-  }
-
-  displaySummary(node) {
-    const cleanName = this.cleanSuktaName(node.name);
-    const summaryContentDiv = this.ragSummary.querySelector(".summary-content");
-    if (window.getSuktaSummary) {
-      // Check if the function exists
-      const summary = window.getSuktaSummary(node.id);
-      summaryContentDiv.innerHTML = `
-            <h4>Summary for ${cleanName}</h4>
-            <p>${summary || "Summary not available for this Sukta."}</p>
-        `;
-    } else {
-      summaryContentDiv.innerHTML = `<p>Summary for ${cleanName} will appear here. (sukta_summary.js not loaded or function missing)</p>`;
-    }
-  }
-
-  resetGraph() {
-    // Clear graph elements
-    this.g.selectAll("*").remove();
-    // Reload initial graph data (resets colors, positions, etc.)
-    this.loadGraphData(this.databaseSelect.value);
-    // Reset zoom/pan
-    this.svg
-      .transition()
-      .duration(750)
-      .call(this.zoom.transform, d3.zoomIdentity);
-    // Reset selection
-    this.selectedNode = null;
-    this.selectedEdge = null;
-    this.isolateMode = false;
-    this.popup.style("display", "none");
-    this.ragSummary.querySelector(
-      ".summary-content"
-    ).innerHTML = `<p>Summary of search results will appear here.</p>`;
   }
 
   cleanSuktaName(name) {
