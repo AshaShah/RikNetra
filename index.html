@@ -47,8 +47,8 @@
     <section class="search-section" id="search-section">
       <div class="search-controls-wrapper">
         <div class="search-input-group">
-          <input type="text" id="search-box" placeholder="Search for Suktas, keywords, or query..." aria-label="Search">
-          <span class="clear-search" id="clear-search">×</span>
+          <input type="text" id="search-box" placeholder="Search keywords or query..." aria-label="Search">
+          <!-- <span class="clear-search" id="clear-search">×</span> -->
           <button id="search-button"><i class="fas fa-search"></i></button>
         </div>
         <div class="styled-select-container">
@@ -93,34 +93,34 @@
 
     </section>
 
+    <div class="search-summary" id="search-summary"></div>
     <div class="results-container" id="results-container">
+
       <div class="results-layout">
         <div class="results-left">
-          <div class="search-summary" id="search-summary"></div>
+
           <div class="top-results" id="top-results">
             <div class="scroll-controls"></div>
             <h2>Top Results</h2>
             <div class="result-cards" id="result-cards"></div>
           </div>
-          <!-- MOVE graph-section HERE! -->
-          <div class="graph-section" id="graph-section">
-            <h2>Connections Visualization</h2>
-            <div class="graph-visualization-container" id="graph-visualization">
-              <svg id="graph-svg" class="graph-svg-container"></svg>
-              <div id="tooltip" class="tooltip" style="display: none;"></div>
-              <div id="popup" class="popup" style="display: none;">
-                <button id="close-popup" class="close-btn">×</button>
-                <h3 id="popup-title"></h3>
-                <ul id="popup-links"></ul>
-                <button id="read-chapter">Read this Chapter</button>
-              </div>
-              <div id="summary-popup" class="summary-popup" style="display: none;">
-                <span class="close-summary">&times;</span>
-                <div class="summary-content"></div>
-              </div>
+        </div>
+        <div class="graph-section" id="graph-section">
+          <h2>Connections Visualization</h2>
+          <div class="graph-visualization-container" id="graph-visualization">
+            <svg id="graph-svg" class="graph-svg-container"></svg>
+            <div id="tooltip" class="tooltip" style="display: none;"></div>
+            <div id="popup" class="popup" style="display: none;">
+              <button id="close-popup" class="close-btn">×</button>
+              <h3 id="popup-title"></h3>
+              <ul id="popup-links"></ul>
+              <button id="read-chapter">Read this Chapter</button>
+            </div>
+            <div id="summary-popup" class="summary-popup" style="display: none;">
+              <span class="close-summary">&times;</span>
+              <div class="summary-content"></div>
             </div>
           </div>
-          <!-- end graph-section -->
         </div>
         <div class="results-right">
           <div class="rag-summary" id="rag-summary">
