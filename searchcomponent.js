@@ -147,37 +147,50 @@ class RigvedaSearch {
     this.resultsContainer.style.display = "flex";
   }
 
-  async performSearch() {
-    if (this.currentSearchTerm.length === 0) {
-      this.resetSearch();
+async performSearch() {
+  if (this.currentSearchTerm.length === 0) {
+    this.resetSearch();
+    return;
+  }
+
+  this.showLoading();
+  const currentDatabase = this.databaseSelect.value;
+
+  try {
+    // 1. Load JSON data for exact match
+    const data = await d3.json(currentDatabase);
+    this.nodesData = data.nodes;
+    this.edgesData = data.edges;
+
+    // 2. Try to find an exact match in the node names
+    // Normalize search term
+    const searchTermNorm = this.cleanSuktaName(this.currentSearchTerm).toLowerCase().replace(/\s+/g, '');
+    const exactNode = this.nodesData.find(node =>
+      this.cleanSuktaName(node.name).toLowerCase().replace(/\s+/g, '') === searchTermNorm
+    );
+
+    if (exactNode) {
+      // If found, show ONLY this result and skip semantic search
+      this.updateSearchResults([exactNode], this.currentSearchTerm, { rag_summary: null });
+      this.loadGraphData(currentDatabase, this.currentSearchTerm, [exactNode]);
       return;
     }
 
-    this.showLoading();
-    const currentDatabase = this.databaseSelect.value;
+    // 3. If not found, proceed as usual with semantic search
+    const semanticData = await this.fetchSemanticResults();
+    let matchedNodes = this.processSearchResults(semanticData);
 
-    try {
-      const data = await d3.json(currentDatabase);
-      this.nodesData = data.nodes;
-      this.edgesData = data.edges;
-
-      const semanticData = await this.fetchSemanticResults();
-      console.log("RAG data received:", semanticData.rag_summary); // Debug
-
-      let matchedNodes = this.processSearchResults(semanticData);
-
-      // Pass semanticData to update results
-      this.updateSearchResults(
-        matchedNodes,
-        this.currentSearchTerm,
-        semanticData
-      );
-      this.loadGraphData(currentDatabase, this.currentSearchTerm, matchedNodes);
-    } catch (error) {
-      console.error("Search error:", error);
-      this.showSearchError();
-    }
+    this.updateSearchResults(
+      matchedNodes,
+      this.currentSearchTerm,
+      semanticData
+    );
+    this.loadGraphData(currentDatabase, this.currentSearchTerm, matchedNodes);
+  } catch (error) {
+    console.error("Search error:", error);
+    this.showSearchError();
   }
+}
 
   async fetchSemanticResults() {
     const response = await fetch("http://localhost:5000/semantic-search", {
@@ -349,18 +362,34 @@ class RigvedaSearch {
   getContentPreview(text) {
     if (!text) return "";
 
-    const firstLine = text.split(/[\n.]/)[0].trim();
-    return firstLine.length > 0
-      ? firstLine
-      : text.substring(0, 60).trim() + (text.length > 60 ? "..." : "");
-  }
-
-  handleViewSukta(suktaId) {
-    const node = this.nodesData.find((n) => n.id.includes(suktaId));
-    if (node) {
-      this.zoomToNode(node);
-      this.highlightGraphNode(node.id);
+    // First try to get a complete sentence
+    const sentenceMatch = text.match(/^.*?[.!?](?=\s|$)/);
+    if (
+      sentenceMatch &&
+      sentenceMatch[0].length >= 60 &&
+      sentenceMatch[0].length <= 90
+    ) {
+      return sentenceMatch[0];
     }
+
+    // If no suitable sentence, get the first line or truncate
+    const firstLine = text.split(/\n/)[0].trim();
+    if (firstLine.length >= 60 && firstLine.length <= 90) {
+      return firstLine;
+    }
+
+    // If still too long, truncate to 90 chars at word boundary
+    if (firstLine.length > 90) {
+      return firstLine.substring(0, 90).replace(/\s+\S*$/, "...");
+    }
+
+    // If too short, try to get more content
+    if (firstLine.length < 60) {
+      const moreContent = text.substring(0, 90).trim();
+      return moreContent + (text.length > 90 ? "..." : "");
+    }
+
+    return firstLine;
   }
 
   handleViewConnections(nodeId) {
@@ -519,8 +548,6 @@ class RigvedaSearch {
           ])
           .range([100, height - 100]);
 
-
-
         this.link = this.g
           .append("g")
           .selectAll("line")
@@ -534,9 +561,7 @@ class RigvedaSearch {
           .on("click", (event, d) => {
             this.selectedEdge = d3.select(event.target);
             this.highlightEdgeNodes(d);
-            this.selectedEdge
-              .attr("stroke", "red")
-              .attr("stroke-width", 2); // Constant width
+            this.selectedEdge.attr("stroke", "red").attr("stroke-width", 2); // Constant width
           })
           .on("mouseover", (event, d) => {
             d3.select(event.target)
@@ -554,7 +579,7 @@ class RigvedaSearch {
             }
           });
 
-  this.simulation = d3
+        this.simulation = d3
           .forceSimulation(this.nodesData)
           .force(
             "link",
@@ -631,15 +656,10 @@ class RigvedaSearch {
           .append("text")
           .attr("x", (d) => d.x + 10)
           .attr("y", (d) => d.y + 5)
+          .attr("class", "node-label")
           .text((d) => this.cleanSuktaName(d.name))
           .style("font-size", "6px")
-          .style("fill", "black")
           .style("pointer-events", "none");
-
-        if (highlightNodes && highlightNodes.length > 0) {
-          this.highlightGraphNode(highlightNodes[0].id);
-          this.zoomToNode(highlightNodes[0].id);
-        }
       })
       .catch((err) => {
         console.error("Graph data load error", err);
@@ -734,7 +754,7 @@ class RigvedaSearch {
     };
 
     // Style nodes - matching opacity and sizing from suktaconnection.html
-     this.node
+    this.node
       .attr("opacity", (d) => {
         if (d.id === nodeId) return 1;
         if (level1.has(d.id)) return 1;
@@ -767,15 +787,12 @@ class RigvedaSearch {
           return colors.level1;
         if (level2.has(d.source.id) || level2.has(d.target.id))
           return colors.level2;
-        if (level3.has(d.source.id) || level3.has(d.target.id))
-          return colors.level3;
         return colors.edgeDefault;
       })
       .attr("stroke-opacity", (d) => {
         if (d.source.id === nodeId || d.target.id === nodeId) return 1;
         if (level1.has(d.source.id) || level1.has(d.target.id)) return 0.8;
         if (level2.has(d.source.id) || level2.has(d.target.id)) return 0.6;
-        if (level3.has(d.source.id) || level3.has(d.target.id)) return 0.4;
         return 0.07;
       })
       .attr("stroke-width", 2) // Constant width
@@ -791,6 +808,8 @@ class RigvedaSearch {
       })
       .style("font-weight", (d) => (d.id === nodeId ? "bold" : "normal"))
       .style("font-size", "6px");
+
+    this.zoomToNode(this.selectedNode);
   }
 
   resetGraphHighlights() {
