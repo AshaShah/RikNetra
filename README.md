@@ -119,7 +119,7 @@ riknetra/
 ├── README.md
 ```
 
-### Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -129,7 +129,7 @@ Contributions are welcome! Please follow these steps:
    - Push to the branch (git push origin feature/your-feature).
    - Open a pull request.
 
-### Acknowledgments
+## Acknowledgments
    - Griffith’s Translation of the Rigveda for textual data.
    - SentenceTransformers for semantic embeddings.
    - Cohere for RAG summarization.
