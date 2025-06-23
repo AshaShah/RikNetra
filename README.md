@@ -22,10 +22,12 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
   - Cohere API: Powers RAG-based summarization.
   - TF-IDF Vectorizer: Enhances query processing with keyword extraction.
   - NLTK: Handles text preprocessing (stopwords, tokenization).
+  
 - **Frontend**:
   - HTML/CSS/JavaScript: Core web interface.
   - D3.js: Renders interactive force-directed graphs.
   - Font Awesome: Provides icons for UI elements.
+  
 - **Data**:
   - Griffith’s Rigveda Translation: Text source for suktas.
   - Precomputed Embeddings: Stored in TSV files for efficient similarity search.
@@ -70,7 +72,7 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
    Use a static file server (e.g., Python’s http.server):
       `python -m http.server 8000`
       Open `http://localhost:8000/index.html` in your browser.
-
+      
 ### Usage
 
 1. **Home Page (`index.html`)**:
@@ -87,7 +89,6 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
 3. **Read Suktas (`chapter.html`)**:
    - View full sukta text with related suktas listed.
    - Search for specific suktas (e.g., "RV 1.1").
-
 
 ### Project Structure
 
@@ -126,7 +127,6 @@ Contributions are welcome! Please follow these steps:
    - Commit your changes (git commit -m "Add your feature").
    - Push to the branch (git push origin feature/your-feature).
    - Open a pull request.
-
 
 ### Acknowledgments
    - Griffith’s Translation of the Rigveda for textual data.
