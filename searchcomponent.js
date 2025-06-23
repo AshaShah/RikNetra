@@ -125,12 +125,12 @@ class RigvedaSearch {
     )}&database=${encodeURIComponent(database)}`;
   }
 
-  toggleClearButton() {
-    this.clearSearch.classList.toggle(
-      "visible",
-      this.currentSearchTerm.length > 0
-    );
-  }
+  // toggleClearButton() {
+  //   this.clearSearch.classList.toggle(
+  //     "visible",
+  //     this.currentSearchTerm.length > 0
+  //   );
+  // }
 
   showLoading() {
     document.body.classList.add("search-active");
@@ -435,12 +435,10 @@ async performSearch() {
   resetSearch() {
     this.currentSearchTerm = "";
     this.searchBox.value = "";
-    this.clearSearch.classList.remove("visible");
     document.body.classList.remove("search-active");
     this.welcomeSection.classList.remove("hidden");
     document.getElementById("search-guide-card").classList.remove("hidden");
     this.resultsContainer.style.display = "none";
-    this.resetGraph();
   }
 
   // --- D3 Graph Initialization and Rendering ---
