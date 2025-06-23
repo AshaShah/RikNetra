@@ -91,7 +91,7 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
    - Search for specific suktas (e.g., "RV 1.1").
 
 ### Project Structure
-
+```
 riknetra/
 ├── css/
 │   ├── chapter.css
@@ -117,6 +117,7 @@ riknetra/
 ├── chapter.html
 ├── index.html
 ├── README.md
+```
 
 ### Contributing
 
