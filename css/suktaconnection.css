@@ -21,7 +21,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: "Arial", sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--bg-light);
   color: var(--text-dark);
   overflow-x: hidden;
@@ -120,11 +120,11 @@ body {
   border-radius: 50%;
 }
 
-.side-panel.open ~ .home-logo {
+.side-panel.open~.home-logo {
   display: none;
 }
 
-.side-panel:not(.open) ~ .home-logo {
+.side-panel:not(.open)~.home-logo {
   display: flex;
 }
 
@@ -195,6 +195,7 @@ body {
   background-color: var(--secondary);
   color: var(--text-light);
 }
+
 /* Main Container */
 .main-container {
   margin-top: var(--header-height);
@@ -212,7 +213,7 @@ body {
 /* Graph Container */
 .graph-container {
   position: relative;
-  flex: 1; 
+  flex: 1;
   min-height: 500px;
   height: calc(100vh - var(--header-height) - 40px);
   width: 100%;
@@ -224,7 +225,7 @@ body {
 #graph-svg {
   width: 100%;
   height: 100%;
-  display: block; 
+  display: block;
 }
 
 /* Controls Section */
@@ -303,18 +304,19 @@ body {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+
 .controls select:focus {
   border-color: var(--primary);
   box-shadow: 0 0 5px rgba(88, 24, 69, 0.2);
 }
 
+
 .controls label {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   align-items: center;
-  gap: 8px;
   font-size: 14px;
   color: var(--text-dark);
-  margin-top: 5px;
 }
 
 .controls input[type="checkbox"] {
@@ -322,6 +324,26 @@ body {
   height: 16px;
   cursor: pointer;
 }
+
+.select-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  /* space between label and select */
+  margin-right: 10px;
+  /* space after the dropdown if other controls follow */
+}
+
+.select-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 0;
+  letter-spacing: -0.01rem;
+  font-family: sans-serif;
+}
+
 
 /* Graph Elements */
 .node {
@@ -460,7 +482,7 @@ body {
 .toggle-switch {
   position: relative;
   display: inline-block;
-  width: 100px;
+  width: 130px;
   height: 30px;
 }
 
@@ -482,53 +504,133 @@ body {
   border-radius: 34px;
 }
 
+/* Toggle button - starts at left corner in OFF state */
 .toggle-label:before {
   position: absolute;
   content: "";
   height: 22px;
   width: 22px;
   left: 4px;
+  /* Adjusted to stick to left corner */
   bottom: 4px;
   background-color: white;
   transition: .4s;
   border-radius: 50%;
 }
 
-input:checked + .toggle-label {
+input:checked+.toggle-label {
   background-color: var(--secondary);
 }
 
-input:checked + .toggle-label:before {
-  transform: translateX(70px);
+/* Toggle button - moves to right corner in ON state */
+input:checked+.toggle-label:before {
+  transform: translateX(100px);
+  /* Adjusted to stick to right corner */
+  left: 4px;
+  /* Maintains base position */
 }
 
-.toggle-text-on, .toggle-text-off {
+/* Text positioning */
+.toggle-text-on,
+.toggle-text-off {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   color: white;
-  font-size: 12px;
-  font-weight: bold;
+  font-size: 13px;
 }
 
+/* OFF text appears near right edge */
+.toggle-text-off {
+  right: 9px;
+}
+
+/* ON text appears near left edge */
 .toggle-text-on {
   left: 10px;
   display: none;
 }
 
-.toggle-text-off {
-  right: 10px;
-}
-
-input:checked + .toggle-label .toggle-text-on {
+input:checked+.toggle-label .toggle-text-on {
   display: block;
 }
 
-input:checked + .toggle-label .toggle-text-off {
+input:checked+.toggle-label .toggle-text-off {
   display: none;
 }
 
-/* Summary Popup Styles */
+/* Color Legend Styles */
+.color-legend {
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  background-color: var(--card-bg-light);
+  padding: 12px 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  width: 180px;
+  border: 1px solid var(--border-light);
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.color-legend:hover {
+  opacity: 1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.legend-title {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: var(--text-dark);
+  font-size: 14px;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 5px;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-dark);
+}
+
+.color-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  margin-right: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Dark mode styles for legend */
+.dark-mode .color-legend {
+  background-color: var(--card-bg-dark);
+  border: 1px solid var(--highlight);
+  box-shadow: 0 4px 20px rgba(127, 85, 177, 0.2);
+}
+
+.dark-mode .legend-title {
+  color: var(--highlight);
+  border-bottom-color: rgba(127, 85, 177, 0.3);
+}
+
+.dark-mode .legend-item {
+  color: var(--text-light);
+}
+
+.dark-mode .color-box {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Summary Popup Styles
 .summary-popup {
   position: fixed;
   left: 50%;
@@ -583,7 +685,7 @@ input:checked + .toggle-label .toggle-text-off {
   background-color: var(--accent);
   color: white;
   transform: scale(1.1);
-}
+} */
 
 /* Animation classes */
 .transition-all {
@@ -609,12 +711,12 @@ body.dark-mode .side-panel {
 /* Graph Container */
 .dark-mode .graph-container {
   background-color: var(--card-bg-dark);
-  box-shadow:  0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .dark-mode .controls {
   background-color: #2c3e50;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 /* Controls Section */
@@ -695,7 +797,8 @@ body.dark-mode .side-panel {
 }
 
 .dark-mode .close-btn:hover {
-  background-color: red; /* Red color for close button */
+  background-color: red;
+  /* Red color for close button */
   color: white;
 }
 
@@ -704,7 +807,7 @@ body.dark-mode .side-panel {
   background-color: var(--highlight);
 }
 
-.dark-mode input:checked + .toggle-label {
+.dark-mode input:checked+.toggle-label {
   background-color: var(--dark-mode-button-bg);
 }
 
@@ -726,8 +829,8 @@ body.dark-mode .side-panel {
 }
 
 .dark-mode .kebab-menu {
-  color: var(--text-light); 
-  background: var(--highlight); 
+  color: var(--text-light);
+  background: var(--highlight);
 }
 
 .dark-mode .kebab-menu:hover {
@@ -771,7 +874,7 @@ body.dark-mode .side-panel {
 }
 
 .dark-mode .dark-mode-toggle:hover {
-  background-color: var(--dark-mode-button-bg); 
+  background-color: var(--dark-mode-button-bg);
 }
 
 /* Summary Popup */
@@ -797,7 +900,8 @@ body.dark-mode .side-panel {
 }
 
 .dark-mode .close-summary:hover {
-  background-color: #e74c3c; /* Red color for close button */
+  background-color: #e74c3c;
+  /* Red color for close button */
   color: white;
 }
 
@@ -806,72 +910,71 @@ body.dark-mode .side-panel {
   body {
     padding: 20px;
   }
-  
+
   .graph-container {
     height: 650px;
   }
-  
+
   .controls {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
-    margin-bottom: 24px;
   }
-  
+
   .controls button {
     width: auto;
     padding: 10px 16px;
-    font-size: 16px;
+    font-size: 14px;
   }
-  
+
   .controls input[type="text"] {
     width: 200px;
-    font-size: 16px;
+    font-size: 14px;
   }
-  
+
   .controls select {
     width: 180px;
-    font-size: 16px;
+    font-size: 14px;
     padding: 10px 16px;
   }
-  
+
   .tooltip {
     font-size: 14px;
     padding: 8px 12px;
   }
-  
+
   .popup {
     width: 300px;
     padding: 20px;
   }
-  
+
   .popup h3 {
     font-size: 18px;
   }
-  
+
   .popup ul li a {
-    font-size: 16px;
+    font-size: 14px;
   }
-  
+
   .selected-option {
     font-size: 14px;
   }
-  
+
   .toggle-label {
-    width: 100px;
+    width: 130px;
     height: 30px;
   }
-  
+
   .toggle-slider {
     width: 26px;
     height: 26px;
   }
-  
+
   .toggle-text {
     font-size: 14px;
   }
-  
-  #color-toggle:checked + .toggle-label .toggle-slider {
+
+  #color-toggle:checked+.toggle-label .toggle-slider {
     transform: translateX(70px);
   }
 }
@@ -880,7 +983,7 @@ body.dark-mode .side-panel {
   .graph-container {
     height: 700px;
   }
-  
+
   .controls {
     gap: 15px;
   }
@@ -892,11 +995,11 @@ body.dark-mode .side-panel {
     width: 250px;
     left: -250px;
   }
-  
+
   .main-container.panel-open {
     margin-left: 250px;
   }
-  
+
   .side-panel-header h3 {
     margin-left: 10%;
   }
