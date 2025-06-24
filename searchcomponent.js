@@ -147,50 +147,60 @@ class RigvedaSearch {
     this.resultsContainer.style.display = "flex";
   }
 
-async performSearch() {
-  if (this.currentSearchTerm.length === 0) {
-    this.resetSearch();
-    return;
-  }
-
-  this.showLoading();
-  const currentDatabase = this.databaseSelect.value;
-
-  try {
-    // 1. Load JSON data for exact match
-    const data = await d3.json(currentDatabase);
-    this.nodesData = data.nodes;
-    this.edgesData = data.edges;
-
-    // 2. Try to find an exact match in the node names
-    // Normalize search term
-    const searchTermNorm = this.cleanSuktaName(this.currentSearchTerm).toLowerCase().replace(/\s+/g, '');
-    const exactNode = this.nodesData.find(node =>
-      this.cleanSuktaName(node.name).toLowerCase().replace(/\s+/g, '') === searchTermNorm
-    );
-
-    if (exactNode) {
-      // If found, show ONLY this result and skip semantic search
-      this.updateSearchResults([exactNode], this.currentSearchTerm, { rag_summary: null });
-      this.loadGraphData(currentDatabase, this.currentSearchTerm, [exactNode]);
+  async performSearch() {
+    if (this.currentSearchTerm.length === 0) {
+      this.resetSearch();
       return;
     }
+    this.showLoading();
+    const currentDatabase = this.databaseSelect.value;
 
-    // 3. If not found, proceed as usual with semantic search
-    const semanticData = await this.fetchSemanticResults();
-    let matchedNodes = this.processSearchResults(semanticData);
+    // Always show RAG summary unless exact match found
+    this.ragSummary.style.display = "";
 
-    this.updateSearchResults(
-      matchedNodes,
-      this.currentSearchTerm,
-      semanticData
-    );
-    this.loadGraphData(currentDatabase, this.currentSearchTerm, matchedNodes);
-  } catch (error) {
-    console.error("Search error:", error);
-    this.showSearchError();
+    try {
+      // 1. Load JSON data for exact match
+      const data = await d3.json(currentDatabase);
+      this.nodesData = data.nodes;
+      this.edgesData = data.edges;
+
+      // 2. Try to find an exact match in the node names
+      const searchTermNorm = this.cleanSuktaName(this.currentSearchTerm)
+        .toLowerCase()
+        .replace(/\s+/g, "");
+      const exactNode = this.nodesData.find(
+        (node) =>
+          this.cleanSuktaName(node.name).toLowerCase().replace(/\s+/g, "") ===
+          searchTermNorm
+      );
+
+      if (exactNode) {
+        // Hide the RAG summary for exact matches
+        this.ragSummary.style.display = "none";
+        this.updateSearchResults([exactNode], this.currentSearchTerm, {
+          rag_summary: null,
+        });
+        this.loadGraphData(currentDatabase, this.currentSearchTerm, [
+          exactNode,
+        ]);
+        return;
+      }
+
+      // 3. If not found, proceed as usual with semantic search
+      const semanticData = await this.fetchSemanticResults();
+      let matchedNodes = this.processSearchResults(semanticData);
+
+      this.updateSearchResults(
+        matchedNodes,
+        this.currentSearchTerm,
+        semanticData
+      );
+      this.loadGraphData(currentDatabase, this.currentSearchTerm, matchedNodes);
+    } catch (error) {
+      console.error("Search error:", error);
+      this.showSearchError();
+    }
   }
-}
 
   async fetchSemanticResults() {
     const response = await fetch("http://localhost:5000/semantic-search", {

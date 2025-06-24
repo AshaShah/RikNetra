@@ -42,17 +42,21 @@
     <!-- Database and Search Controls -->
     <div class="controls-container">
       <div class="controls">
-        <select id="database-select">
-          <option value="database/k3database.json">Sukta with 2 connections</option>
-          <option value="database/k4database.json">Sukta with 3 connections</option>
-          <option value="database/k5database.json" selected>Sukta with 4 connections</option>
-          <option value="database/k6database.json">Sukta with 5 connections</option>
-          <option value="database/k7database.json">Sukta with 6 connections</option>
-          <option value="database/k8database.json">Sukta with 7 connections</option>
-          <option value="database/k9database.json">Sukta with 8 connections</option>
-          <option value="database/k10database.json">Sukta with 9 connections</option>
-          <option value="database/k11database.json">Sukta with 10 connections</option>
-        </select>
+        <div class="select-group">
+          <!-- Label for database selection -->
+          <label for="database-select">Select Number of Connection</label>
+          <select id="database-select">
+            <option value="database/k3database.json">2 connections</option>
+            <option value="database/k4database.json">3 connections</option>
+            <option value="database/k5database.json" selected>4 connections</option>
+            <option value="database/k6database.json">5 connections</option>
+            <option value="database/k7database.json">6 connections</option>
+            <option value="database/k8database.json">7 connections</option>
+            <option value="database/k9database.json">8 connections</option>
+            <option value="database/k10database.json">9 connections</option>
+            <option value="database/k11database.json">10 connections</option>
+          </select>
+        </div>
         <input type="text" id="search-input" placeholder="Search Sukta rv 1.1...">
         <button id="search-button">Search</button>
       </div>

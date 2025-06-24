@@ -411,7 +411,7 @@ body.search-active .search-section {
 
 .search-methods h3 {
   color: #3a2e22;
-  margin: 0.5rem 0 1rem 0;
+  margin: 0.5rem 0 0.5rem 0;
   font-size: 1.1rem;
   display: flex;
   align-items: center;
@@ -422,7 +422,6 @@ body.search-active .search-section {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin-bottom: 1rem;
 }
 
 .tag {
@@ -461,21 +460,33 @@ body.search-active .search-section {
   border: 1px solid #e5d0c1;
 }
 
-.search-tips {
-  font-size: 0.9rem;
-  color: #666;
+
+.search-label {
+  font-weight: bold;
+  font-size: 1em;
+  color: var(--primary, #521C0D);
+  flex-shrink: 0;
+  flex-shrink: 0;
+  display: block;      /* makes margin-bottom work */
+  margin-bottom: 0.4em;
 }
 
-.tip-example {
-  font-family: monospace;
-  color: #b78c4a;
-  font-weight: 500;
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.8rem;
 }
+
+
 
 /* Dark mode section for search guide */
 .dark-mode .search-guide-card {
   background: var(--card-bg-dark);
   border-left: 4px solid var(--highlight);
+}
+
+.dark-mode .search-label {
+  color: var(--light-accent, #F4E7E1);
 }
 
 .dark-mode .rv-explanation {
@@ -520,13 +531,7 @@ body.search-active .search-section {
   border: 1px solid rgba(210, 180, 150, 0.3);
 }
 
-.dark-mode .search-tips {
-  color: rgba(255, 255, 255, 0.7);
-}
 
-.dark-mode .tip-example {
-  color: var(--accent);
-}
 
 /* Make sure search box container has relative positioning */
 .search-container {
