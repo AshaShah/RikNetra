@@ -44,10 +44,10 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
 ### Steps
 
 1. **Clone the Repository**:
-   git clone https://github.com/AshaShah/Visualization.git
+   git clone https://github.com/AshaShah/RikNetra-D3Visualization.git
 
 2. **Install Python Dependencies**:
-    `pip install -r python/requirements.txt`
+    `pip install -r pythoncode/requirements.txt`
 
 3. **Configure Cohere API Key**:
    Replace the placeholder API key in `semanticsearch.py` with your Cohere API key:
