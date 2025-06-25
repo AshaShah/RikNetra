@@ -270,15 +270,17 @@ class RigvedaSearch {
     this.renderResultsList(results);
   }
 
-  updateRagSummary(results, searchTerm, semanticData) {
+updateRagSummary(results, searchTerm, semanticData) {
     const ragContainer = this.ragSummary.querySelector(".summary-content");
 
     if (semanticData?.rag_summary) {
-      // Remove **text** and format bullets
+      // The backend now handles most formatting, we just need to convert newlines to <br>
       let formattedSummary = semanticData.rag_summary
-        .replace(/\*\*(.*?)\*\*/g, "$1") // Remove **bold**
-        .replace(/^\s*-\s*/gm, "<br>• ") // Replace - with • and new line
-        .replace(/\n/g, "<br>"); // Preserve other line breaks
+        .replace(/\n/g, "<br>") // Convert newlines to HTML line breaks
+        .replace(/^- /gm, "<br>• "); // Convert hyphen bullets to styled bullets
+
+      // Remove any leading <br> if present
+      formattedSummary = formattedSummary.replace(/^<br>/, '');
 
       ragContainer.innerHTML = `
             <div class="rag-container">
@@ -287,7 +289,7 @@ class RigvedaSearch {
     } else {
       ragContainer.innerHTML = `<p>Found ${results.length} results for "${searchTerm}"</p>`;
     }
-  }
+}
 
   renderResultsList(results) {
     this.resultCards.innerHTML = "";

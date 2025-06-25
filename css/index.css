@@ -958,6 +958,7 @@ body.search-active .results-container {
   line-height: 1.6;
   color: #4f2f1c;
   margin-bottom: 10px;
+  text-align: justify;
 }
 
 .rag-summary .source-suktas ul {
