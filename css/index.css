@@ -467,7 +467,7 @@ body.search-active .search-section {
   color: var(--primary, #521C0D);
   flex-shrink: 0;
   flex-shrink: 0;
-  display: block;      /* makes margin-bottom work */
+  display: block;      
   margin-bottom: 0.4em;
 }
 
@@ -531,9 +531,6 @@ body.search-active .search-section {
   border: 1px solid rgba(210, 180, 150, 0.3);
 }
 
-
-
-/* Make sure search box container has relative positioning */
 .search-container {
   position: relative;
 }
@@ -595,14 +592,13 @@ body.search-active .results-container {
   margin: 0 auto;
   min-width: 0;
   box-sizing: border-box;
-  /* Make the grid take at least the viewport minus header height */
   min-height: calc(100vh - var(--header-height));
   height: calc(100vh - var(--header-height));
   max-height: calc(100vh - var(--header-height));
 }
 
 
-/* --- Search Summary: Clean Text Only --- */
+/* --- Search Summary --- */
 .search-summary {
   width: 100%;
   padding: 0.7rem 0 0.7rem 0;
@@ -918,7 +914,7 @@ body.search-active .results-container {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 0.7rem; /* Reduced from 2.4rem to match others */
+  gap: 0.7rem;
   height: 100%;
   box-sizing: border-box;
 }
@@ -935,9 +931,9 @@ body.search-active .results-container {
   gap: 0;
   box-sizing: border-box;
   overflow-y: auto;
-  height: 690px; /* Match the height of top-results and graph-section */
-  min-height: 320px; /* Match the min-height */
-  max-height: 120vh; /* Match the max-height */
+  height: 690px; 
+  min-height: 320px;
+  max-height: 120vh; 
 }
 
 .rag-summary h3 {
@@ -990,14 +986,12 @@ body.search-active .results-container {
     line-height: 1.6;
 }
 .rag-content br + • {
-    margin-left: 1em;  /* Indent bullets */
+    margin-left: 1em; 
 }
 
 /* ========================== */
 /* DARK MODE FOR RIKNETRA TRIPTYCH LAYOUT */
 /* ========================== */
-
-/* --- Results Layout Container (no background override needed) --- */
 
 /* --- DARK MODE: Top Results (Left Panel) --- */
 .dark-mode .results-left {
@@ -1207,25 +1201,25 @@ body.search-active .results-container {
 }
 @media (max-width: 1400px) {
   .rag-summary {
-    height: auto; /* Let it be flexible at medium sizes */
+    height: auto;
   }
 }
 
 @media (max-width: 992px) {
   .results-right {
-    gap: 1.2rem; /* Match the gap in mobile layout */
+    gap: 1.2rem; 
   }
   
   .rag-summary {
-    max-height: 350px; /* Match mobile height */
+    max-height: 350px; 
     height: auto;
   }
 }
 
 @media (max-width: 650px) {
   .rag-summary {
-    max-height: none; /* Let it be flexible on smallest screens */
-    padding: 11px 4vw; /* Match mobile padding */
+    max-height: none; 
+    padding: 11px 4vw; 
   }
 }
 /* =========Section End Here =========== */
