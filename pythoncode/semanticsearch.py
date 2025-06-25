@@ -60,7 +60,7 @@ labels = pd.read_csv("pythoncode/suktalabels.tsv", header=None)
 sukta_stop_words = set(stopwords.words("english"))
 
 # Load and preprocess text for TF-IDF
-fname = 'pythoncode/consuktasrigveda.txt'  # You'll need to provide this file
+fname = 'pythoncode/consuktasrigveda.txt' 
 with open(fname, 'r', encoding='utf-8') as f:
     rigsuktatext = f.read()
 
