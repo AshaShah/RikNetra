@@ -610,6 +610,25 @@ input:checked+.toggle-label .toggle-text-off {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+/* Highlighting styles for legend and nodes */
+.legend-item {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.legend-item.active {
+  font-weight: bold;
+  text-decoration: underline;
+  background: #d3dcdf;
+  border-radius: 10px;
+}
+
+.node.legend-highlight {
+  stroke: black!important;
+  stroke-width: 3 !important;
+  opacity: 1 !important;
+}
+
 /* Dark mode styles for legend */
 .dark-mode .color-legend {
   background-color: var(--card-bg-dark);
@@ -620,6 +639,18 @@ input:checked+.toggle-label .toggle-text-off {
 .dark-mode .legend-title {
   color: var(--highlight);
   border-bottom-color: rgba(127, 85, 177, 0.3);
+}
+
+.dark-mode .legend-item.active {
+  background: #d3dcdf;
+  color: var(--text-dark);
+  font-weight: bold;
+  border-radius: 10px;
+}
+.dark-mode .node.legend-highlight {
+  stroke: rgb(255, 255, 255)!important;
+  stroke-width: 3 !important;
+  opacity: 1 !important;
 }
 
 .dark-mode .legend-item {
