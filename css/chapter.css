@@ -252,7 +252,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* Chapter Container - Full Styles */
+/* Chapter Container*/
 .chapter-container {
   min-height: 500px;
   width: 90%;
@@ -357,7 +357,6 @@ body {
   position: absolute;
   right: 15px;
   top: 15px;
-  /* Fixed position instead of centered */
   background: transparent;
   border: none;
   color: var(--primary);
@@ -365,7 +364,6 @@ body {
   transition: color 0.3s ease;
   padding: 5px;
   z-index: 1;
-  /* Ensure it stays above other content */
 }
 
 .connect-chapter .dropdown-toggle:hover {
@@ -384,7 +382,6 @@ body {
   transition: all 0.3s ease;
   position: relative;
   z-index: 0;
-  /* Matching paragraph typography settings */
   max-width: 44em;
   /* Compensates for letter-spacing */
   margin-left: auto;
@@ -399,7 +396,6 @@ body {
   -webkit-hyphens: auto;
   -moz-hyphens: auto;
   line-height: 2;
-  /* Matching paragraph line-height */
 }
 
 .connect-chapter .dropdown-content.active {
@@ -411,9 +407,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
-  /* space between label and select */
   margin-right: 10px;
-  /* space after the dropdown if other controls follow */
 }
 
 .select-group label {

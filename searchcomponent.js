@@ -338,7 +338,6 @@ updateRagSummary(results, searchTerm, semanticData) {
       </div>
     `;
 
-      // Maintain original event listeners
       item
         .querySelector(".view-connections")
         .addEventListener("click", () =>
@@ -763,7 +762,7 @@ updateRagSummary(results, searchTerm, semanticData) {
       edgeHighlight: "#E97777", // Edge highlight color (matches selected node)
     };
 
-    // Style nodes - matching opacity and sizing from suktaconnection.html
+    // Style nodes
     this.node
       .attr("opacity", (d) => {
         if (d.id === nodeId) return 1;
