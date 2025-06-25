@@ -44,20 +44,20 @@
     <div class="controls-container">
       <div class="controls">
         <div class="select-group">
-        <!-- Label for database selection -->
-        <label for="database-select">Select Number of Connection</label>
-        <!-- Database selection and search -->
-        <select id="database-select">
-          <option value="database/k3database.json">2 connections</option>
-          <option value="database/k4database.json">3 connections</option>
-          <option value="database/k5database.json" selected>4 connections</option>
-          <option value="database/k6database.json">5 connections</option>
-          <option value="database/k7database.json">6 connections</option>
-          <option value="database/k8database.json">7 connections</option>
-          <option value="database/k9database.json">8 connections</option>
-          <option value="database/k10database.json">9 connections</option>
-          <option value="database/k11database.json">10 connections</option>
-        </select>
+          <!-- Label for database selection -->
+          <label for="database-select">Select Number of Connection</label>
+          <!-- Database selection and search -->
+          <select id="database-select">
+            <option value="database/k3database.json">2 connections</option>
+            <option value="database/k4database.json">3 connections</option>
+            <option value="database/k5database.json" selected>4 connections</option>
+            <option value="database/k6database.json">5 connections</option>
+            <option value="database/k7database.json">6 connections</option>
+            <option value="database/k8database.json">7 connections</option>
+            <option value="database/k9database.json">8 connections</option>
+            <option value="database/k10database.json">9 connections</option>
+            <option value="database/k11database.json">10 connections</option>
+          </select>
         </div>
 
         <input type="text" id="search-input" placeholder="Search Sukta rv1.1...">
@@ -102,26 +102,27 @@
         <ul id="popup-links"></ul>
         <button id="read-chapter">Read this Chapter</button>
       </div>
-      <!-- <div id="summary-popup" class="summary-popup" style="display: none;">
-        <span class="close-summary">&times;</span>
-        <div class="summary-content"></div>
-      </div> -->
-      <!-- Inside your graph-container div, after the SVG -->
       <div id="color-legend" class="color-legend" style="display: none;">
         <div class="legend-title">Topic Colors:</div>
         <div class="legend-items">
-          <div class="legend-item"><span class="color-box" style="background-color: #1f77b4;"></span>Deities</div>
-          <div class="legend-item"><span class="color-box" style="background-color: #ff7f0e;"></span>Nature</div>
-          <div class="legend-item"><span class="color-box" style="background-color: #2ca02c;"></span>Rituals</div>
-          <div class="legend-item"><span class="color-box" style="background-color: #d62728;"></span>Philosophy</div>
-          <div class="legend-item"><span class="color-box" style="background-color: #9467bd;"></span>Cosmology</div>
-          <div class="legend-item"><span class="color-box" style="background-color: #8c564b;"></span>Society</div>
-          <div class="legend-item"><span class="color-box" style="background-color: #e377c2;"></span>Miscellaneous</div>
+          <div class="legend-item" data-color="#ce6dbd"><span class="color-box"
+              style="background-color: #ce6dbd;"></span>Creation</div>
+          <div class="legend-item" data-color="#dbdb8d"><span class="color-box"
+              style="background-color: #dbdb8d;"></span>Marut</div>
+          <div class="legend-item" data-color="#756bb1"><span class="color-box"
+              style="background-color: #756bb1;"></span>Funeral</div>
+          <div class="legend-item" data-color="#5254a3"><span class="color-box"
+              style="background-color: #5254a3;"></span>Surya</div>
+          <div class="legend-item" data-color="#ffbb78"><span class="color-box"
+              style="background-color: #ffbb78;"></span>Water</div>
+          <div class="legend-item" data-color="#9c9ede"><span class="color-box"
+              style="background-color: #9c9ede;"></span>Heaven & Earth</div>
+          <div class="legend-item" data-color="#bcbd22"><span class="color-box"
+              style="background-color: #bcbd22;"></span>Brihaspathi</div>
         </div>
       </div>
     </div>
   </div>
-
 
   <script src="darkmode/darkMode.js"></script>
   <!-- <script src="sukta_summary.js"></script> -->
@@ -185,7 +186,7 @@
 
     function resetNodeColors() {
       if (node) {
-        node.attr("fill", "#7fb3d5");
+        node.attr("fill", "#7fb3d5").classed("legend-highlight", false);
       }
     }
 
@@ -443,14 +444,7 @@
             .attr("stroke", d => d.source.id === selectedNode.id ? "red" : "#aaa");
 
           label.style("opacity", d => d.id === selectedNode.id || edges.some(e => e.source.id === selectedNode.id && e.target.id === d.id) ? 1 : 0.1);
-
-          // Get connected nodes and show summary
-          // const connectedNodes = nodes.filter(n =>
-          //   edges.some(e => e.source.id === selectedNode.id && e.target.id === n.id)
-          // );
-          // displaySummary(selectedNode, connectedNodes);
         }
-
 
         function highlightEdgeNodes(edge) {
           node.attr("fill", d => {
@@ -499,7 +493,6 @@
             });
         }
 
-
         function colorNodesByGroup() {
           const customColors = [
             "#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf",
@@ -527,7 +520,6 @@
           });
         }
 
-
         document.getElementById("resetBtn").addEventListener("click", () => {
           location.reload();
         });
@@ -540,6 +532,9 @@
           } else {
             resetNodeColors();
             legend.style.display = "none";
+            // Remove legend highlights
+            d3.selectAll('.node').classed('legend-highlight', false);
+            document.querySelectorAll('.legend-item').forEach(li => li.classList.remove('active'));
           }
         });
 
@@ -554,6 +549,68 @@
             alert("Please select a node first.");
           }
         });
+
+        // -------- LEGEND INTERACTIVITY ---------
+        function setupLegendClickHighlight() {
+          const legendItems = document.querySelectorAll('.legend-item');
+          let lastActiveLegend = null;
+
+          legendItems.forEach(item => {
+            item.addEventListener('click', function () {
+              legendItems.forEach(li => li.classList.remove('active'));
+              if (lastActiveLegend === this) {
+                node.classed('legend-highlight', false);
+                lastActiveLegend = null;
+                return;
+              }
+              this.classList.add('active');
+              lastActiveLegend = this;
+              const color = this.getAttribute('data-color').toLowerCase();
+              node.classed('legend-highlight', false);
+              node.each(function (d, i) {
+                const fill = d3.select(this).attr('fill')?.toLowerCase();
+                if (fill === color) {
+                  d3.select(this).classed('legend-highlight', true);
+                }
+              });
+
+              // -------- Center-focus highlighted nodes --------
+              const highlightedNodes = [];
+              node.each(function (d) {
+                if (d3.select(this).classed('legend-highlight')) {
+                  highlightedNodes.push(d);
+                }
+              });
+              if (highlightedNodes.length > 0) {
+                const avgX = d3.mean(highlightedNodes, d => d.x);
+                const avgY = d3.mean(highlightedNodes, d => d.y);
+                const scale = 2;
+                const svgWidth = width;
+                const svgHeight = height;
+                const transform = d3.zoomIdentity
+                  .translate(svgWidth / 2, svgHeight / 2)
+                  .scale(scale)
+                  .translate(-avgX, -avgY);
+                svg.transition().duration(750).call(zoom.transform, transform);
+              }
+            });
+          });
+        }
+
+        // Whenever the legend appears, set up interactivity
+        const observer = new MutationObserver(function (mutationsList) {
+          for (const mutation of mutationsList) {
+            if (
+              mutation.type === "attributes" &&
+              mutation.attributeName === "style" &&
+              document.getElementById("color-legend").style.display !== "none"
+            ) {
+              setupLegendClickHighlight();
+            }
+          }
+        });
+        observer.observe(document.getElementById("color-legend"), { attributes: true });
+
       }).catch(error => {
         console.error("Error loading the graph data:", error);
       });
@@ -578,8 +635,6 @@
       // Reset isolation mode
       isolateMode = false;
       d3.select("#isolate-node-toggle").property("checked", false);
-
-
 
       // Reset any selected nodes/edges
       selectedNode = null;

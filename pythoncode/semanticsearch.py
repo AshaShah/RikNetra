@@ -137,40 +137,22 @@ def user_query_function(query, k=5):
     
     # Generate RAG summary
     try:
-        message = f"""Generate a summary of the Rigveda hymns with STRICT formatting:
-        1. **Never use bold text** (avoid `**` entirely).
-        2. **Use bullet points** (start each point with `- ` on a new line).
-        3. **No colons after names** (e.g., "Bṛhaspati" not "Bṛhaspati:").
-        4. **No headers** (e.g., "AI Analysis" or "Based on").
-
-        Query: {query}
-        Text: {collected_text}"""
-
+        message = f"{query}. Generate a concise summary of the given Rigveda hymns as bullet points. Focus on the initial question and choose only contextually needed information.\n{collected_text}"
         response = co.chat(
             model="command-a-03-2025",
             messages=[{"role": "user", "content": message}],
             temperature=0.0
         )
         rag_summary = response.message.content[0].text
-
-        # Post-process to enforce rules
-        rag_summary = (
-            rag_summary.replace("**", "")      # Remove **bold** markers
-            .replace(": -", "\n-")             # Fix bullet points
-            .replace(": \n-", "\n-")           # Fix bullet points
-            .replace("•", "-")                 # Standardize bullets to hyphens
-        )
-
     except Exception as e:
         print(f"Error generating RAG summary: {e}")
         rag_summary = "Could not generate summary at this time."
-
+    
     return {
         "results": results,
         "rag_summary": rag_summary,
-        "text_dict": text_dict,
+        "text_dict": text_dict
     }
-
 
 @app.route('/semantic-search', methods=['POST'])
 def api_semantic_search():
