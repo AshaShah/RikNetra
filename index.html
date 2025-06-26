@@ -122,15 +122,16 @@
             <div class="search-section">
               <span class="search-label">Words:</span>
               <div class="tag-list">
-                <span class="tag keyword-tag" data-search-term="Manyu suktam (Temper, anger)">Manyu suktam</span>
-                <span class="tag keyword-tag" data-search-term="Healing plants">Oshadhi Sukta (Herbal Hymn)</span>
-                <span class="tag keyword-tag" data-search-term="Goddess of the night">Ratri Suktam</span>
-                <span class="tag keyword-tag" data-search-term="Faith">Shradda Suktam</span>
-                <span class="tag keyword-tag" data-search-term="Aditi and the Birth of the Gods">Aditi and the Birth of
-                  the Gods</span>
-                <span class="tag keyword-tag" data-search-term="Gambler’s Lament">Aksha Sukta</span>
-                <span class="tag keyword-tag" data-search-term="The Horse">The Horse (Ashvamedha-Sukta)</span>
-                <span class="tag keyword-tag" data-search-term="Cow">Cow (Go Sukta)</span>
+                <span class="tag keyword-tag" data-search-term="Agni">Agni</span>
+                <span class="tag keyword-tag" data-search-term="Indra">Indra</span>
+                <span class="tag keyword-tag" data-search-term="Soma">Soma</span>
+                <span class="tag keyword-tag" data-search-term="Varuna">Varuna</span>
+                <span class="tag keyword-tag" data-search-term="Visnu">Visnu</span>
+                <span class="tag keyword-tag" data-search-term="Rudra">Rudra</span>
+                <span class="tag keyword-tag" data-search-term="Maruts">Maruts</span>
+                <span class="tag keyword-tag" data-search-term="Asvin">Asvin</span>
+                <span class="tag keyword-tag" data-search-term="Brihaspati">Brihaspati</span>
+                <span class="tag keyword-tag" data-search-term="Pusan">Pusan</span>
               </div>
             </div>
 
@@ -138,107 +139,111 @@
             <div class="search-section">
               <span class="search-label">Query:</span>
               <div class="tag-list">
-                <span class="tag question-tag" data-search-term="What is creation">What is creation (Nasadiya
-                  Sukta)</span>
-                <span class="tag question-tag" data-search-term="Importance of Agni">Importance of Agni (Agni
-                  Suktam)</span>
+                <span class="tag question-tag" data-search-term="What is creation">What is creation</span>
+                <span class="tag question-tag" data-search-term="Importance of Agni">Importance of Agni</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-  </section>
+    </section>
 
-  <div class="search-summary" id="search-summary"></div>
-  <div class="results-container" id="results-container">
+    <div class="search-summary" id="search-summary"></div>
+    <div class="results-container" id="results-container">
 
-    <div class="results-layout">
-      <div class="results-left">
+      <div class="results-layout">
+        <div class="results-left">
 
-        <div class="top-results" id="top-results">
-          <div class="scroll-controls"></div>
-          <h2>Top Results</h2>
-          <div class="result-cards" id="result-cards"></div>
-        </div>
-      </div>
-      <div class="graph-section" id="graph-section">
-        <h2>Connections Visualization</h2>
-        <div class="graph-visualization-container" id="graph-visualization">
-          <svg id="graph-svg" class="graph-svg-container"></svg>
-          <div class="graph-legend">
-            <div class="legend-title">Graph Legend</div>
-            <div class="legend-item"><span class="legend-color selected"></span> Selected Node</div>
-            <div class="legend-item"><span class="legend-color level1"></span> Direct Connections</div>
-            <div class="legend-item"><span class="legend-color level2"></span> Secondary Connections</div>
-            <div class="legend-item"><span class="legend-color level3"></span> Tertiary Connections</div>
+          <div class="top-results" id="top-results">
+            <h2>Top Results</h2>
+            <div class="top-results-content">
+              <div class="result-cards" id="result-cards"></div>
+            </div>
           </div>
-
         </div>
-      </div>
-      <div class="results-right">
-        <div class="rag-summary" id="rag-summary">
-          <h3>Summary</h3>
-          <div class="summary-content">
-            <p>Summary of search results will appear here.</p>
+        <div class="graph-section" id="graph-section">
+          <h2>Related Suktas</h2>
+          <div class="graph-content-container">
+            <div class="graph-visualization-container" id="graph-visualization">
+              <svg id="graph-svg" class="graph-svg-container"></svg>
+              <div class="graph-legend">
+                <div class="legend-title">Graph Legend</div>
+                <div class="legend-item"><span class="legend-color selected"></span> Selected Sukta</div>
+                <div class="legend-item"><span class="legend-color level1"></span> Direct Connections</div>
+                <div class="legend-item"><span class="legend-color level2"></span> Secondary Connections</div>
+                <div class="legend-item"><span class="legend-color level3"></span> Tertiary Connections</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="results-right">
+          <div class="rag-summary" id="rag-summary">
+            <h2>Summary</h2>
+            <div class="rag-summary-content">
+              <div class="summary-content">
+                <p>Summary of search results will appear here.</p>
+
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-  <script src="darkmode/darkMode.js"></script>
-  <script src="sukta_summary.js"></script>
-  <script src="searchComponent.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="darkmode/darkMode.js"></script>
+    <script src="sukta_summary.js"></script>
+    <script src="searchComponent.js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Initialize components
-      const search = new RigvedaSearch({
-        searchBox: document.getElementById('search-box'),
-        searchButton: document.getElementById('search-button'),
-        clearSearch: document.getElementById('clear-search'),
-        databaseSelect: document.getElementById('database-select'),
-        resultsContainer: document.getElementById('results-container'),
-        welcomeSection: document.getElementById('welcome-section'),
-        searchSection: document.getElementById('search-section'),
-        topResults: document.getElementById('top-results'),
-        graphSection: document.getElementById('graph-section'),
-        searchSummary: document.getElementById('search-summary'),
-        ragSummary: document.getElementById('rag-summary'),
-        resultCards: document.getElementById('result-cards'),
-        graphSvg: document.getElementById('graph-svg') 
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Initialize components
+        const search = new RigvedaSearch({
+          searchBox: document.getElementById('search-box'),
+          searchButton: document.getElementById('search-button'),
+          clearSearch: document.getElementById('clear-search'),
+          databaseSelect: document.getElementById('database-select'),
+          resultsContainer: document.getElementById('results-container'),
+          welcomeSection: document.getElementById('welcome-section'),
+          searchSection: document.getElementById('search-section'),
+          topResults: document.getElementById('top-results'),
+          graphSection: document.getElementById('graph-section'),
+          searchSummary: document.getElementById('search-summary'),
+          ragSummary: document.getElementById('rag-summary'),
+          resultCards: document.getElementById('result-cards'),
+          graphSvg: document.getElementById('graph-svg')
+        });
+
+        // Side panel toggle
+        const kebabMenu = document.getElementById('kebab-menu');
+        const sidePanel = document.getElementById('side-panel');
+        const mainContainer = document.getElementById('main-container');
+        const homeLogo = document.getElementById('home-logo');
+
+        kebabMenu.addEventListener('click', (e) => {
+          e.stopPropagation();
+          sidePanel.classList.toggle('open');
+          mainContainer.classList.toggle('panel-open');
+          homeLogo.style.display = sidePanel.classList.contains('open') ? 'none' : 'flex';
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
+            sidePanel.classList.remove('open');
+            mainContainer.classList.remove('panel-open');
+            homeLogo.style.display = 'flex';
+          }
+        });
       });
+    </script>
 
-      // Side panel toggle
-      const kebabMenu = document.getElementById('kebab-menu');
-      const sidePanel = document.getElementById('side-panel');
-      const mainContainer = document.getElementById('main-container');
-      const homeLogo = document.getElementById('home-logo');
-
-      kebabMenu.addEventListener('click', (e) => {
-        e.stopPropagation();
-        sidePanel.classList.toggle('open');
-        mainContainer.classList.toggle('panel-open');
-        homeLogo.style.display = sidePanel.classList.contains('open') ? 'none' : 'flex';
-      });
-
-      // Close panel when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
-          sidePanel.classList.remove('open');
-          mainContainer.classList.remove('panel-open');
-          homeLogo.style.display = 'flex';
-        }
-      });
-    });
-  </script>
-
-  <footer class="footer">
-    <p>&copy; 2025 RikNetra. All rights reserved. </p>
-    <!--Website developed by<a href="someone.html">Your Name</a></p> -->
-  </footer>
+    <footer class="footer">
+      <p>&copy; 2025 RikNetra. All rights reserved. </p>
+      <!--Website developed by<a href="someone.html">Your Name</a></p> -->
+    </footer>
 
 </body>
 
