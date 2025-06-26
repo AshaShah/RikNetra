@@ -224,7 +224,6 @@ body {
 
 #graph-svg {
   width: 100%;
-  height: 100%;
   display: block;
 }
 
@@ -327,21 +326,27 @@ body {
 
 .select-group {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  margin-right: 10px;
+  flex-direction: row;  /* Changed from column to row */
+  align-items: center;  /* Vertically center items */
+  gap: 2px;             /* Increased gap slightly for side-by-side */
 }
 
 .select-group label {
-  font-size: 13px;
   font-weight: 500;
   color: var(--text-dark);
   margin-bottom: 0;
   letter-spacing: -0.01rem;
-  font-family: sans-serif;
+  white-space: nowrap;  
 }
 
+.select-group select {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 13px;
+  background-color: white;
+  cursor: pointer;
+}
 
 /* Graph Elements */
 .node {
@@ -870,12 +875,11 @@ body.dark-mode .side-panel {
   }
 
   .controls input[type="text"] {
-    width: 200px;
+    width: 150px;
     font-size: 14px;
   }
 
   .controls select {
-    width: 180px;
     font-size: 14px;
     padding: 10px 16px;
   }
@@ -924,10 +928,6 @@ body.dark-mode .side-panel {
 @media (min-width: 992px) {
   .graph-container {
     height: 700px;
-  }
-
-  .controls {
-    gap: 15px;
   }
 }
 
