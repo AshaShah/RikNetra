@@ -73,7 +73,6 @@ class RigvedaSearch {
 
   handleSearchInput() {
     this.currentSearchTerm = this.searchBox.value.trim();
-    this.toggleClearButton();
 
     if (this.searchTimeout) clearTimeout(this.searchTimeout);
     if (this.currentSearchTerm.length > 0) {
@@ -180,7 +179,7 @@ class RigvedaSearch {
         this.updateSearchResults([exactNode], this.currentSearchTerm, {
           rag_summary: null,
         });
-        this.loadGraphData(currentDatabase, this.currentSearchTerm, [
+        await this.loadGraphData(currentDatabase, this.currentSearchTerm, [
           exactNode,
         ]);
         return;
@@ -292,28 +291,32 @@ updateRagSummary(results, searchTerm, semanticData) {
 }
 
   renderResultsList(results) {
-    this.resultCards.innerHTML = "";
+  this.resultCards.innerHTML = "";
 
-    if (!results || results.length === 0) {
-      this.resultCards.innerHTML =
-        "<p class='no-results'>No Suktas found matching your search term.</p>";
-      return;
-    }
+  if (!results || results.length === 0) {
+    this.resultCards.innerHTML =
+      "<p class='no-results'>No Suktas found matching your search term.</p>";
+    return;
+  }
 
-    // VERTICAL container
-    const container = document.createElement("div");
-    container.className = "vertical-result-list";
+  const isExact = results.length === 1 && this.ragSummary.style.display === "none";
+  // Or use another flag if you set it for exact search
 
-    results.forEach((result, index) => {
-      const cleanName = this.cleanSuktaName(
-        result.name || `RV ${result.index || ""}`
-      );
-      const contentPreview =
-        result.text || this.getContentPreview(result.content);
+  const container = document.createElement("div");
+  container.className = "vertical-result-list";
 
-      const item = document.createElement("div");
-      item.className = "vertical-result-item";
-      item.innerHTML = `
+  results.forEach((result, index) => {
+    const cleanName = this.cleanSuktaName(
+      result.name || `RV ${result.index || ""}`
+    );
+    const contentPreview =
+      result.text || this.getContentPreview(result.content);
+
+    const item = document.createElement("div");
+    item.className = "vertical-result-item";
+    if (isExact) item.classList.add('exact-match'); // <-- ADD THIS LINE
+
+    item.innerHTML = `
       <div class="vertical-result-header">
         <span class="vertical-result-title">${cleanName}</span>
         <span class="vertical-result-score">${Math.max(
@@ -338,16 +341,6 @@ updateRagSummary(results, searchTerm, semanticData) {
       </div>
     `;
 
-      item
-        .querySelector(".view-connections")
-        .addEventListener("click", () =>
-          this.handleViewConnections(result.id || result.index)
-        );
-      item
-        .querySelector(".read-full")
-        .addEventListener("click", (event) =>
-          this.handleReadFull(event, cleanName)
-        );
 
       container.appendChild(item);
     });
@@ -377,27 +370,27 @@ updateRagSummary(results, searchTerm, semanticData) {
     const sentenceMatch = text.match(/^.*?[.!?](?=\s|$)/);
     if (
       sentenceMatch &&
-      sentenceMatch[0].length >= 60 &&
-      sentenceMatch[0].length <= 90
+      sentenceMatch[0].length >= 40 &&
+      sentenceMatch[0].length <= 60
     ) {
       return sentenceMatch[0];
     }
 
     // If no suitable sentence, get the first line or truncate
     const firstLine = text.split(/\n/)[0].trim();
-    if (firstLine.length >= 60 && firstLine.length <= 90) {
+    if (firstLine.length >= 40 && firstLine.length <= 60) {
       return firstLine;
     }
 
-    // If still too long, truncate to 90 chars at word boundary
-    if (firstLine.length > 90) {
-      return firstLine.substring(0, 90).replace(/\s+\S*$/, "...");
+    // If still too long, truncate to 60 chars at word boundary
+    if (firstLine.length > 60) {
+      return firstLine.substring(0, 60).replace(/\s+\S*$/, "...");
     }
 
     // If too short, try to get more content
     if (firstLine.length < 60) {
-      const moreContent = text.substring(0, 90).trim();
-      return moreContent + (text.length > 90 ? "..." : "");
+      const moreContent = text.substring(0, 60).trim();
+      return moreContent + (text.length > 60 ? "..." : "");
     }
 
     return firstLine;
