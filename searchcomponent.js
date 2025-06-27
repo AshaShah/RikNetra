@@ -16,6 +16,7 @@ class RigvedaSearch {
     this.initializeGraph();
   }
 
+  // Initialize DOM elements
   initElements(options) {
     this.searchBox = options.searchBox;
     this.searchButton = options.searchButton;
@@ -32,6 +33,7 @@ class RigvedaSearch {
     this.graphSvg = options.graphSvg;
   }
 
+  // Initialize D3 Graph variables
   initGraphVariables() {
     this.g = null;
     this.link = null;
@@ -53,6 +55,7 @@ class RigvedaSearch {
     this.selectedEdge = null;
   }
 
+  // Setup event listeners for search and graph interactions
   setupEventListeners() {
     this.searchBox.addEventListener("input", this.handleSearchInput.bind(this));
     this.searchButton.addEventListener(
@@ -81,11 +84,13 @@ class RigvedaSearch {
     // }
   }
 
+  // Search button click handler
   handleSearchClick() {
     if (this.searchTimeout) clearTimeout(this.searchTimeout);
     this.performSearch();
   }
 
+  // Database change handler
   handleDatabaseChange() {
     this.loadGraphData(this.databaseSelect.value, this.currentSearchTerm);
     if (this.currentSearchTerm.length > 0) {
@@ -95,6 +100,7 @@ class RigvedaSearch {
     }
   }
 
+  // Handle Enter key for search
   handleKeyDown(e) {
     if (e.key === "Enter") {
       if (this.searchTimeout) clearTimeout(this.searchTimeout);
@@ -102,6 +108,7 @@ class RigvedaSearch {
     }
   }
 
+  // --- Popup and Read Chapter ---
   closePopup() {
     this.popup.style("display", "none");
     this.isolateMode = false;
@@ -125,6 +132,7 @@ class RigvedaSearch {
     )}&database=${encodeURIComponent(database)}`;
   }
 
+  // --- Search and Results Handling ---
   showLoading() {
     document.body.classList.add("search-active");
     this.welcomeSection.classList.add("hidden");
