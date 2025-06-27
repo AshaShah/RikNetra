@@ -71,13 +71,14 @@ class RigvedaSearch {
     this.readChapterBtn.on("click", this.readChapter.bind(this));
   }
 
+  //Auto search on input - commented out to avoid auto search on every keystroke
   handleSearchInput() {
     this.currentSearchTerm = this.searchBox.value.trim();
 
-    if (this.searchTimeout) clearTimeout(this.searchTimeout);
-    if (this.currentSearchTerm.length > 0) {
-      this.searchTimeout = setTimeout(() => this.performSearch(), 300);
-    }
+    // if (this.searchTimeout) clearTimeout(this.searchTimeout);
+    // if (this.currentSearchTerm.length > 0) {
+    //   this.searchTimeout = setTimeout(() => this.performSearch(), 300);
+    // }
   }
 
   handleSearchClick() {
@@ -123,13 +124,6 @@ class RigvedaSearch {
       chapterName
     )}&database=${encodeURIComponent(database)}`;
   }
-
-  // toggleClearButton() {
-  //   this.clearSearch.classList.toggle(
-  //     "visible",
-  //     this.currentSearchTerm.length > 0
-  //   );
-  // }
 
   showLoading() {
     document.body.classList.add("search-active");
@@ -179,7 +173,7 @@ class RigvedaSearch {
         this.updateSearchResults([exactNode], this.currentSearchTerm, {
           rag_summary: null,
         });
-        await this.loadGraphData(currentDatabase, this.currentSearchTerm, [
+        this.loadGraphData(currentDatabase, this.currentSearchTerm, [
           exactNode,
         ]);
         return;
@@ -187,6 +181,7 @@ class RigvedaSearch {
 
       // 3. If not found, proceed as usual with semantic search
       const semanticData = await this.fetchSemanticResults();
+      console.log("RAG data received:", semanticData.rag_summary);
       let matchedNodes = this.processSearchResults(semanticData);
 
       this.updateSearchResults(
@@ -261,11 +256,7 @@ class RigvedaSearch {
 
   updateSearchResults(results, searchTerm, semanticData) {
     this.searchSummary.innerHTML = `<h2>Results for "${searchTerm}"</h2>`;
-
-    // Update RAG summary with the semanticData
     this.updateRagSummary(results, searchTerm, semanticData);
-
-    // Render regular results (unchanged)
     this.renderResultsList(results);
   }
 
@@ -291,32 +282,31 @@ updateRagSummary(results, searchTerm, semanticData) {
 }
 
   renderResultsList(results) {
-  this.resultCards.innerHTML = "";
+    this.resultCards.innerHTML = "";
 
-  if (!results || results.length === 0) {
-    this.resultCards.innerHTML =
-      "<p class='no-results'>No Suktas found matching your search term.</p>";
-    return;
-  }
+    if (!results || results.length === 0) {
+      this.resultCards.innerHTML =
+        "<p class='no-results'>No Suktas found matching your search term.</p>";
+      return;
+    }
 
-  const isExact = results.length === 1 && this.ragSummary.style.display === "none";
-  // Or use another flag if you set it for exact search
+    const isExact = results.length === 1 && this.ragSummary.style.display === "none";
 
-  const container = document.createElement("div");
-  container.className = "vertical-result-list";
+    // VERTICAL container
+    const container = document.createElement("div");
+    container.className = "vertical-result-list";
 
-  results.forEach((result, index) => {
-    const cleanName = this.cleanSuktaName(
-      result.name || `RV ${result.index || ""}`
-    );
-    const contentPreview =
-      result.text || this.getContentPreview(result.content);
+    results.forEach((result, index) => {
+      const cleanName = this.cleanSuktaName(
+        result.name || `RV ${result.index || ""}`
+      );
+      const contentPreview =
+        result.text || this.getContentPreview(result.content);
 
-    const item = document.createElement("div");
-    item.className = "vertical-result-item";
-    if (isExact) item.classList.add('exact-match'); // <-- ADD THIS LINE
-
-    item.innerHTML = `
+      const item = document.createElement("div");
+      item.className = "vertical-result-item";
+      if (isExact) item.classList.add('exact-match'); 
+      item.innerHTML = `
       <div class="vertical-result-header">
         <span class="vertical-result-title">${cleanName}</span>
         <span class="vertical-result-score">${Math.max(
@@ -341,6 +331,16 @@ updateRagSummary(results, searchTerm, semanticData) {
       </div>
     `;
 
+      item
+        .querySelector(".view-connections")
+        .addEventListener("click", () =>
+          this.handleViewConnections(result.id || result.index)
+        );
+      item
+        .querySelector(".read-full")
+        .addEventListener("click", (event) =>
+          this.handleReadFull(event, cleanName)
+        );
 
       container.appendChild(item);
     });
