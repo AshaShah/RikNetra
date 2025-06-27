@@ -138,7 +138,7 @@ def user_query_function(queries: list, k: int):
     \n{collected_text}"""
 
     # Original Cohere implementation
-    co = cohere.Client(api_key="YOUR_COHERE_API_KEY")
+    co = cohere.Client(api_key="cjsgL5O9U4MfBmBT1j8lYmNa9eRtmM02CzVTxR9m")
     response = co.chat(
         model="command-a-03-2025",
         message=message,
@@ -152,7 +152,7 @@ def user_query_function(queries: list, k: int):
         "text_dict": text_dict
     }
 
-
+# Minimal Flask wrapper
 @app.route('/semantic-search', methods=['POST'])
 def api_semantic_search():
     data = request.get_json()
@@ -161,9 +161,8 @@ def api_semantic_search():
     if not query:
         return jsonify({"results": []})
     
-    results = user_query_function([query], k=5)  # Hardcoded k=5 like notebook
-
-    # Print RAG summary to console
-    print("\nRAG SUMMARY:\n", results["rag_summary"])
-
+    results = user_query_function([query], k=10)  # Hardcoded k=10 like notebook
     return jsonify(results)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
