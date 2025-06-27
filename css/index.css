@@ -744,6 +744,7 @@ body.search-active .results-container {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: justify;
 }
 
 
