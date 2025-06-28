@@ -1,18 +1,19 @@
 # RikNetra
 
-RikNetra is an interactive web platform for exploring the ancient wisdom of the Rigveda through semantic search, interconnected verse visualization, and detailed textual analysis. It leverages natural language processing (NLP) and graph-based visualization to provide an intuitive interface for scholars, researchers, and enthusiasts to discover and navigate Rigvedic hymns (suktas).
+RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hindu scripture, through semantic search, interconnected hymn visualization, and textual analysis. It leverages natural language processing (NLP) and graph-based visualization to enable scholars, researchers, and enthusiasts to navigate Rigvedic hymns (suktas) intuitively.
 
-![RikNetra Screenshot](Images/riknetra.png)
+<img src="Images/riknetra.png" alt="RikNetra Screenshot" width="300">
 
 ## Features
 
 - **Semantic Search**: Search Rigveda suktas using keywords, queries, or specific hymn references (e.g., "RV 1.1", "hymns to Agni"). Powered by SentenceTransformer embeddings and TF-IDF for enhanced query understanding.
-- **Graph Visualization**: Visualize connections between suktas using an interactive force-directed graph, built with D3.js. Supports zoom, drag, and node highlight.
+- **Graph Visualization**: Visualize connections between suktas using an interactive force-directed graph, built with D3.js. Supports zoom, drag, node highlighting, and topic-based color coding.
 - **RAG Summary**: Retrieve augmented generation (RAG) summaries for search results, providing concise insights into selected hymns using Cohere's language model.
-- **Triptych Layout**: Displays search results in a three-column layout: top results, connection graph, and summary.
+- **Triptych Layout**: Displays search results in a three-column layout: top results, connection graph, and RAG summary.
 - **Dark Mode**: Toggle between light and dark themes for comfortable reading.
-- **Sukta Reader**: Read full texts of suktas with related connections, sourced from Griffith's translation of the Rigveda.
-- **Database Selection**: Choose from multiple graph databases (k3 to k11) representing suktas with varying connection densities.
+- **Sukta Reader**: Read full texts of suktas with related connections, sourced from Griffith's and Jamison's translations of the Rigveda.
+- **Database Selection**: Choose from multiple graph databases (k3 to k11) representing suktas with varying connection densities (2 to 10 neighbors).
+- **Topic Visualization**: Toggle topic-based node coloring in the graph to highlight thematic clusters (e.g., Creation, Marut, Surya).
 
 ## Tech Stack
 
@@ -22,6 +23,7 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
   - Cohere API: Powers RAG-based summarization.
   - TF-IDF Vectorizer: Enhances query processing with keyword extraction.
   - NLTK: Handles text preprocessing (stopwords, tokenization).
+  - PyTorch: Supports SentenceTransformer model execution.
   
 - **Frontend**:
   - HTML/CSS/JavaScript: Core web interface.
@@ -29,9 +31,10 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
   - Font Awesome: Provides icons for UI elements.
   
 - **Data**:
-  - Griffith’s Rigveda Translation: Text source for suktas.
-  - Precomputed Embeddings: Stored in TSV files for efficient similarity search.
-  - JSON Databases: Graph data (nodes and edges) for suktas with varying connections.
+   - Griffith’s and Jamison’s Rigveda Translations: Text sources for suktas.
+   - Precomputed Embeddings: Stored in `sbert_queryembeddings.tsv` for efficient similarity search.
+   - JSON Databases: Graph data (nodes and edges) for suktas with varying connections (k3 to k11).
+   - TSV and Text Files: Sukta labels (`suktalabels.tsv`) and preprocessed Rigveda text (`consuktasrigveda.txt`).
 
 ## Installation
 
@@ -45,33 +48,29 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
 
 1. **Clone the Repository**:
    git clone https://github.com/AshaShah/RikNetra-D3Visualization.git
+   cd RikNetra-D3Visualization
 
 2. **Install Python Dependencies**:
-    `pip install -r pythoncode/requirements.txt`
+    `pip install -r requirements.txt`
 
 3. **Configure Cohere API Key**:
    Replace the placeholder API key in `semanticsearch.py` with your Cohere API key:
-   co = cohere.ClientV2(api_key="your-cohere-api-key")
+   co = cohere.Client(api_key="your-cohere-api-key")
 
 4. **Download NLTK Data**:
    `python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"`
 
 5. **Prepare Data**:
    Ensure the following files are in the `pythoncode/` directory:
-   - `Griffith_Translation_Rigveda.txt`: Sukta texts.
+   - `Griff_translation.txt`: Griffith’s sukta texts.
    - `sbert_queryembeddings.tsv`: Precomputed embeddings.
    - `suktalabels.tsv`: Sukta labels.
    - `consuktasrigveda.txt`: Preprocessed Rigveda text for TF-IDF.
    - Place graph databases (`k3database.json to k11database.json`) in the `database/` directory.
 
 6. **Run the Flask API**:
-   python pythoncode/semanticsearch.py
+   python run.py
    The API will run at `http://localhost:5000`.
-
-7. **Serve the Frontend**:
-   Use a static file server (e.g., Python’s http.server):
-      `python -m http.server 8000`
-      Open `http://localhost:8000/index.html` in your browser.
       
 ### Usage
 
@@ -82,41 +81,57 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
    - Click tags (e.g., "Purusha Sukta") for quick searches.
 
 2. **Sukta Connections (`suktasconnection.html`)**:
-   - Explore suktas as an interactive graph.
-   - Click nodes to view connections and zoom.
-   - Use controls to toggle labels, isolate nodes, or switch to multi-color mode.
+   - Explore suktas as an interactive force-directed graph.
+   - Click nodes to view connections, zoom, or open a popup with related suktas.
+   - Use controls to toggle sukta numbers, hide unselected, or enable topic-based coloring.
+   - Zoom in/out or reset the view using dedicated buttons.
 
 3. **Read Suktas (`chapter.html`)**:
-   - View full sukta text with related suktas listed.
-   - Search for specific suktas (e.g., "RV 1.1").
+   - View full sukta text with related suktas listed in a dropdown format.
+   - Search for specific suktas (e.g., "RV 1.1") to load their content.
+   - Select different databases to view connections in the new context.
 
 ### Project Structure
 ```
-riknetra/
-├── css/
-│   ├── chapter.css
-│   ├── index.css
-│   ├── suktaconnection.css
+RikNetra-D3Visualization/
+RIKNETRA-D3VISUALIZATION/
+├── .vscode/
 ├── database/
 │   ├── k3database.json
-│   ├── ...
-│   ├── k11database.json
-├── darkmode/
-│   ├── darkMode.js
-├── Images/
-│   ├── riknetra.png
+│   ├── k4database.json
+│   ├── k5database.json
+│   ├── k6database.json
+│   ├── k7database.json
+│   ├── k9database.json
+│   ├── k10database.json
+│   └── k11database.json
 ├── pythoncode/
-│   ├── Griffith_Translation_Rigveda.txt
-│   ├── sbert_queryembeddings.tsv
-│   ├── suktalabels.tsv
+│   ├── __pycache__/
 │   ├── consuktasrigveda.txt
-|   ├── requirements.txt
-|   ├── semanticsearch.py
-├── searchcomponent.js
-├── suktaconnection.html
-├── chapter.html
-├── index.html
+│   ├── Griff_translation.txt
+│   ├── sbert_queryembeddings.tsv
+│   ├── sbertmodel.py
+│   ├── semanticsearch.py
+│   └── suktalabels.tsv
+├── static/
+│   ├── css/
+│   │   ├── chapter.css
+│   │   ├── index.css
+│   │   └── suktaconnection.css
+│   ├── Images/
+│   │   └── riknetra.png
+│   └── js/
+│       ├── darkmode/
+│       │   └── darkMode.js
+│       └── searchcomponent.js
+├── templates/
+│   ├── chapter.html
+│   ├── index.html
+│   └── suktasconnection.html
+├── .env
 ├── README.md
+├── requirements.txt
+└── run.py
 ```
 
 ## Contributing
@@ -130,10 +145,14 @@ Contributions are welcome! Please follow these steps:
    - Open a pull request.
 
 ## Acknowledgments
-   - Griffith’s Translation of the Rigveda for textual data.
+   - Griffith’s and Jamison’s Translations of the Rigveda for textual data.
    - SentenceTransformers for semantic embeddings.
    - Cohere for RAG summarization.
    - D3.js for graph visualization.
+   - Font Awesome for UI icons.
+
+## Contact
+For questions, contact ashashah228@gmail.com.
 
 
 © 2025 RikNetra. All rights reserved.
