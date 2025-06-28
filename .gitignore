@@ -1,0 +1,8 @@
+# Ignore the entire venv/ directory (Python virtual environment)
+venv/
+
+# Ignore all .log files
+*.log
+
+# Ignore a specific file
+config.env
