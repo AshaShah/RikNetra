@@ -5,4 +5,4 @@ venv/
 *.log
 
 # Ignore a specific file
-config.env
+config.envvenv/
