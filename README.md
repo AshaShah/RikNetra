@@ -47,7 +47,7 @@ RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hi
    git clone https://github.com/AshaShah/RikNetra-D3Visualization.git
 
 2. **Install Python Dependencies**:
-    `pip install -r pythoncode/requirements.txt`
+    `pip install -r requirements.txt`
 
 3. **Configure Cohere API Key**:
    Replace the placeholder API key in `semanticsearch.py` with your Cohere API key:
@@ -110,12 +110,12 @@ RikNetra-D3Visualization/
 │   ├── consuktasrigveda.txt
 │   ├── sbert_queryembeddings.tsv
 │   ├── suktalabels.tsv
-│   ├── requirements.txt
 │   ├── semanticsearch.py
 ├── searchcomponent.js
 ├── suktaconnection.html
 ├── chapter.html
 ├── index.html
+├── requirements.txt
 ├── README.md
 ```
 
@@ -140,3 +140,4 @@ For questions, contact ashashah228@gmail.com.
 
 
 © 2025 RikNetra. All rights reserved.
+
