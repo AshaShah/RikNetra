@@ -1,4 +1,5 @@
 import re
+from dotenv import load_dotenv
 import os
 import nltk
 import torch
@@ -17,6 +18,8 @@ CORS(app)
 
 # Initialize NLTK
 nltk.download('stopwords')
+
+load_dotenv() # Load environment variables from .env file
 
 # Set seeds for reproducibility
 SEED = 42
@@ -165,7 +168,7 @@ def api_semantic_search():
         
         \n{collected_text}"""
 
-        co = cohere.Client(api_key="cjsgL5O9U4MfBmBT1j8lYmNa9eRtmM02CzVTxR9m")
+        co = cohere.Client(api_key=os.getenv("COHERE_API_KEY"))
         response = co.chat(
             model="command-a-03-2025",
             message=message,
@@ -337,7 +340,7 @@ if __name__ == "__main__":
 #     \n{collected_text}"""
 
 #     # Cohere implementation
-#     co = cohere.Client(api_key="cjsgL5O9U4MfBmBT1j8lYmNa9eRtmM02CzVTxR9m")
+#     co = cohere.Client(api_key="API_KEY_HERE")  # Replace with your actual API key
 #     response = co.chat(
 #         model="command-a-03-2025",
 #         message=message,

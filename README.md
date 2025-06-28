@@ -1,8 +1,8 @@
 # RikNetra
 
-RikNetra is an interactive web platform for exploring the ancient wisdom of the Rigveda through semantic search, interconnected verse visualization, and detailed textual analysis. It leverages natural language processing (NLP) and graph-based visualization to provide an intuitive interface for scholars, researchers, and enthusiasts to discover and navigate Rigvedic hymns (suktas).
+RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hindu scripture, through semantic search, interconnected verse visualization, and textual analysis. It leverages natural language processing (NLP) and graph-based visualization to enable scholars, researchers, and enthusiasts to navigate Rigvedic hymns (suktas) intuitively.
 
-![RikNetra Screenshot](Images/riknetra.png)
+<img src="Images/riknetra.png" alt="RikNetra Screenshot" width="300">
 
 ## Features
 
@@ -51,14 +51,14 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
 
 3. **Configure Cohere API Key**:
    Replace the placeholder API key in `semanticsearch.py` with your Cohere API key:
-   co = cohere.ClientV2(api_key="your-cohere-api-key")
+   co = cohere.Client(api_key="your-cohere-api-key")
 
 4. **Download NLTK Data**:
    `python -c "import nltk; nltk.download('stopwords'); nltk.download('punkt')"`
 
 5. **Prepare Data**:
    Ensure the following files are in the `pythoncode/` directory:
-   - `Griffith_Translation_Rigveda.txt`: Sukta texts.
+   - `Griff_translation.txt`: Griffith’s sukta texts.
    - `sbert_queryembeddings.tsv`: Precomputed embeddings.
    - `suktalabels.tsv`: Sukta labels.
    - `consuktasrigveda.txt`: Preprocessed Rigveda text for TF-IDF.
@@ -92,7 +92,7 @@ RikNetra is an interactive web platform for exploring the ancient wisdom of the 
 
 ### Project Structure
 ```
-riknetra/
+RikNetra-D3Visualization/
 ├── css/
 │   ├── chapter.css
 │   ├── index.css
@@ -106,12 +106,12 @@ riknetra/
 ├── Images/
 │   ├── riknetra.png
 ├── pythoncode/
-│   ├── Griffith_Translation_Rigveda.txt
+│   ├── Griff_translation.txt
+│   ├── consuktasrigveda.txt
 │   ├── sbert_queryembeddings.tsv
 │   ├── suktalabels.tsv
-│   ├── consuktasrigveda.txt
-|   ├── requirements.txt
-|   ├── semanticsearch.py
+│   ├── requirements.txt
+│   ├── semanticsearch.py
 ├── searchcomponent.js
 ├── suktaconnection.html
 ├── chapter.html
@@ -134,6 +134,9 @@ Contributions are welcome! Please follow these steps:
    - SentenceTransformers for semantic embeddings.
    - Cohere for RAG summarization.
    - D3.js for graph visualization.
+
+## Contact
+For questions, contact ashashah228@gmail.com.
 
 
 © 2025 RikNetra. All rights reserved.
