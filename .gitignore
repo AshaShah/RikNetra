@@ -6,3 +6,4 @@ venv/
 
 # Ignore a specific file
 config.envvenv/
+__pycache__/
