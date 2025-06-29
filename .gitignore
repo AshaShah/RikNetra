@@ -1,3 +1,65 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environment
+venv/
+ENV/
+env/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Apache
+*.conf
+*.wsgi
+
+# Large data files
+pythoncode/Griff_translation.txt
+pythoncode/consuktasrigveda.txt
+pythoncode/sbert_queryembeddings.tsv
+pythoncode/suktalabels.tsv
+
+# Node modules (if you add any JS build tools)
+node_modules/
+
+# Logs
+*.log
+
 # Ignore the entire venv/ directory (Python virtual environment)
 venv/
 
