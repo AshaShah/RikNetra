@@ -463,7 +463,7 @@ body.search-active .search-section {
 
 .search-label {
   font-weight: bold;
-  font-size: 1em;
+  font-size: medium;
   color: var(--primary, #521C0D);
   flex-shrink: 0;
   flex-shrink: 0;
@@ -677,7 +677,7 @@ body.search-active .results-container {
 }
 
 .top-results-content {
-  padding: 0 18px 18px 18px;
+  padding: 0 15px 18px 15px;
   flex: 1;
   overflow-y: auto;
   height: calc(100% - 60px);
@@ -698,7 +698,7 @@ body.search-active .results-container {
   border: 1px solid var(--border-light);
   border-radius: 10px;
   box-shadow: 0 1px 6px rgba(127, 85, 177, 0.09);
-  padding: 13px 15px 13px 15px;
+  padding: 13px 10px 13px 10px;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -706,6 +706,12 @@ body.search-active .results-container {
   transition: all 0.18s;
   min-height: 78px;
   position: relative;
+}
+
+.vertical-result-item.selected {
+  border: 2px solid #E57373;
+  /* Matches the selected node color in the graph */
+  box-shadow: 0 0 5px rgba(229, 115, 115, 0.5);
 }
 
 
@@ -740,7 +746,7 @@ body.search-active .results-container {
 
 .vertical-result-content {
   font-size: 0.91rem;
-  line-height: 1.36;
+  line-height: 1.15;
   color: var(--text-dark);
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -820,7 +826,7 @@ body.search-active .results-container {
 }
 
 .graph-content-container {
-  padding: 0 18px 18px 18px;
+  padding: 0 15px 18px 15px;
   flex: 1;
   overflow: hidden;
   /* Graph handles its own scrolling */
@@ -988,20 +994,18 @@ body.search-active .results-container {
 .rag-summary .rag-container {
   background: #faf6f3;
   border-radius: 8px;
-  padding: 14px 12px;
+  padding: 10px 10px 10px 10px;
   margin-bottom: 0;
+
 }
 
 .rag-summary .rag-content {
-  font-size: 0.91rem;
-  line-height: 2;
-  color: #4f2f1c;
-  margin-bottom: 10px;
+  font-size: 15px;
+  line-height: 1.15;
+  color: var(--text-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-align: justify;
-  /* Ensure ~40 characters per line */
-  max-width: 40em;
-  /* Adjust based on font-size (1em ≈ avg. character width) */
-  letter-spacing: normal;
 }
 
 .rag-summary .source-suktas ul {
@@ -1058,13 +1062,13 @@ body.search-active .results-container {
 
 /* --- DARK MODE: Vertical Result Item --- */
 .dark-mode .vertical-result-item {
-  background: rgb(54 43 67);
+  background: border-box;
   border: 1px solid var(--border-dark);
   box-shadow: 0 1px 6px rgba(127, 85, 177, 0.09);
   color: var(--text-light);
 }
 
-.dark-mode .vertical-result-item:hover {
+.dark-mode .vertical-result-item.selected {
   border-color: var(--highlight);
   background: rgba(127, 85, 177, 0.09);
   box-shadow: 0 8px 25px rgba(127, 85, 177, 0.2);
@@ -1192,7 +1196,7 @@ body.search-active .results-container {
   .results-layout {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem;
+    gap: 0.7rem;
     width: 100%;
     max-width: 100vw;
   }
