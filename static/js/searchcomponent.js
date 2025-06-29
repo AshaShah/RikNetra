@@ -207,25 +207,25 @@ class RigvedaSearch {
     }
   }
 
-async fetchSemanticResults() {
-  try {
-    const response = await fetch("/semantic-search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: this.currentSearchTerm,
-      }),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  async fetchSemanticResults() {
+    try {
+      const response = await fetch("/semantic-search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: this.currentSearchTerm,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching semantic results:", error);
+      return null; // or handle error as needed
     }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching semantic results:", error);
-    return null; // or handle error as needed
   }
-}
 
   processSearchResults(semanticData) {
     let matchedNodes = [];
@@ -278,26 +278,34 @@ async fetchSemanticResults() {
     this.renderResultsList(results);
   }
 
-  updateRagSummary(results, searchTerm, semanticData) {
+updateRagSummary(results, searchTerm, semanticData) {
     const ragContainer = this.ragSummary.querySelector(".summary-content");
 
     if (semanticData?.rag_summary) {
-      // The backend now handles most formatting, we just need to convert newlines to <br>
-      let formattedSummary = semanticData.rag_summary
-        .replace(/\n/g, "<br>")
-        .replace(/^- /gm, "<br>• ");
+        // Split summary into sentences
+        let sentences = semanticData.rag_summary
+            .split(/(?<=[.!?])\s+/)
+            .filter(s => s.trim().length > 0);
 
-      // Remove any leading <br> if present
-      formattedSummary = formattedSummary.replace(/^<br>/, "");
+        // Group sentences into paragraphs of 3
+        let paragraphs = [];
+        for (let i = 0; i < sentences.length; i += 3) {
+            paragraphs.push(sentences.slice(i, i + 3).join(' '));
+        }
 
-      ragContainer.innerHTML = `
-        <div class="rag-container">
-          <div class="rag-content">${formattedSummary}</div>
-        </div>`;
+        // Format paragraphs with HTML
+        let formattedSummary = paragraphs
+            .map(p => `<p>${p}</p>`)
+            .join('');
+
+        ragContainer.innerHTML = `
+            <div class="rag-container">
+                <div class="rag-content">${formattedSummary}</div>
+            </div>`;
     } else {
-      ragContainer.innerHTML = `<p>Found ${results.length} results for "${searchTerm}"</p>`;
+        ragContainer.innerHTML = `<p>Found ${results.length} results for "${searchTerm}"</p>`;
     }
-  }
+}
 
   renderResultsList(results) {
     this.resultCards.innerHTML = "";
@@ -311,7 +319,6 @@ async fetchSemanticResults() {
     const isExact =
       results.length === 1 && this.ragSummary.style.display === "none";
 
-    // VERTICAL container
     const container = document.createElement("div");
     container.className = "vertical-result-list";
 
@@ -325,30 +332,37 @@ async fetchSemanticResults() {
       const item = document.createElement("div");
       item.className = "vertical-result-item";
       if (isExact) item.classList.add("exact-match");
+      if (
+        this.selectedNode &&
+        (result.id === this.selectedNode.id ||
+          result.index === this.selectedNode.id)
+      ) {
+        item.classList.add("selected"); // Highlight if this is the selected node
+      }
       item.innerHTML = `
-        <div class="vertical-result-header">
-          <span class="vertical-result-title">${cleanName}</span>
-          <span class="vertical-result-score">${Math.max(
-            70,
-            100 - index * 5
-          )}%</span>
-        </div>
-        <div class="vertical-result-content">
-          ${contentPreview || "No preview available"}
-        </div>
-        <div class="vertical-result-actions">
-          <button class="view-connections" data-node-id="${
-            result.id || result.index
-          }">
-            <i class="fas fa-link"></i> View Graph
-          </button>
-          <button class="read-full" data-node-id="${
-            result.id || result.index
-          }" data-node-name="${cleanName}">
-            <i class="fas fa-book-open"></i> Read Full
-          </button>
-        </div>
-      `;
+            <div class="vertical-result-header">
+                <span class="vertical-result-title">${cleanName}</span>
+                <span class="vertical-result-score">${Math.max(
+                  70,
+                  100 - index * 5
+                )}%</span>
+            </div>
+            <div class="vertical-result-content">
+                ${contentPreview || "No preview available"}
+            </div>
+            <div class="vertical-result-actions">
+                <button class="view-connections" data-node-id="${
+                  result.id || result.index
+                }">
+                    <i class="fas fa-link"></i> View Graph
+                </button>
+                <button class="read-full" data-node-id="${
+                  result.id || result.index
+                }" data-node-name="${cleanName}">
+                    <i class="fas fa-book-open"></i> Read Full
+                </button>
+            </div>
+        `;
 
       item
         .querySelector(".view-connections")
@@ -424,10 +438,19 @@ async fetchSemanticResults() {
       );
     }
     if (!node) return;
+
+    // Highlight the selected result card
+    const resultItems = document.querySelectorAll(".vertical-result-item");
+    resultItems.forEach((item) => {
+      item.classList.remove("selected"); // Remove highlight from all items
+      if (item.querySelector(`[data-node-id="${nodeId}"]`)) {
+        item.classList.add("selected"); // Add highlight to the selected item
+      }
+    });
+
     this.zoomToNode(node);
     this.highlightGraphNode(node.id);
   }
-
   handleReadFull(event, chapterName) {
     const chapterId = event.target.dataset.nodeId;
     const database = this.databaseSelect.value;
@@ -568,7 +591,7 @@ async fetchSemanticResults() {
           } else {
             d.normalized_weight =
               ((d.weight - min_weight) / (max_weight - min_weight)) *
-              (new_max - new_min) +
+                (new_max - new_min) +
               new_min;
           }
         });
@@ -740,7 +763,7 @@ async fetchSemanticResults() {
     d.fy = null;
   }
 
-  highlightGraphNode(nodeId) {
+highlightGraphNode(nodeId) {
     this.selectedNode = this.nodesData.find((n) => n.id === nodeId);
     if (!this.selectedNode) return;
 
@@ -749,29 +772,24 @@ async fetchSemanticResults() {
     const level2 = new Set();
     const level3 = new Set();
 
-    // Find level 1 connections
+    // Find level 1 connections (only outgoing edges from selected node)
     this.edgesData.forEach((edge) => {
       if (edge.source.id === nodeId) level1.add(edge.target.id);
-      if (edge.target.id === nodeId) level1.add(edge.source.id);
     });
 
-    // Find level 2 connections
+    // Find level 2 connections (outgoing edges from level 1 nodes)
     level1.forEach((id) => {
       this.edgesData.forEach((edge) => {
         if (edge.source.id === id && edge.target.id !== nodeId)
           level2.add(edge.target.id);
-        if (edge.target.id === id && edge.source.id !== nodeId)
-          level2.add(edge.source.id);
       });
     });
 
-    // Find level 3 connections
+    // Find level 3 connections (outgoing edges from level 2 nodes)
     level2.forEach((id) => {
       this.edgesData.forEach((edge) => {
         if (edge.source.id === id && !level1.has(edge.target.id))
           level3.add(edge.target.id);
-        if (edge.target.id === id && !level1.has(edge.source.id))
-          level3.add(edge.source.id);
       });
     });
 
@@ -825,20 +843,38 @@ async fetchSemanticResults() {
         return 3;
       });
 
+    // New edge highlighting logic:
+    // 1. Highlight only outgoing edges from selected node
+    // 2. Only highlight edges where BOTH nodes are in levels 1-3
     this.link
       .attr("stroke", (d) => {
-        if (d.source.id === nodeId || d.target.id === nodeId)
-          return colors.edgeHighlight;
-        if (level1.has(d.source.id) || level1.has(d.target.id))
-          return colors.level1;
-        if (level2.has(d.source.id) || level2.has(d.target.id))
-          return colors.level2;
+        // Highlight outgoing edges from selected node
+        if (d.source.id === nodeId) return colors.edgeHighlight;
+        
+        // For other edges, only highlight if both nodes are in levels
+        const sourceInLevel = level1.has(d.source.id) || level2.has(d.source.id) || level3.has(d.source.id);
+        const targetInLevel = level1.has(d.target.id) || level2.has(d.target.id) || level3.has(d.target.id);
+        
+        if (sourceInLevel && targetInLevel) {
+          if (level1.has(d.source.id) && level1.has(d.target.id)) return colors.level1;
+          if (level2.has(d.source.id) && level2.has(d.target.id)) return colors.level2;
+          return colors.edgeDefault;
+        }
         return colors.edgeDefault;
       })
       .attr("stroke-opacity", (d) => {
-        if (d.source.id === nodeId || d.target.id === nodeId) return 1;
-        if (level1.has(d.source.id) || level1.has(d.target.id)) return 0.8;
-        if (level2.has(d.source.id) || level2.has(d.target.id)) return 0.6;
+        // Full opacity for outgoing edges from selected node
+        if (d.source.id === nodeId) return 1;
+        
+        // For other edges, opacity based on levels of both nodes
+        const sourceInLevel = level1.has(d.source.id) || level2.has(d.source.id) || level3.has(d.source.id);
+        const targetInLevel = level1.has(d.target.id) || level2.has(d.target.id) || level3.has(d.target.id);
+        
+        if (sourceInLevel && targetInLevel) {
+          if (level1.has(d.source.id) && level1.has(d.target.id)) return 0.8;
+          if (level2.has(d.source.id) && level2.has(d.target.id)) return 0.6;
+          return 0.4;
+        }
         return 0.07;
       })
       .attr("stroke-width", 2)
@@ -856,23 +892,7 @@ async fetchSemanticResults() {
       .style("font-size", "6px");
 
     this.zoomToNode(this.selectedNode);
-  }
-
-  resetGraphHighlights() {
-    this.node
-      .attr("opacity", 1)
-      .attr("fill", "#7fb3d5")
-      .attr("stroke", "none")
-      .attr("stroke-width", 0)
-      .attr("r", 8);
-
-    this.link
-      .attr("stroke", "#aaa")
-      .attr("stroke-opacity", 0.6)
-      .attr("stroke-width", 2);
-
-    this.label.style("opacity", 1).style("font-weight", "normal");
-  }
+}
 
   zoomToNode(node) {
     if (!node || isNaN(node.x) || isNaN(node.y)) {
