@@ -1,3 +1,4 @@
+
 # Python
 __pycache__/
 *.py[cod]
@@ -58,3 +59,13 @@ node_modules/
 
 # Logs
 *.log
+
+# Ignore the entire venv/ directory (Python virtual environment)
+venv/
+
+# Ignore all .log files
+*.log
+
+# Ignore a specific file
+config.envvenv/
+__pycache__/

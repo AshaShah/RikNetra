@@ -1,25 +1,28 @@
 import re
-from dotenv import load_dotenv
 import os
 import nltk
 import torch
 import cohere
 import numpy as np
 import pandas as pd
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from unidecode import unidecode
 from nltk.corpus import stopwords
 from sentence_transformers import SentenceTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from dotenv import load_dotenv
 
-app = Flask(__name__)
+# Load environment variables from .env file
+load_dotenv()
+
+app = Flask(__name__,
+            static_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../static'),
+            template_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../templates'))
 CORS(app)
 
 # Initialize NLTK
 nltk.download('stopwords')
-
-load_dotenv() # Load environment variables from .env file
 
 # Set seeds for reproducibility
 SEED = 42
@@ -35,6 +38,9 @@ print(f"Using device: {device}")
 embedder = SentenceTransformer("all-mpnet-base-v2")
 embedder.eval()
 
+# Get the directory of the current script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Load data files
 def load_sbert_embeddings(file_path):
     return np.loadtxt(file_path, delimiter='\t')
@@ -46,13 +52,16 @@ def read_griffith_text(file_path):
 def read_jamison_text(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
+    
+# Get the directory of the current script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Load data
-corpus_np = load_sbert_embeddings("pythoncode/sbert_queryembeddings.tsv")
+# Load data from pythoncode/ directory
+corpus_np = load_sbert_embeddings(os.path.join(BASE_DIR, "sbert_queryembeddings.tsv"))
 corpus_embeddings = torch.tensor(corpus_np)
-labels = pd.read_csv("pythoncode/suktalabels.tsv", header=None)
-griffith_text = read_griffith_text("pythoncode/Griff_translation.txt")
-rigsuktatext = read_jamison_text("pythoncode/consuktasrigveda.txt")
+labels = pd.read_csv(os.path.join(BASE_DIR, "suktalabels.tsv"), header=None)
+griffith_text = read_griffith_text(os.path.join(BASE_DIR, "Griff_translation.txt"))
+rigsuktatext = read_jamison_text(os.path.join(BASE_DIR, "consuktasrigveda.txt"))
 
 # Preprocessing function
 def preprocessing(raw_text):
@@ -100,28 +109,45 @@ def user_query_function(queries, text, k, embedding_model, text_embeddings, sukt
             sorted_items = sorted(non_zero_items, key=lambda x: x[1], reverse=True)
             suktafeat_names = vectorizer.get_feature_names_out()
             top_terms = [suktafeat_names[idx] for idx, _ in sorted_items[:5]]
+            print(f"Top terms for query '{query}': {top_terms}")  # Debug
         
         new_query_string = " ".join(top_terms) if len(top_terms) >= 2 else query_lower
+        print(f"Query string: {new_query_string}")  # Debug
         
         query_embedding = embedding_model.encode(new_query_string, convert_to_tensor=True).to(device)
         query_embedding = query_embedding.to(dtype=torch.float64)
         
         similarity_scores = embedding_model.similarity(query_embedding, text_embeddings)[0]
         scores, indices = torch.topk(similarity_scores, k=top_k)
+        print(f"Top {top_k} indices: {indices.tolist()}")  # Debug
         
         for score, idx in zip(scores, indices):
             index = idx.tolist()
             label_num = sukta_labels.iloc[index, 0]
+            print(f"Sukta {label_num}: {text[index]}")  # Debug
             text_dict[label_num] = text[index]
             collected_text += "".join(text[index])
     
+    print(f"Collected text length: {len(collected_text)}")  # Debug
     return collected_text, text_dict
 
-# API endpoint for semantic search
+# Routes
+@app.route('/')
+def index():
+    return send_from_directory(app.template_folder, 'index.html')
+
+@app.route('/database/<path:filename>')
+def serve_database(filename):
+    return send_from_directory(os.path.join(BASE_DIR, '../database'), filename)
+
+@app.route('/templates/<path:filename>')
+def serve_template(filename):
+    return send_from_directory(app.template_folder, filename)
+
 @app.route('/semantic-search', methods=['POST'])
 def api_semantic_search():
     data = request.get_json()
-    query = data.get("query", "").strip()
+    query = data.get("query", "").strip().lower()
     
     if not query:
         return jsonify({"error": "Please enter a non-empty query"}), 400
@@ -141,8 +167,9 @@ def api_semantic_search():
         
         message = f"""{query}.
         Instructions:
-        
+
         Generate a concise and focused summary based only on the given Rigveda hymns.
+       ս
         Do not use bullet points. The summary must be written as a continuous paragraph, using natural language.
         Do not start the summary with the phrase "The Rigveda hymns"; instead, return the summary content directly.
 
@@ -165,16 +192,22 @@ def api_semantic_search():
         Example 2 — Query: "What is computer science"
 
         The entered query "What is computer science" is not relevant to the Rigveda context. Please enter a query related to the Rigveda.
+
         
         \n{collected_text}"""
 
-        co = cohere.Client(api_key=os.getenv("COHERE_API_KEY"))
+        cohere_api_key = os.getenv("COHERE_API_KEY")
+        if not cohere_api_key:
+            return jsonify({"error": "Cohere API key not found in .env file"}), 500
+
+        co = cohere.ClientV2(api_key=cohere_api_key)
+
         response = co.chat(
             model="command-a-03-2025",
-            message=message,
+            messages=[{"role": "user", "content": message}],
             temperature=0.0
         )
-        llm_text = response.text.strip()
+        llm_text = response.message.content[0].text.strip()
         
         return jsonify({
             "results": [{"sukta": f"RV {k}", "text": v} for k, v in text_dict.items()],
@@ -183,7 +216,22 @@ def api_semantic_search():
         })
         
     except Exception as e:
+        import traceback
+        print(f"Error in semantic search: {str(e)}")
+        traceback.print_exc()
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+if __name__ == '__main__':
+    port = 5000
+    while port < 5010:  # Try up to port 5009
+        try:
+            print(f"Trying to start on port {port}")
+            app.run(host='0.0.0.0', port=port, debug=True)
+            break
+        except OSError as e:
+            if "Address already in use" in str(e):
+                port += 1
+            else:
+                raise
+    else:
+        print("Failed to find an available port between 5000-5009")

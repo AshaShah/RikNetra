@@ -631,6 +631,8 @@ body.search-active .results-container {
   background: transparent;
 }
 
+
+
 /* --- Left: Top Results (VERTICAL, scrollable) --- */
 .results-left {
   grid-column: 1;
@@ -702,10 +704,11 @@ body.search-active .results-container {
   flex-direction: column;
   gap: 6px;
   transition: all 0.18s;
-  cursor: pointer;
   min-height: 78px;
   position: relative;
 }
+
+
 
 .vertical-result-header {
   display: flex;
@@ -819,7 +822,8 @@ body.search-active .results-container {
 .graph-content-container {
   padding: 0 18px 18px 18px;
   flex: 1;
-  overflow: hidden; /* Graph handles its own scrolling */
+  overflow: hidden;
+  /* Graph handles its own scrolling */
 }
 
 .graph-visualization-container {
@@ -977,7 +981,8 @@ body.search-active .results-container {
   padding: 0 15px 25px 15px;
   flex: 1;
   overflow-y: auto;
-  height: calc(100% - 60px); /* Adjust based on header height */
+  height: calc(100% - 60px);
+  /* Adjust based on header height */
 }
 
 .rag-summary .rag-container {
@@ -996,7 +1001,6 @@ body.search-active .results-container {
   /* Ensure ~40 characters per line */
   max-width: 40em;
   /* Adjust based on font-size (1em ≈ avg. character width) */
-  word-spacing: 0.1em;
   letter-spacing: normal;
 }
 

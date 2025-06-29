@@ -53,6 +53,11 @@ class RigvedaSearch {
     this.isolateMode = false;
     this.selectedNode = null;
     this.selectedEdge = null;
+    this.levels = {
+      1: new Set(),
+      2: new Set(),
+      3: new Set(),
+    }; // Initialize levels for getNodeLevel
   }
 
   // Setup event listeners for search and graph interactions
@@ -74,10 +79,9 @@ class RigvedaSearch {
     this.readChapterBtn.on("click", this.readChapter.bind(this));
   }
 
-  //Auto search on input - commented out to avoid auto search on every keystroke
+  // Auto search on input - commented out to avoid auto search on every keystroke
   handleSearchInput() {
     this.currentSearchTerm = this.searchBox.value.trim();
-
     // if (this.searchTimeout) clearTimeout(this.searchTimeout);
     // if (this.currentSearchTerm.length > 0) {
     //   this.searchTimeout = setTimeout(() => this.performSearch(), 300);
@@ -121,11 +125,10 @@ class RigvedaSearch {
       alert("Please select a node first.");
       return;
     }
-
     const chapterName = this.cleanSuktaName(this.selectedNode.name);
     const chapterId = this.selectedNode.id;
     const database = this.databaseSelect.value;
-    window.location.href = `chapter.html?chapterId=${encodeURIComponent(
+    window.location.href = `/templates/chapter.html?chapterId=${encodeURIComponent(
       chapterId
     )}&chapterName=${encodeURIComponent(
       chapterName
@@ -142,9 +145,9 @@ class RigvedaSearch {
       ".summary-content"
     ).innerHTML = `<p>Generating summary for "${this.currentSearchTerm}"...</p>`;
     this.resultCards.innerHTML = `
-    <div class="result-card loading"><div class="loading-line" style="width: 80%"></div></div>
-    <div class="result-card loading"><div class="loading-line" style="width: 75%"></div></div>
-    <div class="result-card loading"><div class="loading-line" style="width: 70%"></div></div>`;
+      <div class="result-card loading"><div class="loading-line" style="width: 80%"></div></div>
+      <div class="result-card loading"><div class="loading-line" style="width: 75%"></div></div>
+      <div class="result-card loading"><div class="loading-line" style="width: 70%"></div></div>`;
     this.resultsContainer.style.display = "flex";
   }
 
@@ -161,7 +164,7 @@ class RigvedaSearch {
 
     try {
       // 1. Load JSON data for exact match
-      const data = await d3.json(currentDatabase);
+      const data = await d3.json(`${currentDatabase}`);
       this.nodesData = data.nodes;
       this.edgesData = data.edges;
 
@@ -204,18 +207,25 @@ class RigvedaSearch {
     }
   }
 
-  async fetchSemanticResults() {
-    const response = await fetch("http://localhost:5000/semantic-search", {
+async fetchSemanticResults() {
+  try {
+    const response = await fetch("/semantic-search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         query: this.currentSearchTerm,
-        top_k: 5,
-        include_rag: true, // Request RAG summary from backend
       }),
     });
-    return response.json();
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching semantic results:", error);
+    return null; // or handle error as needed
   }
+}
 
   processSearchResults(semanticData) {
     let matchedNodes = [];
@@ -268,26 +278,26 @@ class RigvedaSearch {
     this.renderResultsList(results);
   }
 
-updateRagSummary(results, searchTerm, semanticData) {
+  updateRagSummary(results, searchTerm, semanticData) {
     const ragContainer = this.ragSummary.querySelector(".summary-content");
 
     if (semanticData?.rag_summary) {
       // The backend now handles most formatting, we just need to convert newlines to <br>
       let formattedSummary = semanticData.rag_summary
-        .replace(/\n/g, "<br>") // Convert newlines to HTML line breaks
-        .replace(/^- /gm, "<br>• "); // Convert hyphen bullets to styled bullets
+        .replace(/\n/g, "<br>")
+        .replace(/^- /gm, "<br>• ");
 
       // Remove any leading <br> if present
-      formattedSummary = formattedSummary.replace(/^<br>/, '');
+      formattedSummary = formattedSummary.replace(/^<br>/, "");
 
       ragContainer.innerHTML = `
-            <div class="rag-container">
-                <div class="rag-content">${formattedSummary}</div>
-            </div>`;
+        <div class="rag-container">
+          <div class="rag-content">${formattedSummary}</div>
+        </div>`;
     } else {
       ragContainer.innerHTML = `<p>Found ${results.length} results for "${searchTerm}"</p>`;
     }
-}
+  }
 
   renderResultsList(results) {
     this.resultCards.innerHTML = "";
@@ -298,7 +308,8 @@ updateRagSummary(results, searchTerm, semanticData) {
       return;
     }
 
-    const isExact = results.length === 1 && this.ragSummary.style.display === "none";
+    const isExact =
+      results.length === 1 && this.ragSummary.style.display === "none";
 
     // VERTICAL container
     const container = document.createElement("div");
@@ -313,31 +324,31 @@ updateRagSummary(results, searchTerm, semanticData) {
 
       const item = document.createElement("div");
       item.className = "vertical-result-item";
-      if (isExact) item.classList.add('exact-match'); 
+      if (isExact) item.classList.add("exact-match");
       item.innerHTML = `
-      <div class="vertical-result-header">
-        <span class="vertical-result-title">${cleanName}</span>
-        <span class="vertical-result-score">${Math.max(
-          70,
-          100 - index * 5
-        )}%</span>
-      </div>
-      <div class="vertical-result-content">
-        ${contentPreview || "No preview available"}
-      </div>
-      <div class="vertical-result-actions">
-        <button class="view-connections" data-node-id="${
-          result.id || result.index
-        }">
-          <i class="fas fa-link"></i> View Graph
-        </button>
-        <button class="read-full" data-node-id="${
-          result.id || result.index
-        }" data-node-name="${cleanName}">
-          <i class="fas fa-book-open"></i> Read Full
-        </button>
-      </div>
-    `;
+        <div class="vertical-result-header">
+          <span class="vertical-result-title">${cleanName}</span>
+          <span class="vertical-result-score">${Math.max(
+            70,
+            100 - index * 5
+          )}%</span>
+        </div>
+        <div class="vertical-result-content">
+          ${contentPreview || "No preview available"}
+        </div>
+        <div class="vertical-result-actions">
+          <button class="view-connections" data-node-id="${
+            result.id || result.index
+          }">
+            <i class="fas fa-link"></i> View Graph
+          </button>
+          <button class="read-full" data-node-id="${
+            result.id || result.index
+          }" data-node-name="${cleanName}">
+            <i class="fas fa-book-open"></i> Read Full
+          </button>
+        </div>
+      `;
 
       item
         .querySelector(".view-connections")
@@ -356,7 +367,6 @@ updateRagSummary(results, searchTerm, semanticData) {
     this.resultCards.appendChild(container);
   }
 
-  // Keep your original cleanSuktaName method exactly as is
   cleanSuktaName(name) {
     if (!name) return name;
     // Remove extra "RV" prefixes and trim whitespace
@@ -370,7 +380,6 @@ updateRagSummary(results, searchTerm, semanticData) {
     return cleanName.trim();
   }
 
-  // Keep your original getContentPreview method exactly as is
   getContentPreview(text) {
     if (!text) return "";
 
@@ -422,7 +431,7 @@ updateRagSummary(results, searchTerm, semanticData) {
   handleReadFull(event, chapterName) {
     const chapterId = event.target.dataset.nodeId;
     const database = this.databaseSelect.value;
-    window.location.href = `chapter.html?chapterId=${encodeURIComponent(
+    window.location.href = `/templates/chapter.html?chapterId=${encodeURIComponent(
       chapterId
     )}&chapterName=${encodeURIComponent(
       chapterName
@@ -511,7 +520,30 @@ updateRagSummary(results, searchTerm, semanticData) {
     return -1;
   }
 
-  // --- THE MAIN CHANGE: ADD forceX/forceY and xScale/yScale for fixed layout ---
+  highlightEdgeNodes(edge) {
+    // Highlight the source and target nodes of the clicked edge
+    const sourceId = edge.source.id;
+    const targetId = edge.target.id;
+
+    this.node
+      .attr("fill", (d) => {
+        if (d.id === sourceId || d.id === targetId) return "#E57373"; // Highlight color
+        return "#7fb3d5"; // Default color
+      })
+      .attr("r", (d) => {
+        if (d.id === sourceId || d.id === targetId) return 8; // Larger radius for highlighted nodes
+        return 5; // Default radius
+      });
+
+    this.label
+      .style("font-weight", (d) =>
+        d.id === sourceId || d.id === targetId ? "bold" : "normal"
+      )
+      .style("opacity", (d) =>
+        d.id === sourceId || d.id === targetId ? 1 : 0.6
+      );
+  }
+
   loadGraphData(database, searchTerm = null, highlightNodes = []) {
     this.g.selectAll("*").remove();
 
@@ -536,7 +568,7 @@ updateRagSummary(results, searchTerm, semanticData) {
           } else {
             d.normalized_weight =
               ((d.weight - min_weight) / (max_weight - min_weight)) *
-                (new_max - new_min) +
+              (new_max - new_min) +
               new_min;
           }
         });
@@ -565,18 +597,18 @@ updateRagSummary(results, searchTerm, semanticData) {
           .enter()
           .append("line")
           .attr("class", "link")
-          .attr("stroke-width", 2) // Constant width
+          .attr("stroke-width", 2)
           .attr("stroke", "#aaa")
           .attr("stroke-opacity", 0.6)
           .on("click", (event, d) => {
             this.selectedEdge = d3.select(event.target);
             this.highlightEdgeNodes(d);
-            this.selectedEdge.attr("stroke", "red").attr("stroke-width", 2); // Constant width
+            this.selectedEdge.attr("stroke", "red").attr("stroke-width", 2);
           })
           .on("mouseover", (event, d) => {
             d3.select(event.target)
               .attr("stroke", "red")
-              .attr("stroke-width", 2); // Constant width
+              .attr("stroke-width", 2);
           })
           .on("mouseout", (event, d) => {
             if (
@@ -585,7 +617,7 @@ updateRagSummary(results, searchTerm, semanticData) {
             ) {
               d3.select(event.target)
                 .attr("stroke", "#aaa")
-                .attr("stroke-width", 2); // Constant width
+                .attr("stroke-width", 2);
             }
           });
 
@@ -647,12 +679,11 @@ updateRagSummary(results, searchTerm, semanticData) {
               this.selectedEdge.attr("stroke", "#aaa");
               this.selectedEdge = null;
             }
-            if (this.selectedNode && this.selectedNode.id === d.id) {
-              this.resetGraphHighlights();
-              this.selectedNode = null;
-              this.popup.style("display", "none");
-              return;
-            }
+            // Perform exact search for the clicked node
+            this.searchBox.value = this.cleanSuktaName(d.name);
+            this.currentSearchTerm = this.cleanSuktaName(d.name);
+            this.performSearch();
+
             this.selectedNode = d;
             this.highlightGraphNode(d.id);
             this.zoomToNode(d);
@@ -676,8 +707,6 @@ updateRagSummary(results, searchTerm, semanticData) {
       });
   }
 
-  // --- END MAIN CHANGE ---
-
   ticked() {
     try {
       this.link
@@ -699,10 +728,12 @@ updateRagSummary(results, searchTerm, semanticData) {
     d.fx = d.x;
     d.fy = d.y;
   }
+
   dragged(event, d) {
     d.fx = event.x;
     d.fy = event.y;
   }
+
   dragEnded(event, d) {
     if (!event.active) this.simulation.alphaTarget(0);
     d.fx = null;
@@ -714,9 +745,9 @@ updateRagSummary(results, searchTerm, semanticData) {
     if (!this.selectedNode) return;
 
     // Create connection levels
-    const level1 = new Set(); // Direct connections
-    const level2 = new Set(); // Friends of friends
-    const level3 = new Set(); // Friends of friends of friends
+    const level1 = new Set();
+    const level2 = new Set();
+    const level3 = new Set();
 
     // Find level 1 connections
     this.edgesData.forEach((edge) => {
@@ -752,15 +783,20 @@ updateRagSummary(results, searchTerm, semanticData) {
       if (level1.has(id) || level2.has(id)) level3.delete(id);
     });
 
+    // Store levels for getNodeLevel
+    this.levels[1] = level1;
+    this.levels[2] = level2;
+    this.levels[3] = level3;
+
     // Color scheme - matching suktaconnection.html
     const colors = {
-      selected: "#E57373", // Selected node color
-      level1: "#FFB74D", // Direct connections color
-      level2: "#64B5F6", // Friends of friends color
-      level3: "#81C784", // Friends of friends of friends color
-      default: "#7fb3d5", // Default node color
-      edgeDefault: "#aaa", // Default edge color
-      edgeHighlight: "#E97777", // Edge highlight color (matches selected node)
+      selected: "#E57373",
+      level1: "#FFB74D",
+      level2: "#64B5F6",
+      level3: "#81C784",
+      default: "#7fb3d5",
+      edgeDefault: "#aaa",
+      edgeHighlight: "#E97777",
     };
 
     // Style nodes
@@ -805,7 +841,7 @@ updateRagSummary(results, searchTerm, semanticData) {
         if (level2.has(d.source.id) || level2.has(d.target.id)) return 0.6;
         return 0.07;
       })
-      .attr("stroke-width", 2) // Constant width
+      .attr("stroke-width", 2)
       .attr("stroke-linecap", "round");
 
     this.label
@@ -833,11 +869,11 @@ updateRagSummary(results, searchTerm, semanticData) {
     this.link
       .attr("stroke", "#aaa")
       .attr("stroke-opacity", 0.6)
-      .attr("stroke-width", 2); // Constant width
+      .attr("stroke-width", 2);
 
     this.label.style("opacity", 1).style("font-weight", "normal");
   }
-  // --- Zoom to node function ---
+
   zoomToNode(node) {
     if (!node || isNaN(node.x) || isNaN(node.y)) {
       console.error("Invalid node position:", node);
@@ -856,6 +892,7 @@ updateRagSummary(results, searchTerm, semanticData) {
 
     this.svg.transition().duration(750).call(this.zoom.transform, transform);
   }
+
   updateGraphVisibility() {
     if (this.node) {
       this.node.attr("opacity", 1);
@@ -864,7 +901,7 @@ updateRagSummary(results, searchTerm, semanticData) {
       this.link.attr("opacity", 1);
     }
     if (this.label) {
-      this.label.style("opacity", 1).style("display", "block"); // Ensure labels are visible
+      this.label.style("opacity", 1).style("display", "block");
     }
   }
 

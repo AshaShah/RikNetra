@@ -759,7 +759,7 @@ body.dark-mode .side-panel {
 /* Buttons */
 .dark-mode #read-chapter {
   background-color: var(--highlight);
-  color: var(--text-dark);
+  color: var(--text-light);
 }
 
 .dark-mode #read-chapter:hover {

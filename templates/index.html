@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RikNetra</title>
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="/static/css/index.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="icon" href="Images/riknetra.png" type="image/png">
+  <link rel="icon" href="/static/Images/riknetra.png" type="image/png">
 </head>
 
 <body>
@@ -20,8 +20,8 @@
       <i class="fas fa-bars"></i>
     </div>
 
-    <a href="index.html" class="home-logo" id="home-logo">
-      <img src="Images/riknetra.png" alt="Home" class="logo-img">
+    <a href="/templates/index.html" class="home-logo" id="home-logo">
+      <img src="/static/Images/riknetra.png" alt="Home" class="logo-img">
     </a>
 
     <div class="side-panel" id="side-panel">
@@ -30,16 +30,16 @@
         <h3>RikNetra</h3>
       </div>
       <div class="side-panel-content">
-        <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
-        <a href="suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
-        <a href="chapter.html"><i class="fas fa-book"></i> Read Suktas</a>
+        <a href="/templates/index.html" class="active"><i class="fas fa-home"></i> Home</a>
+        <a href="/templates/suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
+        <a href="/templates/chapter.html"><i class="fas fa-book"></i> Read Suktas</a>
       </div>
     </div>
   </div>
 
   <div class="main-container" id="main-container">
     <header class="welcome-section" id="welcome-section">
-      <img src="Images/riknetra.png" alt="RiKNetra Logo" class="welcome-logo">
+      <img src="/static/Images/riknetra.png" alt="RiKNetra Logo" class="welcome-logo">
       <h1>Welcome to RikNetra</h1>
       <p>Explore the ancient wisdom of the Rigveda through interconnected verses</p>
     </header>
@@ -53,15 +53,15 @@
         </div>
         <div class="styled-select-container">
           <select id="database-select" class="styled-select">
-            <option value="database/k3database.json">with 2 neighbors</option>
-            <option value="database/k4database.json">with 3 neighbors</option>
-            <option value="database/k5database.json" selected>with 4 neighbors</option>
-            <option value="database/k6database.json">with 5 neighbors</option>
-            <option value="database/k7database.json">with 6 neighbors</option>
-            <option value="database/k8database.json">with 7 neighbors</option>
-            <option value="database/k9database.json">with 8 neighbors</option>
-            <option value="database/k10database.json">with 9 neighbors</option>
-            <option value="database/k11database.json">with 10 neighbors</option>
+            <option value="/database/k3database.json">with 2 neighbors</option>
+            <option value="/database/k4database.json">with 3 neighbors</option>
+            <option value="/database/k5database.json" selected>with 4 neighbors</option>
+            <option value="/database/k6database.json">with 5 neighbors</option>
+            <option value="/database/k7database.json">with 6 neighbors</option>
+            <option value="/database/k8database.json">with 7 neighbors</option>
+            <option value="/database/k9database.json">with 8 neighbors</option>
+            <option value="/database/k10database.json">with 9 neighbors</option>
+            <option value="/database/k11database.json">with 10 neighbors</option>
           </select>
         </div>
       </div>
@@ -83,30 +83,6 @@
             <div class="search-section">
               <span class="search-label">Exact:</span>
               <div class="tag-list">
-                <span class="tag verse-tag" data-search-term="RV 1.22">RV 1.22</span>
-                <span class="tag verse-tag" data-search-term="RV 1.25">RV 1.25</span>
-                <span class="tag verse-tag" data-search-term="RV 1.115">RV 1.115</span>
-                <span class="tag verse-tag" data-search-term="RV 1.154">RV 1.154</span>
-                <span class="tag verse-tag" data-search-term="RV 1.155">RV 1.155</span>
-                <span class="tag verse-tag" data-search-term="RV 1.156">RV 1.156</span>
-                <span class="tag verse-tag" data-search-term="RV 4.4">RV 4.4</span>
-                <span class="tag verse-tag" data-search-term="RV 4.15">RV 4.15</span>
-                <span class="tag verse-tag" data-search-term="RV 5.2">RV 5.2</span>
-                <span class="tag verse-tag" data-search-term="RV 6.54">RV 6.54</span>
-                <span class="tag verse-tag" data-search-term="RV 6.69">RV 6.69</span>
-                <span class="tag verse-tag" data-search-term="RV 7.54">RV 7.54</span>
-                <span class="tag verse-tag" data-search-term="RV 7.86">RV 7.86</span>
-                <span class="tag verse-tag" data-search-term="RV 7.99">RV 7.99</span>
-                <span class="tag verse-tag" data-search-term="RV 7.100">RV 7.100</span>
-                <span class="tag verse-tag" data-search-term="RV 10.15">RV 10.15</span>
-                <span class="tag verse-tag" data-search-term="RV 10.17">RV 10.17</span>
-                <span class="tag verse-tag" data-search-term="RV 10.75">RV 10.75</span>
-                <span class="tag verse-tag" data-search-term="RV 10.81">RV 10.81</span>
-                <span class="tag verse-tag" data-search-term="RV 10.82">RV 10.82</span>
-                <span class="tag verse-tag" data-search-term="RV 10.84">RV 10.84</span>
-                <span class="tag verse-tag" data-search-term="RV 10.85">RV 10.85</span>
-                <span class="tag verse-tag" data-search-term="RV 10.87">RV 10.87</span>
-                <span class="tag verse-tag" data-search-term="RV 10.90">RV 10.90</span>
                 <span class="tag verse-tag" data-search-term="RV 10.121">RV 10.121</span>
                 <span class="tag verse-tag" data-search-term="RV 10.125">RV 10.125</span>
                 <span class="tag verse-tag" data-search-term="RV 10.130">RV 10.130</span>
@@ -193,8 +169,9 @@
     </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="darkmode/darkMode.js"></script>
-    <script src="searchcomponent.js"></script>
+    <script src="/static/js/darkmode/darkMode.js"></script>
+    <script src="/static/js/sukta_summary.js"></script>
+    <script src="/static/js/searchcomponent.js"></script>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {

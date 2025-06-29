@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RikNetra</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="./css/chapter.css">
-  <link rel="icon" href="./Images/riknetra.png" type="image/png">
+  <link rel="stylesheet" href="/static/css/chapter.css">
+  <link rel="icon" href="/static/Images/riknetra.png" type="image/png">
 </head>
 
 <body>
@@ -29,14 +29,14 @@
         <h3>RikNetra</h3>
       </div>
       <div class="side-panel-content">
-        <a href="index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
-        <a href="chapter.html" class="active"><i class="fas fa-book"></i> Read Suktas</a>
+        <a href="/templates/index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="/templates/suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
+        <a href="/templates/chapter.html" class="active"><i class="fas fa-book"></i> Read Suktas</a>
       </div>
     </div>
 
-    <a href="index.html" class="home-logo" id="home-logo">
-      <img src="Images/riknetra.png" alt="Home" class="logo-img">
+    <a href="/templates/index.html" class="home-logo" id="home-logo">
+      <img src="/static/Images/riknetra.png" alt="Home" class="logo-img">
     </a>
 
     <!-- Database and Search Controls -->
@@ -46,15 +46,15 @@
           <!-- Label for database selection -->
           <label for="database-select">Choose Connection:</label>
           <select id="database-select">
-            <option value="database/k3database.json">2 connections</option>
-            <option value="database/k4database.json">3 connections</option>
-            <option value="database/k5database.json" selected>4 connections</option>
-            <option value="database/k6database.json">5 connections</option>
-            <option value="database/k7database.json">6 connections</option>
-            <option value="database/k8database.json">7 connections</option>
-            <option value="database/k9database.json">8 connections</option>
-            <option value="database/k10database.json">9 connections</option>
-            <option value="database/k11database.json">10 connections</option>
+            <option value="/database/k3database.json">2 connections</option>
+            <option value="/database/k4database.json">3 connections</option>
+            <option value="/database/k5database.json" selected>4 connections</option>
+            <option value="/database/k6database.json">5 connections</option>
+            <option value="/database/k7database.json">6 connections</option>
+            <option value="/database/k8database.json">7 connections</option>
+            <option value="/database/k9database.json">8 connections</option>
+            <option value="/database/k10database.json">9 connections</option>
+            <option value="/database/k11database.json">10 connections</option>
           </select>
         </div>
         <input type="text" id="search-input" placeholder="Search Sukta rv 1.1...">
@@ -73,8 +73,8 @@
       <p id="chapter-info"></p>
     </div>
 
-    <!-- Connect Chapter Section -->
-    <div class="connect-chapter">
+    <!-- Connect Chapter Section - Initially hidden -->
+    <div class="connect-chapter" id="connect-chapter" style="display: none;">
       <h3>Related Sukta</h3>
       <ul id="connect-list"></ul>
     </div>
@@ -120,59 +120,62 @@
           })
           .sort((a, b) => a.weight - b.weight);
 
-        // Display connected chapters
+        // Display connected chapters only if there are any
+        const connectChapter = document.getElementById("connect-chapter");
         const connectList = document.getElementById("connect-list");
         connectList.innerHTML = '';
 
-        connectedChapters.forEach(chapter => {
-          const li = document.createElement("li");
-          li.classList.add("chapter-item");
+        if (connectedChapters.length > 0) {
+          connectChapter.style.display = 'block';
 
+          connectedChapters.forEach(chapter => {
+            const li = document.createElement("li");
+            li.classList.add("chapter-item");
 
-          // Create chapter name container (clickable)
-          const chapterNameContainer = document.createElement("div");
-          chapterNameContainer.classList.add("chapter-name-container");
+            // Create chapter name container (clickable)
+            const chapterNameContainer = document.createElement("div");
+            chapterNameContainer.classList.add("chapter-name-container");
 
-          // Create chapter name span
-          const chapterNameSpan = document.createElement("span");
-          chapterNameSpan.textContent = chapter.name;
-          chapterNameContainer.appendChild(chapterNameSpan);
+            // Create chapter name span
+            const chapterNameSpan = document.createElement("span");
+            chapterNameSpan.textContent = chapter.name;
+            chapterNameContainer.appendChild(chapterNameSpan);
 
-          // Create dropdown toggle
-          const dropdownToggle = document.createElement("button");
-          dropdownToggle.classList.add("dropdown-toggle");
-          dropdownToggle.innerHTML = '▼';
-          chapterNameContainer.appendChild(dropdownToggle);
+            // Create dropdown toggle
+            const dropdownToggle = document.createElement("button");
+            dropdownToggle.classList.add("dropdown-toggle");
+            dropdownToggle.innerHTML = '▼';
+            chapterNameContainer.appendChild(dropdownToggle);
 
-          li.appendChild(chapterNameContainer);
+            li.appendChild(chapterNameContainer);
 
-          // Create dropdown content
-          const dropdownContent = document.createElement("div");
-          dropdownContent.classList.add("dropdown-content");
-          dropdownContent.textContent = chapter.text || `This is some placeholder content for ${chapter.name}. More detailed information about this chapter can be added here.`;
-          li.appendChild(dropdownContent);
+            // Create dropdown content
+            const dropdownContent = document.createElement("div");
+            dropdownContent.classList.add("dropdown-content");
+            dropdownContent.textContent = chapter.text || `This is some placeholder content for ${chapter.name}. More detailed information about this chapter can be added here.`;
+            li.appendChild(dropdownContent);
 
-          // Event listener for toggle
-          chapterNameContainer.addEventListener("click", (event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            dropdownContent.classList.toggle("active");
+            // Event listener for toggle
+            chapterNameContainer.addEventListener("click", (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              dropdownContent.classList.toggle("active");
 
-            // Rotate arrow icon
-            dropdownToggle.innerHTML = dropdownContent.classList.contains("active") ? '▲' : '▼';
+              // Rotate arrow icon
+              dropdownToggle.innerHTML = dropdownContent.classList.contains("active") ? '▲' : '▼';
+            });
+
+            connectList.appendChild(li);
           });
-
-          connectList.appendChild(li);
-        });
+        } else {
+          connectChapter.style.display = 'none';
+        }
       }).catch(error => {
         console.error("Error loading JSON data:", error);
       });
     }
 
-    // Function to go back to suktasconnection.html with the correct database parameter
-    function goBack() {
-      window.location.href = `suktasconnection.html?database=${encodeURIComponent(database)}`;
-    }
+    // Function to perform search
     function performSearch() {
       const searchTerm = document.getElementById('search-input').value.trim();
       const selectedDatabase = document.getElementById('database-select').value;
@@ -236,7 +239,6 @@
       }
     });
 
-
     // Database selection change handler
     document.getElementById('database-select').addEventListener('change', function () {
       database = this.value;
@@ -251,6 +253,7 @@
             document.getElementById("chapter-name").textContent = '';
             document.getElementById("chapter-info").textContent = '';
             document.getElementById("connect-list").innerHTML = '';
+            document.getElementById("connect-chapter").style.display = 'none';
             alert('Current Sukta not found in selected database. Please search for a new one.');
           } else {
             // Reload the data
@@ -292,7 +295,7 @@
     // Initialize the page
     initializePage();
   </script>
-  <script src="darkmode/darkMode.js"></script>
+  <script src="/static/js/darkmode/darkMode.js"></script>
 </body>
 
 </html>

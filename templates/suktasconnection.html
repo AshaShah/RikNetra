@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RikNetra</title>
   <script src="https://d3js.org/d3.v7.min.js"></script>
-  <link rel="stylesheet" href="css/suktaconnection.css">
+  <link rel="stylesheet" href="/static/css/suktaconnection.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="icon" href="Images/riknetra.png" type="image/png">
+  <link rel="icon" href="/static/Images/riknetra.png" type="image/png">
 </head>
 
 <body>
@@ -30,14 +30,14 @@
         <h3>RikNetra</h3>
       </div>
       <div class="side-panel-content">
-        <a href="index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="suktasconnection.html" class="active"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
+        <a href="/templates/index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="/templates/suktasconnection.html" class="active"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
         <a href="chapter.html"><i class="fas fa-book"></i> Read Suktas</a>
       </div>
     </div>
 
-    <a href="index.html" class="home-logo" id="home-logo">
-      <img src="Images/riknetra.png" alt="Home" class="logo-img">
+    <a href="/templates/index.html" class="home-logo" id="home-logo">
+      <img src="/static/Images/riknetra.png" alt="Home" class="logo-img">
     </a>
 
     <!-- Main Controls Bar -->
@@ -47,17 +47,17 @@
           <!-- Label for database selection -->
           <label for="database-select">Choose Connections:</label>
           <!-- Database selection and search -->
-          <select id="database-select">
-            <option value="database/k3database.json">2 connections</option>
-            <option value="database/k4database.json">3 connections</option>
-            <option value="database/k5database.json" selected>4 connections</option>
-            <option value="database/k6database.json">5 connections</option>
-            <option value="database/k7database.json">6 connections</option>
-            <option value="database/k8database.json">7 connections</option>
-            <option value="database/k9database.json">8 connections</option>
-            <option value="database/k10database.json">9 connections</option>
-            <option value="database/k11database.json">10 connections</option>
-          </select>
+<select id="database-select">
+  <option value="/database/k3database.json">2 connections</option>
+  <option value="/database/k4database.json">3 connections</option>
+  <option value="/database/k5database.json" selected>4 connections</option>
+  <option value="/database/k6database.json">5 connections</option>
+  <option value="/database/k7database.json">6 connections</option>
+  <option value="/database/k8database.json">7 connections</option>
+  <option value="/database/k9database.json">8 connections</option>
+  <option value="/database/k10database.json">9 connections</option>
+  <option value="/database/k11database.json">10 connections</option>
+</select>
         </div>
 
         <input type="text" id="search-input" placeholder="Search Sukta rv1.1...">
@@ -124,7 +124,7 @@
     </div>
   </div>
 
-  <script src="darkmode/darkMode.js"></script>
+  <script src="/static/js/darkmode/darkMode.js"></script>
   <!-- <script src="sukta_summary.js"></script> -->
 
   <script>
@@ -544,7 +544,7 @@
             const chapterId = selectedNode.id;
             const database = d3.select("#database-select").property("value");
 
-            window.location.href = `chapter.html?chapterId=${encodeURIComponent(chapterId)}&chapterName=${encodeURIComponent(chapterName)}&database=${encodeURIComponent(database)}`;
+            window.location.href = `/templates/chapter.html?chapterId=${encodeURIComponent(chapterId)}&chapterName=${encodeURIComponent(chapterName)}&database=${encodeURIComponent(database)}`;
           } else {
             alert("Please select a node first.");
           }
