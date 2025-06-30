@@ -718,8 +718,8 @@ updateRagSummary(results, searchTerm, semanticData) {
           .data(this.nodesData)
           .enter()
           .append("text")
-          .attr("x", (d) => d.x + 10)
-          .attr("y", (d) => d.y + 5)
+          .attr("x", (d) => d.x + 7)
+          .attr("y", (d) => d.y + 0)
           .attr("class", "node-label")
           .text((d) => this.cleanSuktaName(d.name))
           .style("font-size", "6px")
@@ -740,7 +740,7 @@ updateRagSummary(results, searchTerm, semanticData) {
 
       this.node.attr("cx", (d) => d.x || 0).attr("cy", (d) => d.y || 0);
 
-      this.label.attr("x", (d) => (d.x || 0) + 16).attr("y", (d) => d.y || 0);
+      this.label.attr("x", (d) => (d.x || 0) + 7).attr("y", (d) => d.y || 0);
     } catch (e) {
       console.error("Tick error:", e);
     }
@@ -889,7 +889,7 @@ highlightGraphNode(nodeId) {
         return 0.07;
       })
       .style("font-weight", (d) => (d.id === nodeId ? "bold" : "normal"))
-      .style("font-size", "6px");
+      .style("font-size", "5px");
 
     this.zoomToNode(this.selectedNode);
 }
@@ -938,3 +938,6 @@ highlightGraphNode(nodeId) {
     return cleanName.trim();
   }
 }
+
+
+//<!--Website developed by<a href="ashashah228@gmail.com">Asha Shah</a></p> -->

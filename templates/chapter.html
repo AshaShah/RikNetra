@@ -70,12 +70,12 @@
 
     <!-- Paragraph Section -->
     <div class="paragraph">
-      <div id="chapter-info"></div>
+      <p id="chapter-info"></p>
     </div>
 
     <!-- Connect Chapter Section - Initially hidden -->
     <div class="connect-chapter" id="connect-chapter" style="display: none;">
-      <h3>Related Suktas</h3> <!-- Updated from Related Sukta -->
+      <h3>Related Sukta</h3>
       <ul id="connect-list"></ul>
     </div>
   </div>
@@ -88,28 +88,10 @@
     let chapterName = urlParams.get('chapterName');
     let database = urlParams.get('database') || '/database/k5database.json'; // Default database
 
-    // Function to wrap text to lines of up to 90 characters
-    function wrapText(text, maxLength) {
-      const words = text.split(' ');
-      let lines = [];
-      let currentLine = '';
-
-      for (let word of words) {
-        if ((currentLine + (currentLine ? ' ' : '') + word).length <= maxLength) {
-          currentLine += (currentLine ? ' ' : '') + word;
-        } else {
-          if (currentLine) lines.push(currentLine);
-          currentLine = word;
-        }
-      }
-      if (currentLine) lines.push(currentLine);
-      return lines.join('<br>');
-    }
-
     // Initialize the page with the current chapter
     function initializePage() {
-      const chapterInfo = document.getElementById("chapter-info");
       const chapterNameElement = document.getElementById("chapter-name");
+      const chapterInfo = document.getElementById("chapter-info");
       const connectChapter = document.getElementById("connect-chapter");
 
       // Handle initial state (no search performed)
@@ -122,13 +104,13 @@
 
       // Display the chapter name
       chapterNameElement.textContent = chapterName;
-
-      // Load the chapter data
       loadChapterData();
     }
 
     // Function to load chapter data
     function loadChapterData() {
+      if (!chapterId || !database) return;
+
       d3.json(database).then(data => {
         const nodes = data.nodes;
         const edges = data.edges;
@@ -136,9 +118,13 @@
         // Find the selected chapter (node) by ID
         const selectedChapter = nodes.find(node => node.id === chapterId);
 
+        if (!selectedChapter) {
+          throw new Error("Chapter not found in database");
+        }
+
         // Display the chapter text or a placeholder if no text is available
         const chapterInfo = document.getElementById("chapter-info");
-        let chapterText = selectedChapter.text || `This is a placeholder for ${selectedChapter.name}. More details will be added later.`;
+        const chapterText = selectedChapter.text || `This is a placeholder for ${selectedChapter.name}. More details will be added later.`;
 
         // Split text into sentences
         let sentences = chapterText
@@ -226,6 +212,7 @@
         }
       }).catch(error => {
         console.error("Error loading JSON data:", error);
+        const chapterInfo = document.getElementById("chapter-info");
         chapterInfo.innerHTML = "<p>Error loading sukta data. Please try again.</p>";
       });
     }
@@ -242,15 +229,16 @@
 
       // Normalize the search term (remove RV/SV/YV prefix, handle different formats)
       const normalizedSearch = searchTerm
-        .toUpperCase()
-        .replace(/^(RV|SV|YV)[\s\.]*/i, '')
-        .replace(/\s+/g, ' ')
+        .toUpperCase() // convert to uppercase
+        .replace(/^(RV|SV|YV)[\s\.]*/i, '') // remove RV/SV/YV prefix
+        .replace(/\s+/g, ' ') // normalize spaces
         .trim();
 
       // Load the database and search for the term
       d3.json(selectedDatabase).then(data => {
         // Match nodes that match the normalized search term
         const matchingNodes = data.nodes.filter(node => {
+          // Normalize the node name for comparison
           const normalizedName = node.name
             .toUpperCase()
             .replace(/^(RV|SV|YV)[\s\.]*/i, '')
@@ -269,7 +257,9 @@
           initializePage();
         } else {
           // If multiple matches (like RV 1.1 and SV 1.1), let the user choose
-          const choice = prompt(`Multiple versions found. Please select one:\n\n${matchingNodes.map((node, i) => `${i + 1}. ${node.name}`).join('\n')}`);
+          const choice = prompt(`Multiple versions found. Please select one:\n\n${matchingNodes.map((node, i) => `${i + 1}. ${node.name}`).join('\n')
+            }`);
+
           const selectedIndex = parseInt(choice) - 1;
           if (selectedIndex >= 0 && selectedIndex < matchingNodes.length) {
             chapterId = matchingNodes[selectedIndex].id;
@@ -302,8 +292,8 @@
           const nodeExists = data.nodes.some(node => node.id === chapterId);
           if (!nodeExists) {
             // If current chapter doesn't exist in new database, clear the display
-            document.getElementById("chapter-name").textContent = 'Read Suktas';
-            document.getElementById("chapter-info").innerHTML = '<p>Please enter a sukta number in the search bar.</p>';
+            document.getElementById("chapter-name").textContent = '';
+            document.getElementById("chapter-info").textContent = '';
             document.getElementById("connect-list").innerHTML = '';
             document.getElementById("connect-chapter").style.display = 'none';
             alert('Current Sukta not found in selected database. Please search for a new one.');
@@ -348,6 +338,7 @@
     initializePage();
   </script>
   <script src="/static/js/darkmode/darkMode.js"></script>
+  <!--Website developed by<a href="ashashah228@gmail.com">Asha Shah</a></p> -->
 </body>
 
 </html>
