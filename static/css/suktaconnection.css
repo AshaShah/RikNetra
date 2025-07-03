@@ -603,6 +603,24 @@ input:checked+.toggle-label .toggle-text-off {
   color: var(--text-dark);
 }
 
+/* Update or add these styles */
+.legend-label {
+  text-decoration: underline; /* Always underlined */
+  text-underline-offset: 3px; /* Space between text and underline */
+}
+
+/* Remove any existing :hover or .active rules that might be affecting the underline */
+.legend-item:hover .legend-label,
+.legend-item.active .legend-label {
+  text-decoration: underline !important; /* Maintain underline even on hover/active */
+}
+
+/* If you're using the 'underlined' class specifically, make sure it's always applied */
+.legend-label.underlined {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .color-box {
   width: 14px;
   height: 14px;
@@ -619,7 +637,6 @@ input:checked+.toggle-label .toggle-text-off {
 
 .legend-item.active {
   font-weight: bold;
-  text-decoration: underline;
   background: #d3dcdf;
   border-radius: 10px;
 }

@@ -31,8 +31,8 @@
       </div>
       <div class="side-panel-content">
         <a href="/templates/index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="/templates/suktasconnection.html" class="active"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
-        <a href="chapter.html"><i class="fas fa-book"></i> Read Suktas</a>
+        <a href="/templates/suktasconnection.html" class="active"><i class="fas fa-project-diagram"></i> Hymn Connections</a>
+        <a href="chapter.html"><i class="fas fa-book"></i> Read Hymns</a>
       </div>
     </div>
 
@@ -60,7 +60,7 @@
 </select>
         </div>
 
-        <input type="text" id="search-input" placeholder="Search Sukta rv1.1...">
+        <input type="text" id="search-input" placeholder="Search hymn rv1.1...">
 
         <!-- Zoom controls -->
         <button id="zoom-in" title="Zoom In"><i class="fas fa-search-plus"></i></button>
@@ -69,7 +69,7 @@
 
         <!-- Display options -->
         <label>
-          <input type="checkbox" id="toggle-labels" checked> Sukta Numbers
+          <input type="checkbox" id="toggle-labels" checked> Hymn Numbers
         </label>
         <label>
           <input type="checkbox" id="isolate-node-toggle"> Hide Unselected
@@ -103,22 +103,22 @@
         <button id="read-chapter">Read this Chapter</button>
       </div>
       <div id="color-legend" class="color-legend" style="display: none;">
-        <div class="legend-title">Topic Colors:</div>
+        <div class="legend-title">Navigate to Topics</div>
         <div class="legend-items">
           <div class="legend-item" data-color="#ce6dbd"><span class="color-box"
-              style="background-color: #ce6dbd;"></span>Creation</div>
+              style="background-color: #ce6dbd; "></span><span class="legend-label underlined">Creation</span></div>
           <div class="legend-item" data-color="#dbdb8d"><span class="color-box"
-              style="background-color: #dbdb8d;"></span>Marut</div>
+              style="background-color: #dbdb8d;"></span><span class="legend-label underlined">Marut</span></div>
           <div class="legend-item" data-color="#756bb1"><span class="color-box"
-              style="background-color: #756bb1;"></span>Funeral</div>
+              style="background-color: #756bb1;"></span><span class="legend-label underlined">Funeral</span></div>
           <div class="legend-item" data-color="#5254a3"><span class="color-box"
-              style="background-color: #5254a3;"></span>Surya</div>
+              style="background-color: #5254a3;"></span><span class="legend-label underlined">Surya</span></div>
           <div class="legend-item" data-color="#ffbb78"><span class="color-box"
-              style="background-color: #ffbb78;"></span>Water</div>
+              style="background-color: #ffbb78;"></span><span class="legend-label underlined">Water</span></div>
           <div class="legend-item" data-color="#9c9ede"><span class="color-box"
-              style="background-color: #9c9ede;"></span>Heaven & Earth</div>
+              style="background-color: #9c9ede;"></span><span class="legend-label underlined">Heaven & Earth</span></div>
           <div class="legend-item" data-color="#bcbd22"><span class="color-box"
-              style="background-color: #bcbd22;"></span>Brihaspathi</div>
+              style="background-color: #bcbd22;"></span><span class="legend-label underlined">Brihaspathi</span></div>
         </div>
       </div>
     </div>
@@ -386,7 +386,7 @@
           } else {
             // Optional: Show "no results" feedback
             tooltip.style("display", "block")
-              .html(`<strong>No matching Sukta found</strong>`)
+              .html(`<strong>No matching Hymn found</strong>`)
               .style("left", `${d3.event.pageX + 5}px`)
               .style("top", `${d3.event.pageY + 5}px`)
               .style("background-color", "#ffcccc");
@@ -407,7 +407,7 @@
         });
 
         function showPopup(node) {
-          popupTitle.text(`${node.name} and its related Sukta`);
+          popupTitle.text(`${node.name} and its related Hymns`);
           popupLinks.html("");
 
           const connections = edges.filter(e => e.source.id === node.id)

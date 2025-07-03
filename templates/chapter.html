@@ -30,8 +30,8 @@
       </div>
       <div class="side-panel-content">
         <a href="/templates/index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="/templates/suktasconnection.html"><i class="fas fa-project-diagram"></i> Sukta Connections</a>
-        <a href="/templates/chapter.html" class="active"><i class="fas fa-book"></i> Read Suktas</a>
+        <a href="/templates/suktasconnection.html"><i class="fas fa-project-diagram"></i> Hymn Connections</a>
+        <a href="/templates/chapter.html" class="active"><i class="fas fa-book"></i> Read Hymns</a>
       </div>
     </div>
 
@@ -57,7 +57,7 @@
             <option value="/database/k11database.json">10 connections</option>
           </select>
         </div>
-        <input type="text" id="search-input" placeholder="Search Sukta rv 1.1...">
+        <input type="text" id="search-input" placeholder="Search hymn rv 1.1...">
         <button id="search-button">Search</button>
       </div>
     </div>
@@ -75,7 +75,7 @@
 
     <!-- Connect Chapter Section - Initially hidden -->
     <div class="connect-chapter" id="connect-chapter" style="display: none;">
-      <h3>Related Sukta</h3>
+      <h3>Related Hymns</h3>
       <ul id="connect-list"></ul>
     </div>
   </div>
@@ -96,8 +96,8 @@
 
       // Handle initial state (no search performed)
       if (!chapterId || !chapterName) {
-        chapterNameElement.textContent = "Read Suktas";
-        chapterInfo.innerHTML = "<p>Please enter a sukta number in the search bar.</p>";
+        chapterNameElement.textContent = "Read Hymns";
+        chapterInfo.innerHTML = "<p>Please enter a Hymn number in the search bar.</p>";
         connectChapter.style.display = "none";
         return;
       }
@@ -213,7 +213,7 @@
       }).catch(error => {
         console.error("Error loading JSON data:", error);
         const chapterInfo = document.getElementById("chapter-info");
-        chapterInfo.innerHTML = "<p>Error loading sukta data. Please try again.</p>";
+        chapterInfo.innerHTML = "<p>Error loading hymn data. Please try again.</p>";
       });
     }
 
@@ -248,7 +248,7 @@
         });
 
         if (matchingNodes.length === 0) {
-          alert('No matching Suktas found');
+          alert('No matching Hymns found');
         } else if (matchingNodes.length === 1) {
           // If only one match, load it directly
           chapterId = matchingNodes[0].id;
@@ -296,7 +296,7 @@
             document.getElementById("chapter-info").textContent = '';
             document.getElementById("connect-list").innerHTML = '';
             document.getElementById("connect-chapter").style.display = 'none';
-            alert('Current Sukta not found in selected database. Please search for a new one.');
+            alert('Current Hymn not found in selected database. Please search for a new one.');
           } else {
             // Reload the data
             loadChapterData();

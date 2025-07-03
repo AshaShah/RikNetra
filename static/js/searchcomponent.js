@@ -9,6 +9,7 @@ class RigvedaSearch {
     // Search state
     this.currentSearchTerm = "";
     this.searchTimeout = null;
+    
 
     // Initialize
     this.setupEventListeners();
@@ -192,7 +193,6 @@ class RigvedaSearch {
 
       // 3. If not found, proceed as usual with semantic search
       const semanticData = await this.fetchSemanticResults();
-      console.log("RAG data received:", semanticData.rag_summary);
       let matchedNodes = this.processSearchResults(semanticData);
 
       this.updateSearchResults(
@@ -342,10 +342,6 @@ updateRagSummary(results, searchTerm, semanticData) {
       item.innerHTML = `
             <div class="vertical-result-header">
                 <span class="vertical-result-title">${cleanName}</span>
-                <span class="vertical-result-score">${Math.max(
-                  70,
-                  100 - index * 5
-                )}%</span>
             </div>
             <div class="vertical-result-content">
                 ${contentPreview || "No preview available"}
@@ -354,7 +350,7 @@ updateRagSummary(results, searchTerm, semanticData) {
                 <button class="view-connections" data-node-id="${
                   result.id || result.index
                 }">
-                    <i class="fas fa-link"></i> View Graph
+                    <i class="fas fa-link"></i> Hymns Net.
                 </button>
                 <button class="read-full" data-node-id="${
                   result.id || result.index
