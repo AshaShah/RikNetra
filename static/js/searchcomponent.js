@@ -9,7 +9,6 @@ class RigvedaSearch {
     // Search state
     this.currentSearchTerm = "";
     this.searchTimeout = null;
-    
 
     // Initialize
     this.setupEventListeners();
@@ -32,6 +31,8 @@ class RigvedaSearch {
     this.ragSummary = options.ragSummary;
     this.resultCards = options.resultCards;
     this.graphSvg = options.graphSvg;
+    this.recentHymnsList = document.getElementById("recent-hymns-list");
+    this.recentNodes = []; // Stores recently clicked nodes
   }
 
   // Initialize D3 Graph variables
@@ -68,7 +69,6 @@ class RigvedaSearch {
       "click",
       this.handleSearchClick.bind(this)
     );
-    // this.clearSearch.addEventListener("click", this.resetSearch.bind(this));
     this.databaseSelect.addEventListener(
       "change",
       this.handleDatabaseChange.bind(this)
@@ -83,10 +83,6 @@ class RigvedaSearch {
   // Auto search on input - commented out to avoid auto search on every keystroke
   handleSearchInput() {
     this.currentSearchTerm = this.searchBox.value.trim();
-    // if (this.searchTimeout) clearTimeout(this.searchTimeout);
-    // if (this.currentSearchTerm.length > 0) {
-    //   this.searchTimeout = setTimeout(() => this.performSearch(), 300);
-    // }
   }
 
   // Search button click handler
@@ -223,7 +219,7 @@ class RigvedaSearch {
       return data;
     } catch (error) {
       console.error("Error fetching semantic results:", error);
-      return null; // or handle error as needed
+      return null;
     }
   }
 
@@ -278,34 +274,32 @@ class RigvedaSearch {
     this.renderResultsList(results);
   }
 
-updateRagSummary(results, searchTerm, semanticData) {
+  updateRagSummary(results, searchTerm, semanticData) {
     const ragContainer = this.ragSummary.querySelector(".summary-content");
 
     if (semanticData?.rag_summary) {
-        // Split summary into sentences
-        let sentences = semanticData.rag_summary
-            .split(/(?<=[.!?])\s+/)
-            .filter(s => s.trim().length > 0);
+      // Split summary into sentences
+      let sentences = semanticData.rag_summary
+        .split(/(?<=[.!?])\s+/)
+        .filter((s) => s.trim().length > 0);
 
-        // Group sentences into paragraphs of 3
-        let paragraphs = [];
-        for (let i = 0; i < sentences.length; i += 3) {
-            paragraphs.push(sentences.slice(i, i + 3).join(' '));
-        }
+      // Group sentences into paragraphs of 3
+      let paragraphs = [];
+      for (let i = 0; i < sentences.length; i += 3) {
+        paragraphs.push(sentences.slice(i, i + 3).join(" "));
+      }
 
-        // Format paragraphs with HTML
-        let formattedSummary = paragraphs
-            .map(p => `<p>${p}</p>`)
-            .join('');
+      // Format paragraphs with HTML
+      let formattedSummary = paragraphs.map((p) => `<p>${p}</p>`).join("");
 
-        ragContainer.innerHTML = `
+      ragContainer.innerHTML = `
             <div class="rag-container">
                 <div class="rag-content">${formattedSummary}</div>
             </div>`;
     } else {
-        ragContainer.innerHTML = `<p>Found ${results.length} results for "${searchTerm}"</p>`;
+      ragContainer.innerHTML = `<p>Found ${results.length} results for "${searchTerm}"</p>`;
     }
-}
+  }
 
   renderResultsList(results) {
     this.resultCards.innerHTML = "";
@@ -435,18 +429,22 @@ updateRagSummary(results, searchTerm, semanticData) {
     }
     if (!node) return;
 
+    // Add to recent hymns
+    this.addToRecentHymns(node);
+
     // Highlight the selected result card
     const resultItems = document.querySelectorAll(".vertical-result-item");
     resultItems.forEach((item) => {
-      item.classList.remove("selected"); // Remove highlight from all items
+      item.classList.remove("selected");
       if (item.querySelector(`[data-node-id="${nodeId}"]`)) {
-        item.classList.add("selected"); // Add highlight to the selected item
+        item.classList.add("selected");
       }
     });
 
     this.zoomToNode(node);
     this.highlightGraphNode(node.id);
   }
+
   handleReadFull(event, chapterName) {
     const chapterId = event.target.dataset.nodeId;
     const database = this.databaseSelect.value;
@@ -479,6 +477,31 @@ updateRagSummary(results, searchTerm, semanticData) {
     this.welcomeSection.classList.remove("hidden");
     document.getElementById("search-guide-card").classList.remove("hidden");
     this.resultsContainer.style.display = "none";
+  }
+
+  resetGraphHighlights() {
+    if (this.node) {
+      this.node
+        .attr("fill", "#7fb3d5")
+        .attr("stroke", "none")
+        .attr("stroke-width", 0)
+        .attr("r", 8)
+        .attr("opacity", 1);
+    }
+    if (this.link) {
+      this.link
+        .attr("stroke", "#aaa")
+        .attr("stroke-opacity", 0.6)
+        .attr("stroke-width", 2);
+    }
+    if (this.label) {
+      this.label
+        .style("font-weight", "normal")
+        .style("opacity", 0.6)
+        .style("font-size", "6px");
+    }
+    this.selectedNode = null;
+    this.selectedEdge = null;
   }
 
   // --- D3 Graph Initialization and Rendering ---
@@ -546,12 +569,12 @@ updateRagSummary(results, searchTerm, semanticData) {
 
     this.node
       .attr("fill", (d) => {
-        if (d.id === sourceId || d.id === targetId) return "#E57373"; // Highlight color
-        return "#7fb3d5"; // Default color
+        if (d.id === sourceId || d.id === targetId) return "#E57373";
+        return "#7fb3d5";
       })
       .attr("r", (d) => {
-        if (d.id === sourceId || d.id === targetId) return 8; // Larger radius for highlighted nodes
-        return 5; // Default radius
+        if (d.id === sourceId || d.id === targetId) return 8;
+        return 5;
       });
 
     this.label
@@ -574,7 +597,7 @@ updateRagSummary(results, searchTerm, semanticData) {
         const width = this.graphSvg.parentElement.clientWidth;
         const height = this.graphSvg.parentElement.clientHeight;
 
-        // Normalize edge weights exactly like the reference code
+        // Normalize edge weights
         const weights = this.edgesData.map((d) => d.weight);
         const min_weight = Math.min(...weights);
         const max_weight = Math.max(...weights);
@@ -592,7 +615,7 @@ updateRagSummary(results, searchTerm, semanticData) {
           }
         });
 
-        // Use the same scaling approach as reference code
+        // Use the same scaling approach
         const xScale = d3
           .scaleLinear()
           .domain([
@@ -698,6 +721,10 @@ updateRagSummary(results, searchTerm, semanticData) {
               this.selectedEdge.attr("stroke", "#aaa");
               this.selectedEdge = null;
             }
+
+            // Add to recent hymns
+            this.addToRecentHymns(d);
+
             // Perform exact search for the clicked node
             this.searchBox.value = this.cleanSuktaName(d.name);
             this.currentSearchTerm = this.cleanSuktaName(d.name);
@@ -759,7 +786,7 @@ updateRagSummary(results, searchTerm, semanticData) {
     d.fy = null;
   }
 
-highlightGraphNode(nodeId) {
+  highlightGraphNode(nodeId) {
     this.selectedNode = this.nodesData.find((n) => n.id === nodeId);
     if (!this.selectedNode) return;
 
@@ -839,33 +866,37 @@ highlightGraphNode(nodeId) {
         return 3;
       });
 
-    // New edge highlighting logic:
-    // 1. Highlight only outgoing edges from selected node
-    // 2. Only highlight edges where BOTH nodes are in levels 1-3
+    // Edge highlighting logic
     this.link
       .attr("stroke", (d) => {
-        // Highlight outgoing edges from selected node
         if (d.source.id === nodeId) return colors.edgeHighlight;
-        
-        // For other edges, only highlight if both nodes are in levels
-        const sourceInLevel = level1.has(d.source.id) || level2.has(d.source.id) || level3.has(d.source.id);
-        const targetInLevel = level1.has(d.target.id) || level2.has(d.target.id) || level3.has(d.target.id);
-        
+        const sourceInLevel =
+          level1.has(d.source.id) ||
+          level2.has(d.source.id) ||
+          level3.has(d.source.id);
+        const targetInLevel =
+          level1.has(d.target.id) ||
+          level2.has(d.target.id) ||
+          level3.has(d.target.id);
         if (sourceInLevel && targetInLevel) {
-          if (level1.has(d.source.id) && level1.has(d.target.id)) return colors.level1;
-          if (level2.has(d.source.id) && level2.has(d.target.id)) return colors.level2;
+          if (level1.has(d.source.id) && level1.has(d.target.id))
+            return colors.level1;
+          if (level2.has(d.source.id) && level2.has(d.target.id))
+            return colors.level2;
           return colors.edgeDefault;
         }
         return colors.edgeDefault;
       })
       .attr("stroke-opacity", (d) => {
-        // Full opacity for outgoing edges from selected node
         if (d.source.id === nodeId) return 1;
-        
-        // For other edges, opacity based on levels of both nodes
-        const sourceInLevel = level1.has(d.source.id) || level2.has(d.source.id) || level3.has(d.source.id);
-        const targetInLevel = level1.has(d.target.id) || level2.has(d.target.id) || level3.has(d.target.id);
-        
+        const sourceInLevel =
+          level1.has(d.source.id) ||
+          level2.has(d.source.id) ||
+          level3.has(d.source.id);
+        const targetInLevel =
+          level1.has(d.target.id) ||
+          level2.has(d.target.id) ||
+          level3.has(d.target.id);
         if (sourceInLevel && targetInLevel) {
           if (level1.has(d.source.id) && level1.has(d.target.id)) return 0.8;
           if (level2.has(d.source.id) && level2.has(d.target.id)) return 0.6;
@@ -888,7 +919,7 @@ highlightGraphNode(nodeId) {
       .style("font-size", "5px");
 
     this.zoomToNode(this.selectedNode);
-}
+  }
 
   zoomToNode(node) {
     if (!node || isNaN(node.x) || isNaN(node.y)) {
@@ -921,19 +952,39 @@ highlightGraphNode(nodeId) {
     }
   }
 
-  cleanSuktaName(name) {
-    if (!name) return name;
-    // Remove extra "RV" prefixes and trim whitespace
-    let cleanName = name.replace(/^(RV\s*)+/i, "RV ").trim();
-    // Ensure "RV" is followed by a space if not already
-    if (!cleanName.startsWith("RV ")) {
-      cleanName = "RV " + cleanName;
+  addToRecentHymns(node) {
+    // Check if already exists
+    const exists = this.recentNodes.some((n) => n.id === node.id);
+    if (exists) return;
+
+    // Add to beginning of array
+    this.recentNodes.unshift({
+      id: node.id,
+      name: this.cleanSuktaName(node.name),
+    });
+
+    // Keep only last 5 items
+    if (this.recentNodes.length > 5) {
+      this.recentNodes.pop();
     }
-    // Remove any remaining duplicate "RV"
-    cleanName = cleanName.replace(/(RV\s+)+/g, "RV ");
-    return cleanName.trim();
+
+    this.updateRecentHymnsList();
+  }
+
+  updateRecentHymnsList() {
+    this.recentHymnsList.innerHTML = "";
+
+    this.recentNodes.forEach((node, index) => {
+      const item = document.createElement("div");
+      item.className = `recent-hymn-item recent-hymn-${index + 1}`; // Add numbered class
+      item.textContent = node.name;
+      item.dataset.nodeId = node.id;
+      item.addEventListener("click", () => {
+        this.searchBox.value = node.name;
+        this.currentSearchTerm = node.name;
+        this.performSearch();
+      });
+      this.recentHymnsList.appendChild(item);
+    });
   }
 }
-
-
-//<!--Website developed by<a href="ashashah228@gmail.com">Asha Shah</a></p> -->

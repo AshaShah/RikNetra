@@ -109,26 +109,26 @@ def user_query_function(queries, text, k, embedding_model, text_embeddings, sukt
             sorted_items = sorted(non_zero_items, key=lambda x: x[1], reverse=True)
             suktafeat_names = vectorizer.get_feature_names_out()
             top_terms = [suktafeat_names[idx] for idx, _ in sorted_items[:5]]
-            print(f"Top terms for query '{query}': {top_terms}")  
+            #print(f"Top terms for query '{query}': {top_terms}")  
         
         new_query_string = " ".join(top_terms) if len(top_terms) >= 2 else query_lower
-        print(f"Query string: {new_query_string}")  # Debug
+        #print(f"Query string: {new_query_string}")  # Debug
         
         query_embedding = embedding_model.encode(new_query_string, convert_to_tensor=True).to(device)
         query_embedding = query_embedding.to(dtype=torch.float64)
         
         similarity_scores = embedding_model.similarity(query_embedding, text_embeddings)[0]
         scores, indices = torch.topk(similarity_scores, k=top_k)
-        print(f"Top {top_k} indices: {indices.tolist()}")  
+        #print(f"Top {top_k} indices: {indices.tolist()}")  
         
         for score, idx in zip(scores, indices):
             index = idx.tolist()
             label_num = sukta_labels.iloc[index, 0]
-            print(f"Sukta {label_num}: {text[index]}") 
+            #print(f"Sukta {label_num}: {text[index]}") 
             text_dict[label_num] = text[index]
             collected_text += "".join(text[index])
     
-    print(f"Collected text length: {len(collected_text)}")  
+    #print(f"Collected text length: {len(collected_text)}")  
     return collected_text, text_dict
 
 # Routes

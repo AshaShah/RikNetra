@@ -478,7 +478,6 @@ body.search-active .search-section {
 }
 
 
-
 /* Dark mode section for search guide */
 .dark-mode .search-guide-card {
   background: var(--card-bg-dark);
@@ -892,6 +891,101 @@ body.search-active .results-container {
   max-width: 300px;
   line-height: 1.4;
 }
+
+/* Recent clicked hymns section */
+.recent-hymns-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.recent-hymns-container h3 {
+  margin: 0 0 8px 0;
+  font-size: 12px;
+  color : var(--primary);
+  font-weight: 600;
+}
+
+.recent-hymns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.recent-hymn-item {
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: background 0.2s;
+}
+
+/* Distinct styles for each of the top 5 recent hymns */
+.recent-hymn-1 {
+  background: #328E6E; /* Light pink */
+}
+
+.recent-hymn-2 {
+  background: #67AE6E; /* Light blue */
+}
+
+.recent-hymn-3 {
+  background: #90C67C; /* Light yellow */
+}
+
+.recent-hymn-4 {
+  background: #E1EEBC; /* Light green */
+}
+
+.recent-hymn-5 {
+  background: #EFF6D5; /* Light purple */
+}
+
+/* Dark Mode Styles */
+.dark-mode .recent-hymns-container {
+  background: rgba(103, 98, 98, 0.95);
+  border: 1px solid rgba(127, 85, 177, 0.3);
+}
+
+.dark-mode .recent-hymn-item:hover {
+  background: var(--dark-mode-button-hover-bg);
+}
+
+.dark-mode .recent-hymns-container h3 {
+  color: white;
+}
+
+/* Distinct styles for each of the top 5 recent hymns */
+.dark-mode .recent-hymn-1 {
+  background: #328E6E; 
+}
+
+.dark-mode .recent-hymn-2 {
+  background: #67AE6E; 
+}
+
+.dark-mode .recent-hymn-3 {
+  background: #90C67C; 
+}
+
+.dark-mode  .recent-hymn-4 {
+  background: #E1EEBC; 
+  color: #1e1e1e;
+}
+
+.dark-mode .recent-hymn-5 {
+  background: #EFF6D5;
+  color: #1e1e1e;
+}
+
+
 
 /* Graph Legend Styles */
 .graph-legend {
