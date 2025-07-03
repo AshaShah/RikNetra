@@ -2,7 +2,7 @@
 
 RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hindu scripture, through semantic search, interconnected hymn visualization, and textual analysis. It leverages natural language processing (NLP) and graph-based visualization to enable scholars, researchers, and enthusiasts to navigate Rigvedic hymns (suktas) intuitively.
 
-<img src="Images/riknetra.png" alt="RikNetra Screenshot" width="300">
+<img src="static/Images/riknetra.png" alt="RikNetra Screenshot" width="300">
 
 ## Features
 
