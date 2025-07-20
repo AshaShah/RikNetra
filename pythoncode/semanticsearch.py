@@ -96,7 +96,7 @@ except Exception as e:
     logger.error(f"Failed to load data: {str(e)}")
     raise
 
-# Preprocessing function (unchanged)
+# Preprocessing function
 def preprocessing(raw_text):
     raw_text = raw_text.lower()
     raw_text = re.sub('[0-9]+', '', raw_text)
@@ -109,11 +109,11 @@ def preprocessing(raw_text):
     processed_text = [word for word in clean_split_text if word not in sukta_stop_words and len(word) > 2]
     return processed_text
 
-# Tokenizer function (unchanged)
+# Tokenizer function
 def sukta_tokenizer(suktext):
     return suktext.split()
 
-# Initialize TF-IDF Vectorizer (unchanged parameters)
+# Initialize TF-IDF Vectorizer
 logger.info("Initializing TF-IDF vectorizer...")
 vectorizer = TfidfVectorizer(
     tokenizer=sukta_tokenizer,
@@ -127,7 +127,7 @@ processed_text = preprocessing(rigsuktatext)
 vectorizer.fit_transform(processed_text)
 logger.info("TF-IDF vectorizer initialized")
 
-# Original user_query_function preserved exactly
+# user_query_function
 def user_query_function(queries, text, k, embedding_model, text_embeddings, sukta_labels):
     top_k = min(k, len(text))
     top_terms = []
@@ -188,7 +188,7 @@ def api_semantic_search():
         )
         collected_text, text_dict = future.result(timeout=60)  # 60 second timeout
         
-        # Original message template preserved exactly
+        
         message = f"""{query}.
         Instructions:
 
