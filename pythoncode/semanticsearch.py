@@ -44,36 +44,59 @@ torch.use_deterministic_algorithms(True)
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-# Initialize models - keeping original behavior
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# Force CPU usage for Render compatibility
+device = torch.device("cpu")
 logger.info(f"Using device: {device}")
-embedder = SentenceTransformer("all-mpnet-base-v2")
+
+# Configure Torch for optimal CPU performance
+torch.set_num_threads(1)  # Prevents CPU overutilization on Render
+
+# Initialize models with CPU optimization
+logger.info("Loading SentenceTransformer model...")
+embedder = SentenceTransformer("all-mpnet-base-v2", device=device)
 embedder.eval()
 
 # Get the directory of the current script
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Load data files - original functions preserved
+# Load data files with error handling
 def load_sbert_embeddings(file_path):
-    return np.loadtxt(file_path, delimiter='\t')
+    try:
+        return np.loadtxt(file_path, delimiter='\t')
+    except Exception as e:
+        logger.error(f"Error loading embeddings: {str(e)}")
+        raise
 
 def read_griffith_text(file_path):
-    with open(file_path, 'r') as f:
-        return f.readlines()
+    try:
+        with open(file_path, 'r') as f:
+            return f.readlines()
+    except Exception as e:
+        logger.error(f"Error reading Griffith text: {str(e)}")
+        raise
 
 def read_jamison_text(file_path):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        return f.read()
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception as e:
+        logger.error(f"Error reading Jamison text: {str(e)}")
+        raise
 
-# Load data - original loading process
+# Load data with progress logging
 logger.info("Loading data files...")
-corpus_np = load_sbert_embeddings(os.path.join(BASE_DIR, "sbert_queryembeddings.tsv"))
-corpus_embeddings = torch.tensor(corpus_np)
-labels = pd.read_csv(os.path.join(BASE_DIR, "suktalabels.tsv"), header=None)
-griffith_text = read_griffith_text(os.path.join(BASE_DIR, "Griff_translation.txt"))
-rigsuktatext = read_jamison_text(os.path.join(BASE_DIR, "consuktasrigveda.txt"))
+try:
+    corpus_np = load_sbert_embeddings(os.path.join(BASE_DIR, "sbert_queryembeddings.tsv"))
+    corpus_embeddings = torch.tensor(corpus_np).to(device)
+    labels = pd.read_csv(os.path.join(BASE_DIR, "suktalabels.tsv"), header=None)
+    griffith_text = read_griffith_text(os.path.join(BASE_DIR, "Griff_translation.txt"))
+    rigsuktatext = read_jamison_text(os.path.join(BASE_DIR, "consuktasrigveda.txt"))
+    logger.info("Data loading completed successfully")
+except Exception as e:
+    logger.error(f"Failed to load data: {str(e)}")
+    raise
 
-# Preprocessing function - original preserved
+# Preprocessing function (unchanged)
 def preprocessing(raw_text):
     raw_text = raw_text.lower()
     raw_text = re.sub('[0-9]+', '', raw_text)
@@ -86,11 +109,11 @@ def preprocessing(raw_text):
     processed_text = [word for word in clean_split_text if word not in sukta_stop_words and len(word) > 2]
     return processed_text
 
-# Tokenizer function - original preserved
+# Tokenizer function (unchanged)
 def sukta_tokenizer(suktext):
     return suktext.split()
 
-# Initialize TF-IDF Vectorizer - original parameters preserved
+# Initialize TF-IDF Vectorizer (unchanged parameters)
 logger.info("Initializing TF-IDF vectorizer...")
 vectorizer = TfidfVectorizer(
     tokenizer=sukta_tokenizer,
@@ -102,6 +125,7 @@ vectorizer = TfidfVectorizer(
 )
 processed_text = preprocessing(rigsuktatext)
 vectorizer.fit_transform(processed_text)
+logger.info("TF-IDF vectorizer initialized")
 
 # Original user_query_function preserved exactly
 def user_query_function(queries, text, k, embedding_model, text_embeddings, sukta_labels):
@@ -137,8 +161,8 @@ def user_query_function(queries, text, k, embedding_model, text_embeddings, sukt
     
     return collected_text, text_dict
 
-# Thread pool for handling requests
-executor = ThreadPoolExecutor(max_workers=2)
+# Thread pool for handling requests (limited to 1 worker for CPU constraints)
+executor = ThreadPoolExecutor(max_workers=1)
 
 @app.route('/semantic-search', methods=['POST'])
 def api_semantic_search():
@@ -197,6 +221,7 @@ def api_semantic_search():
 
         cohere_api_key = os.environ.get('COHERE_API_KEY')
         if not cohere_api_key:
+            logger.error("Cohere API key not found")
             return jsonify({"error": "Cohere API key not found"}), 500
 
         co = cohere.ClientV2(api_key=cohere_api_key)
@@ -215,6 +240,7 @@ def api_semantic_search():
         })
         
     except TimeoutError:
+        logger.warning("Request timed out")
         return jsonify({"error": "Request timed out. Please try a simpler query."}), 408
     except Exception as e:
         logger.error(f"Error in semantic search: {str(e)}", exc_info=True)
@@ -232,7 +258,3 @@ def serve_database(filename):
 @app.route('/templates/<path:filename>')
 def serve_template(filename):
     return send_from_directory(app.template_folder, filename)
-
-# if __name__ == '__main__':
-#     port = int(os.environ.get('PORT', 5000))
-#     app.run(host='0.0.0.0', port=port)
