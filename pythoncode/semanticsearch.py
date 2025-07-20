@@ -2,7 +2,7 @@ import re
 import os
 import nltk
 import torch
-import cohere 
+import cohere
 import numpy as np
 import pandas as pd
 from flask import Flask, request, jsonify, send_from_directory
@@ -28,7 +28,7 @@ app = Flask(__name__,
             template_folder=os.path.join(os.path.dirname(os.path.abspath(__file__)), '../templates'))
 CORS(app)
 
-# Health check endpoint (required by Render)
+# Health check endpoint for Render
 @app.route('/health')
 def health_check():
     return jsonify({"status": "healthy"}), 200
@@ -40,100 +40,82 @@ nltk.download('stopwords')
 SEED = 42
 torch.manual_seed(SEED)
 np.random.seed(SEED)
+torch.use_deterministic_algorithms(True)
+os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-# Configuration
-MAX_TIMEOUT = 60  # seconds
-TOP_K_RESULTS = 10
+# Initialize models - keeping original behavior
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+logger.info(f"Using device: {device}")
+embedder = SentenceTransformer("all-mpnet-base-v2")
+embedder.eval()
 
-# Initialize resources in memory (only once when app starts)
-logger.info("Starting application initialization...")
+# Get the directory of the current script
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# 1. Load models and data efficiently
-def load_resources():
-    """Load all heavy resources once at startup"""
-    resources = {}
-    
-    # Set device (use CPU on Render)
-    device = torch.device("cpu")  # Force CPU for Render compatibility
-    logger.info(f"Using device: {device}")
-    
-    # Load embedding model
-    logger.info("Loading SentenceTransformer model...")
-    resources['embedder'] = SentenceTransformer("all-mpnet-base-v2", device=device)
-    resources['embedder'].eval()
-    
-    # Load data files
-    logger.info("Loading data files...")
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    
-    # Load embeddings
-    logger.info("Loading SBERT embeddings...")
-    corpus_np = np.loadtxt(os.path.join(BASE_DIR, "sbert_queryembeddings.tsv"), delimiter='\t')
-    resources['corpus_embeddings'] = torch.tensor(corpus_np).to(device)
-    
-    # Load labels
-    resources['labels'] = pd.read_csv(os.path.join(BASE_DIR, "suktalabels.tsv"), header=None)
-    
-    # Load text files
-    def read_text_file(file_path):
-        with open(file_path, 'r', encoding='utf-8') as f:
-            return f.read()
-    
-    resources['griffith_text'] = read_text_file(os.path.join(BASE_DIR, "Griff_translation.txt"))
-    rigsuktatext = read_text_file(os.path.join(BASE_DIR, "consuktasrigveda.txt"))
-    
-    # Initialize TF-IDF Vectorizer
-    logger.info("Initializing TF-IDF vectorizer...")
-    
-    def preprocessing(raw_text):
-        raw_text = raw_text.lower()
-        raw_text = re.sub('[0-9]+', '', raw_text)
-        raw_text = re.sub('—',' ', raw_text)
-        raw_text = re.sub('–',' ', raw_text)
-        pattern = r'[^\w\s]'
-        clean_raw_text = re.sub(pattern, '', raw_text)
-        clean_split_text = clean_raw_text.split('\n')
-        sukta_stop_words = set(stopwords.words("english"))
-        return [word for word in clean_split_text if word not in sukta_stop_words and len(word) > 2]
-    
-    def sukta_tokenizer(suktext):
-        return suktext.split()
-    
-    processed_text = preprocessing(rigsuktatext)
-    resources['vectorizer'] = TfidfVectorizer(
-        tokenizer=sukta_tokenizer,
-        max_df=0.75, 
-        min_df=5, 
-        token_pattern=None, 
-        lowercase=False, 
-        strip_accents=None
-    )
-    resources['vectorizer'].fit_transform(processed_text)
-    
-    logger.info("Resource loading completed!")
-    return resources
+# Load data files - original functions preserved
+def load_sbert_embeddings(file_path):
+    return np.loadtxt(file_path, delimiter='\t')
 
-# Load all resources at startup
-resources = load_resources()
+def read_griffith_text(file_path):
+    with open(file_path, 'r') as f:
+        return f.readlines()
 
-# Thread pool for handling requests
-executor = ThreadPoolExecutor(max_workers=2)
+def read_jamison_text(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return f.read()
 
-# Optimized query processing function
-def process_query(query, top_k=TOP_K_RESULTS):
-    """Optimized version of user_query_function"""
-    try:
-        embedder = resources['embedder']
-        corpus_embeddings = resources['corpus_embeddings']
-        labels = resources['labels']
-        griffith_text = resources['griffith_text']
-        vectorizer = resources['vectorizer']
-        
+# Load data - original loading process
+logger.info("Loading data files...")
+corpus_np = load_sbert_embeddings(os.path.join(BASE_DIR, "sbert_queryembeddings.tsv"))
+corpus_embeddings = torch.tensor(corpus_np)
+labels = pd.read_csv(os.path.join(BASE_DIR, "suktalabels.tsv"), header=None)
+griffith_text = read_griffith_text(os.path.join(BASE_DIR, "Griff_translation.txt"))
+rigsuktatext = read_jamison_text(os.path.join(BASE_DIR, "consuktasrigveda.txt"))
+
+# Preprocessing function - original preserved
+def preprocessing(raw_text):
+    raw_text = raw_text.lower()
+    raw_text = re.sub('[0-9]+', '', raw_text)
+    raw_text = re.sub('—',' ', raw_text)
+    raw_text = re.sub('–',' ', raw_text)
+    pattern = r'[^\w\s]'
+    clean_raw_text = re.sub(pattern, '', raw_text)
+    clean_split_text = clean_raw_text.split('\n')
+    sukta_stop_words = set(stopwords.words("english"))
+    processed_text = [word for word in clean_split_text if word not in sukta_stop_words and len(word) > 2]
+    return processed_text
+
+# Tokenizer function - original preserved
+def sukta_tokenizer(suktext):
+    return suktext.split()
+
+# Initialize TF-IDF Vectorizer - original parameters preserved
+logger.info("Initializing TF-IDF vectorizer...")
+vectorizer = TfidfVectorizer(
+    tokenizer=sukta_tokenizer,
+    max_df=0.75, 
+    min_df=5, 
+    token_pattern=None, 
+    lowercase=False, 
+    strip_accents=None
+)
+processed_text = preprocessing(rigsuktatext)
+vectorizer.fit_transform(processed_text)
+
+# Original user_query_function preserved exactly
+def user_query_function(queries, text, k, embedding_model, text_embeddings, sukta_labels):
+    top_k = min(k, len(text))
+    top_terms = []
+    collected_text = ""
+    text_dict = {}
+    text_embeddings = text_embeddings.to(device)
+    
+    for query in queries:
         query_lower = query.lower()
         query_trans = vectorizer.transform([query_lower])
         non_zero_items = list(zip(query_trans.indices, query_trans.data))
         
-        top_terms = []
         if non_zero_items:
             sorted_items = sorted(non_zero_items, key=lambda x: x[1], reverse=True)
             suktafeat_names = vectorizer.get_feature_names_out()
@@ -141,38 +123,23 @@ def process_query(query, top_k=TOP_K_RESULTS):
         
         new_query_string = " ".join(top_terms) if len(top_terms) >= 2 else query_lower
         
-        # Process embeddings
-        query_embedding = embedder.encode(
-            new_query_string, 
-            convert_to_tensor=True,
-            show_progress_bar=False
-        ).to(dtype=torch.float64)
+        query_embedding = embedding_model.encode(new_query_string, convert_to_tensor=True).to(device)
+        query_embedding = query_embedding.to(dtype=torch.float64)
         
-        # Efficient similarity calculation
-        similarity_scores = torch.nn.functional.cosine_similarity(
-            query_embedding.unsqueeze(0),
-            corpus_embeddings
-        )
+        similarity_scores = embedding_model.similarity(query_embedding, text_embeddings)[0]
+        scores, indices = torch.topk(similarity_scores, k=top_k)
         
-        scores, indices = torch.topk(similarity_scores, k=min(top_k, len(griffith_text)))
-        
-        # Collect results
-        text_dict = {}
-        collected_text = []
         for score, idx in zip(scores, indices):
-            index = idx.item()
-            label_num = labels.iloc[index, 0]
-            text_dict[label_num] = griffith_text[index]
-            collected_text.append(griffith_text[index])
-        
-        return "".join(collected_text), text_dict
+            index = idx.tolist()
+            label_num = sukta_labels.iloc[index, 0]
+            text_dict[label_num] = text[index]
+            collected_text += "".join(text[index])
     
-    except Exception as e:
-        logger.error(f"Error in process_query: {str(e)}", exc_info=True)
-        raise
+    return collected_text, text_dict
 
+# Thread pool for handling requests
+executor = ThreadPoolExecutor(max_workers=2)
 
-# API endpoint for semantic search
 @app.route('/semantic-search', methods=['POST'])
 def api_semantic_search():
     data = request.get_json()
@@ -183,10 +150,11 @@ def api_semantic_search():
     
     query_list = [query]
     num_of_suktas = 10
-    print("Calling user_query_function")
     
     try:
-        collected_text, text_dict = user_query_function(
+        # Submit to thread pool with timeout
+        future = executor.submit(
+            user_query_function,
             queries=query_list,
             text=griffith_text,
             k=num_of_suktas,
@@ -194,8 +162,9 @@ def api_semantic_search():
             text_embeddings=corpus_embeddings,
             sukta_labels=labels
         )
-        print("user_query_function completed successfully")
+        collected_text, text_dict = future.result(timeout=60)  # 60 second timeout
         
+        # Original message template preserved exactly
         message = f"""{query}.
         Instructions:
 
@@ -224,29 +193,20 @@ def api_semantic_search():
 
         The entered query "What is computer science" is not relevant to the Rigveda context. Please enter a query related to the Rigveda.
 
-        
         \n{collected_text}"""
 
-        print(f"Collected text length: {len(collected_text)}")
-        print(f"Text dict: {text_dict}")
-
-        cohere_api_key = os.getenv("COHERE_API_KEY")
+        cohere_api_key = os.environ.get('COHERE_API_KEY')
         if not cohere_api_key:
-            print("Cohere API key not found")
-            return jsonify({"error": "Cohere API key not found in .env file"}), 500
-        
-        print("Initializing Cohere client")
-        co = cohere.ClientV2(api_key=os.getenv("COHERE_API_KEY"))
+            return jsonify({"error": "Cohere API key not found"}), 500
 
+        co = cohere.ClientV2(api_key=cohere_api_key)
 
-        print("Sending Cohere chat request")
         response = co.chat(
             model="command-a-03-2025",
             messages=[{"role": "user", "content": message}],
             temperature=0.0
         )
         llm_text = response.message.content[0].text.strip()
-        print(f"Cohere response: {llm_text}")
         
         return jsonify({
             "results": [{"sukta": f"RV {k}", "text": v} for k, v in text_dict.items()],
@@ -255,14 +215,12 @@ def api_semantic_search():
         })
         
     except TimeoutError:
-        logger.warning(f"Query timed out: {query}")
         return jsonify({"error": "Request timed out. Please try a simpler query."}), 408
     except Exception as e:
-        logger.error(f"Error in API: {str(e)}", exc_info=True)
+        logger.error(f"Error in semantic search: {str(e)}", exc_info=True)
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
-
-# Static Routes
+# Original routes preserved
 @app.route('/')
 def index():
     return send_from_directory(app.template_folder, 'index.html')
@@ -275,6 +233,6 @@ def serve_database(filename):
 def serve_template(filename):
     return send_from_directory(app.template_folder, filename)
 
-
-
-
+# if __name__ == '__main__':
+#     port = int(os.environ.get('PORT', 5000))
+#     app.run(host='0.0.0.0', port=port)
