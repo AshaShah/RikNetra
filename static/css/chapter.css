@@ -16,6 +16,7 @@
   --dark-mode-button-bg: #C5B3D6;
   --dark-mode-button-hover-bg: #9B7EBD;
   --header-height: 70px;
+  --footer-height: 40px;
 }
 
 body {
@@ -549,6 +550,68 @@ margin-left: 60px;
   background-color: var(--card-bg-dark);
   border-color: var(--border-dark);
   color: var(--text-light);
+}
+
+/* Footer Styles */
+.footer {
+  width: 100%;
+  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  text-align: center;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  border-top: 1px solid var(--border-light);
+  font-size: 0.9rem;
+  margin-top: 2rem;
+}
+
+body.search-active .footer {
+  display: none;
+}
+
+.footer p {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+}
+
+.footer a {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+.footer a:hover {
+  color: var(--text-light);
+  background-color: var(--primary);
+  text-decoration: none;
+}
+
+/* Dark Mode */
+.dark-mode .footer {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  border-top: 1px solid var(--border-dark);
+}
+
+.dark-mode .footer a {
+  color: var(--highlight);
+}
+
+.dark-mode .footer a:hover {
+  color: var(--text-light);
+  background-color: var(--highlight);
+}
+
+/* Small screen adjustment */
+@media (max-width: 576px) {
+  .footer {
+    padding: 1rem 0;
+    font-size: 0.8rem;
+  }
 }
 
 

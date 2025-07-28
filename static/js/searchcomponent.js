@@ -503,6 +503,10 @@ showSearchError(error) {
     this.welcomeSection.classList.remove("hidden");
     document.getElementById("search-guide-card").classList.remove("hidden");
     this.resultsContainer.style.display = "none";
+    this.searchSummary.innerHTML = ""; // Clear the search summary
+    this.ragSummary.querySelector(".summary-content").innerHTML = 
+        "<p>Summary of search results will appear here.</p>"; // Reset RAG summary
+    this.resetGraphHighlights(); // Also reset any graph highlights
   }
 
   resetGraphHighlights() {
