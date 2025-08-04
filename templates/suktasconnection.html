@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="/static/css/suktaconnection.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="icon" href="/static/Images/riknetra.png" type="image/png">
+
 </head>
 
 <body>
@@ -31,8 +32,12 @@
       </div>
       <div class="side-panel-content">
         <a href="/templates/index.html"><i class="fas fa-home"></i> Home</a>
-        <a href="/templates/suktasconnection.html" class="active"><i class="fas fa-project-diagram"></i> Hymn Connections</a>
+        <a href="/templates/suktasconnection.html" class="active"><i class="fas fa-project-diagram"></i> Hymn
+          Connections</a>
         <a href="chapter.html"><i class="fas fa-book"></i> Read Hymns</a>
+        <div class="side-panel-footer">
+          <a href="/templates/developers.html"><i class="fas fa-code"></i> Development Team</a>
+        </div>
       </div>
     </div>
 
@@ -47,17 +52,17 @@
           <!-- Label for database selection -->
           <label for="database-select">Choose Connections:</label>
           <!-- Database selection and search -->
-<select id="database-select">
-  <option value="/database/k3database.json">2 connections</option>
-  <option value="/database/k4database.json">3 connections</option>
-  <option value="/database/k5database.json" selected>4 connections</option>
-  <option value="/database/k6database.json">5 connections</option>
-  <option value="/database/k7database.json">6 connections</option>
-  <option value="/database/k8database.json">7 connections</option>
-  <option value="/database/k9database.json">8 connections</option>
-  <option value="/database/k10database.json">9 connections</option>
-  <option value="/database/k11database.json">10 connections</option>
-</select>
+          <select id="database-select">
+            <option value="/database/k3database.json">2 connections</option>
+            <option value="/database/k4database.json">3 connections</option>
+            <option value="/database/k5database.json" selected>4 connections</option>
+            <option value="/database/k6database.json">5 connections</option>
+            <option value="/database/k7database.json">6 connections</option>
+            <option value="/database/k8database.json">7 connections</option>
+            <option value="/database/k9database.json">8 connections</option>
+            <option value="/database/k10database.json">9 connections</option>
+            <option value="/database/k11database.json">10 connections</option>
+          </select>
         </div>
 
         <input type="text" id="search-input" placeholder="Search hymn rv1.1...">
@@ -100,7 +105,7 @@
         <button id="close-popup" class="close-btn">×</button>
         <h3 id="popup-title"></h3>
         <ul id="popup-links"></ul>
-        <button id="read-chapter">Read this Chapter</button>
+        <button id="read-chapter">Read this Hymn</button>
       </div>
       <div id="color-legend" class="color-legend" style="display: none;">
         <div class="legend-title">Navigate to Topics</div>
@@ -116,7 +121,8 @@
           <div class="legend-item" data-color="#ffbb78"><span class="color-box"
               style="background-color: #ffbb78;"></span><span class="legend-label underlined">Water</span></div>
           <div class="legend-item" data-color="#9c9ede"><span class="color-box"
-              style="background-color: #9c9ede;"></span><span class="legend-label underlined">Heaven & Earth</span></div>
+              style="background-color: #9c9ede;"></span><span class="legend-label underlined">Heaven & Earth</span>
+          </div>
           <div class="legend-item" data-color="#bcbd22"><span class="color-box"
               style="background-color: #bcbd22;"></span><span class="legend-label underlined">Brihaspathi</span></div>
         </div>
@@ -644,6 +650,10 @@
       g.selectAll("*").remove();
       resetColorToggle();
       loadGraphData(this.value);
+    });
+
+    document.querySelector('.controls-menu-toggle').addEventListener('click', function () {
+      document.querySelector('.controls').classList.toggle('expanded');
     });
 
   </script>
