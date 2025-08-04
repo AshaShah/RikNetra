@@ -76,7 +76,6 @@
                     </div>
                 </div>
 
-
                 <!-- Developer 2 -->
                 <div class="developer-card">
                     <div class="card-inner">
@@ -136,103 +135,104 @@
                     </div>
                 </div>
 
-                <div class="tech-stack-section">
-                    <h2><i class="fas fa-cogs"></i> Our Technology Stack</h2>
-                    <div class="tech-stack-grid">
-                        <div class="tech-item">
-                            <i class="fab fa-js"></i>
-                            <span>JavaScript</span>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fab fa-python"></i>
-                            <span>Python</span>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fab fa-html5"></i>
-                            <span>HTML5</span>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fab fa-css3-alt"></i>
-                            <span>CSS3</span>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fab fa-node-js"></i>
-                            <span>Node.js</span>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fas fa-database"></i>
-                            <span></span>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fas fa-network-wired"></i>
-                            <span>D3.js</span>
-                        </div>
-                        <div class="tech-item">
-                            <i class="fas fa-brain"></i>
-                            <span>TensorFlow</span>
-                        </div>
+            </div>
+
+            <div class="tech-stack-section">
+                <h2><i class="fas fa-cogs"></i> Our Technology Stack</h2>
+                <div class="tech-stack-grid">
+                    <div class="tech-item">
+                        <i class="fab fa-js"></i>
+                        <span>JavaScript</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-python"></i>
+                        <span>Python</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-html5"></i>
+                        <span>HTML5</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-css3-alt"></i>
+                        <span>CSS3</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fab fa-node-js"></i>
+                        <span>Node.js</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-database"></i>
+                        <span></span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-network-wired"></i>
+                        <span>D3.js</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fas fa-brain"></i>
+                        <span>TensorFlow</span>
                     </div>
                 </div>
+            </div>
 
-                <div class="project-info">
-                    <h2><i class="fas fa-project-diagram"></i> About RikNetra</h2>
-                    <p>RikNetra is an open-source project dedicated to making the Rigveda accessible through modern
-                        technology. Our goal is to bridge ancient wisdom with contemporary digital tools for
-                        researchers,
-                        students, and enthusiasts worldwide.</p>
-                    <a href="https://github.com/AshaShah/RikNetra-D3Visualization" class="github-link" target="_blank">
-                        <i class="fab fa-github"></i> View on GitHub
-                    </a>
-                </div>
+            <div class="project-info">
+                <h2><i class="fas fa-project-diagram"></i> About RikNetra</h2>
+                <p>RikNetra is an open-source project dedicated to making the Rigveda accessible through modern
+                    technology. Our goal is to bridge ancient wisdom with contemporary digital tools for researchers,
+                    students, and enthusiasts worldwide.</p>
+                <a href="https://github.com/AshaShah/RikNetra-D3Visualization" class="github-link" target="_blank">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
             </div>
         </div>
+    </div>
 
 
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
 
-                // Side panel toggle
-                const kebabMenu = document.getElementById('kebab-menu');
-                const sidePanel = document.getElementById('side-panel');
-                const mainContainer = document.querySelector('.main-container');
-                const homeLogo = document.getElementById('home-logo');
+            // Side panel toggle
+            const kebabMenu = document.getElementById('kebab-menu');
+            const sidePanel = document.getElementById('side-panel');
+            const mainContainer = document.querySelector('.main-container');
+            const homeLogo = document.getElementById('home-logo');
 
-                kebabMenu.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    sidePanel.classList.toggle('open');
-                    mainContainer.classList.toggle('panel-open');
-                    homeLogo.style.display = sidePanel.classList.contains('open') ? 'none' : 'flex';
-                });
-
-                document.addEventListener('click', (e) => {
-                    if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
-                        sidePanel.classList.remove('open');
-                        mainContainer.classList.remove('panel-open');
-                        homeLogo.style.display = 'flex';
-                    }
-                });
-
-                // Add flip animation to developer cards
-                const developerCards = document.querySelectorAll('.developer-card');
-
-                developerCards.forEach(card => {
-                    card.addEventListener('click', function (e) {
-                        // Prevent clicks on social links from triggering flip
-                        if (e.target.closest('.social-links')) {
-                            return;
-                        }
-
-                        const cardInner = this.querySelector('.card-inner');
-                        cardInner.classList.toggle('flipped');
-
-                        // Force redraw to fix rendering issues
-                        void cardInner.offsetWidth;
-                    });
-                });
+            kebabMenu.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sidePanel.classList.toggle('open');
+                mainContainer.classList.toggle('panel-open');
+                homeLogo.style.display = sidePanel.classList.contains('open') ? 'none' : 'flex';
             });
 
-        </script>
-        <script src="/static/js/darkmode/darkMode.js"></script>
+            document.addEventListener('click', (e) => {
+                if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
+                    sidePanel.classList.remove('open');
+                    mainContainer.classList.remove('panel-open');
+                    homeLogo.style.display = 'flex';
+                }
+            });
+
+            // Add flip animation to developer cards
+            const developerCards = document.querySelectorAll('.developer-card');
+
+            developerCards.forEach(card => {
+                card.addEventListener('click', function (e) {
+                    // Prevent clicks on social links from triggering flip
+                    if (e.target.closest('.social-links')) {
+                        return;
+                    }
+
+                    const cardInner = this.querySelector('.card-inner');
+                    cardInner.classList.toggle('flipped');
+
+                    // Force redraw to fix rendering issues
+                    void cardInner.offsetWidth;
+                });
+            });
+        });
+
+    </script>
+    <script src="/static/js/darkmode/darkMode.js"></script>
 </body>
 
 </html>
