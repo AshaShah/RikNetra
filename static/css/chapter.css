@@ -17,6 +17,8 @@
   --dark-mode-button-hover-bg: #9B7EBD;
   --header-height: 70px;
   --footer-height: 60px;
+  --text-column-gap: 40px;
+  --text-column-padding: 20px;
 }
 
 body {
@@ -472,6 +474,94 @@ body {
   color: var(--text-light);
 }
 
+/* Font Controls */
+.font-controls {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  display: flex;
+  gap: 5px;
+  z-index: 1000;
+  background-color: var(--accent);
+  padding: 8px;
+  border-radius: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.font-controls button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.font-controls button:hover {
+  background-color: var(--secondary);
+}
+
+/* Bilingual Text Layout */
+.bilingual-text {
+  display: flex;
+  gap: var(--text-column-gap);
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
+}
+
+.text-column {
+  flex: 1;
+  padding: var(--text-column-padding);
+  min-width: 0; /* Prevent flex items from overflowing */
+}
+
+.sanskrit-text {
+  font-family: 'Sanskrit Text', 'Noto Sans Devanagari', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  text-align: right;
+  border-right: 1px solid var(--border-light);
+}
+
+.english-text {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: left;
+}
+
+/* Dropdown bilingual content */
+.dropdown-bilingual {
+  display: flex;
+  gap: var(--text-column-gap);
+}
+
+.dropdown-sanskrit, .dropdown-english {
+  flex: 1;
+  padding: 10px;
+}
+
+.dropdown-sanskrit {
+  font-family: 'Sanskrit Text', 'Noto Sans Devanagari', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  text-align: right;
+  border-right: 1px solid var(--border-light);
+}
+
+.dropdown-english {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: left;
+}
+
+/* Dark mode adjustments */
+.dark-mode .sanskrit-text,
+.dark-mode .dropdown-sanskrit {
+  border-right-color: var(--border-dark);
+}
+
 /* Dark Mode Styles */
 .dark-mode {
   background-color: var(--bg-dark);
@@ -722,7 +812,8 @@ body.search-active .footer {
 
 /* Profile Image Overlay in Dark Mode */
 .dark-mode .image-overlay {
-  background: rgba(127, 85, 177, 0.3); /* Using --highlight with opacity */
+  background: rgba(127, 85, 177, 0.3);
+  /* Using --highlight with opacity */
 }
 
 /* Divider in Dark Mode */
@@ -858,13 +949,13 @@ body.search-active .footer {
     gap: 8px;
   }
 
-  .chapter-container {
-    margin-top: 150px;
-    width: 98vw;
-    max-width: 98vw;
-    padding: 25px 2vw;
-    box-sizing: border-box;
-  }
+.chapter-container {
+  max-width: 1200px;
+  width: 90%;
+  margin: calc(var(--header-height) + 40px) auto var(--footer-height);
+  padding: 40px;
+}
+
 
   .dark-mode-toggle {
     top: 15px;
@@ -946,6 +1037,7 @@ body.search-active .footer {
 
 /* Responsive styles for small screens */
 @media (max-width: 576px) {
+
   body,
   html {
     font-size: 13px;
@@ -1015,7 +1107,7 @@ body.search-active .footer {
     flex-shrink: 0;
   }
 
- .dark-mode-toggle {
+  .dark-mode-toggle {
     padding: 4px 12px;
     font-size: 0.7rem;
     border-radius: 16px;
@@ -1054,7 +1146,8 @@ body.search-active .footer {
     padding: 8px;
     border-radius: 4px;
   }
-  .controls input[type="text"]{
+
+  .controls input[type="text"] {
     width: 50%;
     min-width: 0;
     font-size: 0.9rem;
@@ -1069,6 +1162,7 @@ body.search-active .footer {
     padding: 8px;
     border-radius: 4px;
   }
+
   .select-group {
     flex-direction: column;
     align-items: flex-start;

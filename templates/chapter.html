@@ -66,14 +66,22 @@
     </div>
   </div>
 
+  <!-- Font Size Controls -->
+  <div class="font-controls">
+    <button id="decrease-font" title="Decrease Font Size"><i class="fas fa-font"></i> -</button>
+    <button id="reset-font" title="Reset Font Size"><i class="fas fa-font"></i> Reset</button>
+    <button id="increase-font" title="Increase Font Size"><i class="fas fa-font"></i> +</button>
+  </div>
+
   <!-- Chapter Details Container -->
   <div class="chapter-container">
     <!-- Chapter Name -->
     <div class="chapter-name" id="chapter-name"></div>
 
-    <!-- Paragraph Section -->
-    <div class="paragraph">
-      <p id="chapter-info"></p>
+    <!-- Bilingual Text Section -->
+    <div class="bilingual-text">
+      <div class="text-column sanskrit-text" id="sanskrit-text"></div>
+      <div class="text-column english-text" id="english-text"></div>
     </div>
 
     <!-- Connect Chapter Section - Initially hidden -->
@@ -90,17 +98,20 @@
     let chapterId = urlParams.get('chapterId');
     let chapterName = urlParams.get('chapterName');
     let database = urlParams.get('database') || '/database/k5database.json'; // Default database
+    let currentFontSize = 16; // Default font size in pixels
 
     // Initialize the page with the current chapter
     function initializePage() {
       const chapterNameElement = document.getElementById("chapter-name");
-      const chapterInfo = document.getElementById("chapter-info");
+      const sanskritTextElement = document.getElementById("sanskrit-text");
+      const englishTextElement = document.getElementById("english-text");
       const connectChapter = document.getElementById("connect-chapter");
 
       // Handle initial state (no search performed)
       if (!chapterId || !chapterName) {
         chapterNameElement.textContent = "Read Hymns";
-        chapterInfo.innerHTML = "<p>Please enter a Hymn number in the search bar.</p>";
+        sanskritTextElement.innerHTML = "<p>Please enter a Hymn number in the search bar.</p>";
+        englishTextElement.innerHTML = "<p>Please enter a Hymn number in the search bar.</p>";
         connectChapter.style.display = "none";
         return;
       }
@@ -108,6 +119,12 @@
       // Display the chapter name
       chapterNameElement.textContent = chapterName;
       loadChapterData();
+    }
+
+    // Function to format text with newlines
+    function formatTextWithNewlines(text) {
+      if (!text) return '';
+      return text.replace(/\n/g, '<br>');
     }
 
     // Function to load chapter data
@@ -125,25 +142,19 @@
           throw new Error("Chapter not found in database");
         }
 
-        // Display the chapter text or a placeholder if no text is available
-        const chapterInfo = document.getElementById("chapter-info");
-        const chapterText = selectedChapter.text || `This is a placeholder for ${selectedChapter.name}. More details will be added later.`;
+        // Display the texts
+        const sanskritTextElement = document.getElementById("sanskrit-text");
+        const englishTextElement = document.getElementById("english-text");
+        
+        // Format the texts with newlines
+        const sanskritText = selectedChapter.text_sanskrit || `No Sanskrit text available for ${selectedChapter.name}.`;
+        const englishText = selectedChapter.text_english || `No English text available for ${selectedChapter.name}.`;
+        
+        sanskritTextElement.innerHTML = formatTextWithNewlines(sanskritText);
+        englishTextElement.innerHTML = formatTextWithNewlines(englishText);
 
-        // Split text into sentences
-        let sentences = chapterText
-          .split(/(?<=[.!?])\s+/)
-          .filter(s => s.trim().length > 0);
-
-        // Group sentences into paragraphs of 5
-        let paragraphs = [];
-        for (let i = 0; i < sentences.length; i += 5) {
-          paragraphs.push(sentences.slice(i, i + 5).join(' '));
-        }
-
-        // Format paragraphs with HTML
-        chapterInfo.innerHTML = paragraphs
-          .map(p => `<p>${p}</p>`)
-          .join('');
+        // Apply current font size
+        applyFontSize();
 
         // Find connected chapters based on edges where the selected node is the SOURCE
         const connectedChapters = edges
@@ -187,17 +198,23 @@
             // Create dropdown content
             const dropdownContent = document.createElement("div");
             dropdownContent.classList.add("dropdown-content");
-            let connectedText = chapter.text || `This is some placeholder content for ${chapter.name}. More detailed information about this chapter can be added here.`;
-            let connectedSentences = connectedText
-              .split(/(?<=[.!?])\s+/)
-              .filter(s => s.trim().length > 0);
-            let connectedParagraphs = [];
-            for (let i = 0; i < connectedSentences.length; i += 5) {
-              connectedParagraphs.push(connectedSentences.slice(i, i + 5).join(' '));
-            }
-            dropdownContent.innerHTML = connectedParagraphs
-              .map(p => `<p>${p}</p>`)
-              .join('');
+            
+            // Create bilingual content for dropdown
+            const dropdownBilingual = document.createElement("div");
+            dropdownBilingual.classList.add("dropdown-bilingual");
+            
+            const dropdownSanskrit = document.createElement("div");
+            dropdownSanskrit.classList.add("dropdown-sanskrit");
+            dropdownSanskrit.innerHTML = formatTextWithNewlines(chapter.text_sanskrit || 'No Sanskrit text available');
+            
+            const dropdownEnglish = document.createElement("div");
+            dropdownEnglish.classList.add("dropdown-english");
+            dropdownEnglish.innerHTML = formatTextWithNewlines(chapter.text_english || 'No English text available');
+            
+            dropdownBilingual.appendChild(dropdownSanskrit);
+            dropdownBilingual.appendChild(dropdownEnglish);
+            dropdownContent.appendChild(dropdownBilingual);
+            
             li.appendChild(dropdownContent);
 
             // Event listener for toggle
@@ -215,9 +232,36 @@
         }
       }).catch(error => {
         console.error("Error loading JSON data:", error);
-        const chapterInfo = document.getElementById("chapter-info");
-        chapterInfo.innerHTML = "<p>Error loading hymn data. Please try again.</p>";
+        const sanskritTextElement = document.getElementById("sanskrit-text");
+        const englishTextElement = document.getElementById("english-text");
+        sanskritTextElement.innerHTML = "<p>Error loading hymn data. Please try again.</p>";
+        englishTextElement.innerHTML = "<p>Error loading hymn data. Please try again.</p>";
       });
+    }
+
+    // Function to apply current font size
+    function applyFontSize() {
+      document.querySelectorAll('.text-column, .dropdown-sanskrit, .dropdown-english').forEach(el => {
+        el.style.fontSize = `${currentFontSize}px`;
+      });
+    }
+
+    // Function to change font size
+    function changeFontSize(delta) {
+      currentFontSize += delta;
+      if (currentFontSize < 10) currentFontSize = 10;
+      if (currentFontSize > 32) currentFontSize = 32;
+      applyFontSize();
+      
+      // Store in localStorage
+      localStorage.setItem('fontSize', currentFontSize);
+    }
+
+    // Function to reset font size
+    function resetFontSize() {
+      currentFontSize = 16;
+      applyFontSize();
+      localStorage.setItem('fontSize', currentFontSize);
     }
 
     // Function to perform search
@@ -296,7 +340,8 @@
           if (!nodeExists) {
             // If current chapter doesn't exist in new database, clear the display
             document.getElementById("chapter-name").textContent = '';
-            document.getElementById("chapter-info").textContent = '';
+            document.getElementById("sanskrit-text").textContent = '';
+            document.getElementById("english-text").textContent = '';
             document.getElementById("connect-list").innerHTML = '';
             document.getElementById("connect-chapter").style.display = 'none';
             alert('Current Hymn not found in selected database. Please search for a new one.');
@@ -335,20 +380,28 @@
           homeLogo.style.display = 'flex';
         }
       });
+
+      // Font size controls
+      document.getElementById('increase-font').addEventListener('click', () => changeFontSize(2));
+      document.getElementById('decrease-font').addEventListener('click', () => changeFontSize(-2));
+      document.getElementById('reset-font').addEventListener('click', resetFontSize);
+
+      // Load font size from localStorage if available
+      const savedFontSize = localStorage.getItem('fontSize');
+      if (savedFontSize) {
+        currentFontSize = parseInt(savedFontSize);
+        applyFontSize();
+      }
     });
 
     // Initialize the page
     initializePage();
   </script>
   <script src="/static/js/darkmode/darkMode.js"></script>
-  <!--Website developed by<a href="ashashah228@gmail.com">Asha Shah</a></p> -->
 
   <footer class="footer">
     <p>&copy; 2025 RikNetra. All rights reserved. </p>
     <p> The text used </p>
-    <!--Website developed by<a href="ashashah228@gmail.com">Asha Shah</a></p> -->
   </footer>
 </body>
-
-
 </html>
