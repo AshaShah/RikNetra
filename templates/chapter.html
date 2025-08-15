@@ -66,22 +66,25 @@
     </div>
   </div>
 
-  <!-- Font Size Controls -->
-  <div class="font-controls">
-    <button id="decrease-font" title="Decrease Font Size"><i class="fas fa-font"></i> -</button>
-    <button id="reset-font" title="Reset Font Size"><i class="fas fa-font"></i> Reset</button>
-    <button id="increase-font" title="Increase Font Size"><i class="fas fa-font"></i> +</button>
-  </div>
-
   <!-- Chapter Details Container -->
   <div class="chapter-container">
     <!-- Chapter Name -->
-    <div class="chapter-name" id="chapter-name"></div>
+    <div class="chapter-name" id="chapter-name">Read Hymns</div>
+
+    <!-- Font Size Controls -->
+    <div class="font-controls">
+      <button id="decrease-font" title="Decrease Font Size"><i class="fas fa-font"></i> -</button>
+      <button id="reset-font" title="Reset Font Size"><i class="fa fa-refresh"></i></button>
+      <button id="increase-font" title="Increase Font Size"><i class="fas fa-font"></i> +</button>
+    </div>
 
     <!-- Bilingual Text Section -->
     <div class="bilingual-text">
-      <div class="text-column sanskrit-text" id="sanskrit-text"></div>
-      <div class="text-column english-text" id="english-text"></div>
+      <div class="initial-message-container">
+        <div class="initial-message">Please enter a Hymn number in the search bar</div>
+      </div>
+      <div class="text-column sanskrit-text" id="sanskrit-text" style="display:none"></div>
+      <div class="text-column english-text" id="english-text" style="display:none"></div>
     </div>
 
     <!-- Connect Chapter Section - Initially hidden -->
@@ -103,21 +106,20 @@
     // Initialize the page with the current chapter
     function initializePage() {
       const chapterNameElement = document.getElementById("chapter-name");
-      const sanskritTextElement = document.getElementById("sanskrit-text");
-      const englishTextElement = document.getElementById("english-text");
       const connectChapter = document.getElementById("connect-chapter");
+      const bilingualText = document.querySelector('.bilingual-text');
 
       // Handle initial state (no search performed)
       if (!chapterId || !chapterName) {
         chapterNameElement.textContent = "Read Hymns";
-        sanskritTextElement.innerHTML = "<p>Please enter a Hymn number in the search bar.</p>";
-        englishTextElement.innerHTML = "<p>Please enter a Hymn number in the search bar.</p>";
         connectChapter.style.display = "none";
+        bilingualText.classList.remove('content-loaded');
         return;
       }
 
       // Display the chapter name
       chapterNameElement.textContent = chapterName;
+      bilingualText.classList.add('content-loaded');
       loadChapterData();
     }
 
@@ -135,6 +137,10 @@
         const nodes = data.nodes;
         const edges = data.edges;
 
+        // Show the text columns
+        document.getElementById('sanskrit-text').style.display = 'block';
+        document.getElementById('english-text').style.display = 'block';
+
         // Find the selected chapter (node) by ID
         const selectedChapter = nodes.find(node => node.id === chapterId);
 
@@ -145,11 +151,11 @@
         // Display the texts
         const sanskritTextElement = document.getElementById("sanskrit-text");
         const englishTextElement = document.getElementById("english-text");
-        
+
         // Format the texts with newlines
         const sanskritText = selectedChapter.text_sanskrit || `No Sanskrit text available for ${selectedChapter.name}.`;
         const englishText = selectedChapter.text_english || `No English text available for ${selectedChapter.name}.`;
-        
+
         sanskritTextElement.innerHTML = formatTextWithNewlines(sanskritText);
         englishTextElement.innerHTML = formatTextWithNewlines(englishText);
 
@@ -198,23 +204,23 @@
             // Create dropdown content
             const dropdownContent = document.createElement("div");
             dropdownContent.classList.add("dropdown-content");
-            
+
             // Create bilingual content for dropdown
             const dropdownBilingual = document.createElement("div");
             dropdownBilingual.classList.add("dropdown-bilingual");
-            
+
             const dropdownSanskrit = document.createElement("div");
             dropdownSanskrit.classList.add("dropdown-sanskrit");
             dropdownSanskrit.innerHTML = formatTextWithNewlines(chapter.text_sanskrit || 'No Sanskrit text available');
-            
+
             const dropdownEnglish = document.createElement("div");
             dropdownEnglish.classList.add("dropdown-english");
             dropdownEnglish.innerHTML = formatTextWithNewlines(chapter.text_english || 'No English text available');
-            
+
             dropdownBilingual.appendChild(dropdownSanskrit);
             dropdownBilingual.appendChild(dropdownEnglish);
             dropdownContent.appendChild(dropdownBilingual);
-            
+
             li.appendChild(dropdownContent);
 
             // Event listener for toggle
@@ -252,14 +258,14 @@
       if (currentFontSize < 10) currentFontSize = 10;
       if (currentFontSize > 32) currentFontSize = 32;
       applyFontSize();
-      
+
       // Store in localStorage
       localStorage.setItem('fontSize', currentFontSize);
     }
 
     // Function to reset font size
     function resetFontSize() {
-      currentFontSize = 16;
+      currentFontSize = 20;
       applyFontSize();
       localStorage.setItem('fontSize', currentFontSize);
     }
@@ -339,9 +345,12 @@
           const nodeExists = data.nodes.some(node => node.id === chapterId);
           if (!nodeExists) {
             // If current chapter doesn't exist in new database, clear the display
-            document.getElementById("chapter-name").textContent = '';
-            document.getElementById("sanskrit-text").textContent = '';
-            document.getElementById("english-text").textContent = '';
+            document.getElementById("chapter-name").textContent = 'Read Hymns';
+            document.querySelector('.bilingual-text').classList.remove('content-loaded');
+            document.getElementById("sanskrit-text").style.display = 'none';
+            document.getElementById("english-text").style.display = 'none';
+            document.getElementById("sanskrit-text").innerHTML = '';
+            document.getElementById("english-text").innerHTML = '';
             document.getElementById("connect-list").innerHTML = '';
             document.getElementById("connect-chapter").style.display = 'none';
             alert('Current Hymn not found in selected database. Please search for a new one.');
@@ -404,4 +413,5 @@
     <p> The text used </p>
   </footer>
 </body>
+
 </html>

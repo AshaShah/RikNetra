@@ -1,6 +1,7 @@
 class DarkMode {
   constructor() {
     this.toggleButton = document.getElementById('dark-mode-toggle');
+    this.networkImage = document.getElementById('network-image'); // Reference to the network image
     this.init();
   }
 
@@ -30,12 +31,20 @@ class DarkMode {
   enableDarkMode() {
     document.body.classList.add('dark-mode');
     this.updateToggleButton(true);
+    // Update network image to dark version
+    if (this.networkImage) {
+      this.networkImage.src = '/static/Images/darknetwork.png';
+    }
     localStorage.setItem('darkMode', 'enabled');
   }
 
   disableDarkMode() {
     document.body.classList.remove('dark-mode');
     this.updateToggleButton(false);
+    // Update network image to light version
+    if (this.networkImage) {
+      this.networkImage.src = '/static/Images/network.png';
+    }
     localStorage.setItem('darkMode', 'disabled');
   }
 
@@ -55,5 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Apply dark mode based on saved preference
   if (localStorage.getItem('darkMode') === 'enabled') {
     document.body.classList.add('dark-mode');
+    // Ensure network image is set to dark version on page load
+    const networkImage = document.getElementById('network-image');
+    if (networkImage) {
+      networkImage.src = '/static/Images/darknetwork.png';
+    }
   }
 });

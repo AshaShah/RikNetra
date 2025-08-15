@@ -48,6 +48,7 @@ body {
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
+  gap: 15px;
 }
 
 .dark-mode-toggle {
@@ -67,6 +68,35 @@ body {
 }
 
 .dark-mode-toggle:hover {
+  background-color: var(--secondary);
+}
+
+/* Font Controls in Header */
+.font-controls {
+  display: flex;
+  gap: 5px;
+  position: absolute;
+  right: 40px; /* Adjust based on your layout */
+  top: 15px;
+  z-index: 1001;
+}
+
+.font-controls button {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px; /* Adjust button text size */
+}
+
+.font-controls button:hover {
   background-color: var(--secondary);
 }
 
@@ -202,13 +232,11 @@ body {
   padding: 18px;
   border-top: 1px solid var(--border-light);
   background-color: var(--accent);
-  /* Match panel background */
 }
 
 .dark-mode .side-panel-footer {
   border-top: 1px solid var(--border-dark);
   background-color: var(--card-bg-dark);
-  /* Dark mode background */
 }
 
 /* Ensure footer links look consistent with other panel links */
@@ -247,6 +275,35 @@ body {
   color: white;
 }
 
+/* Initial message styling */
+.initial-message-container {
+  width: 100%;
+  text-align: center;
+  padding: 40px;
+}
+
+.initial-message {
+  font-size: 1.2rem;
+  color: var(--text-dark);
+}
+
+.dark-mode .initial-message {
+  color: var(--text-light);
+}
+
+/* Hide initial message when content is loaded */
+.content-loaded .initial-message-container {
+  display: none;
+}
+
+.content-loaded .text-column {
+  display: flex !important;
+}
+
+/* Remove border when no content */
+.bilingual-text:not(.content-loaded) .sanskrit-text {
+  border-right: none;
+}
 
 /* Controls Container */
 .controls-container {
@@ -310,8 +367,8 @@ body {
 /* Chapter Container*/
 .chapter-container {
   min-height: 500px;
-  width: 90%;
-  max-width: 900px;
+  width: 95%;
+  max-width: 1200px;
   margin: calc(var(--header-height) + 40px) auto var(--footer-height);
   padding: 40px;
   background-color: var(--card-bg-light);
@@ -432,8 +489,7 @@ body {
   transition: all 0.3s ease;
   position: relative;
   z-index: 0;
-  max-width: 44em;
-  /* Compensates for letter-spacing */
+  max-width: 100%;
   margin-left: 50px;
   margin-right: 50px;
   text-align: justify;
@@ -474,57 +530,26 @@ body {
   color: var(--text-light);
 }
 
-/* Font Controls */
-.font-controls {
-  position: fixed;
-  top: 80px;
-  right: 20px;
-  display: flex;
-  gap: 5px;
-  z-index: 1000;
-  background-color: var(--accent);
-  padding: 8px;
-  border-radius: 20px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.font-controls button {
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.font-controls button:hover {
-  background-color: var(--secondary);
-}
-
 /* Bilingual Text Layout */
 .bilingual-text {
   display: flex;
   gap: var(--text-column-gap);
-  margin: 0 auto;
-  max-width: 1200px;
+  margin: 0;
+  max-width: 100%;
   width: 100%;
 }
 
 .text-column {
   flex: 1;
   padding: var(--text-column-padding);
-  min-width: 0; /* Prevent flex items from overflowing */
+  min-width: 0;
+  text-align: left;
+  direction: ltr;
+  display: none;
 }
 
 .sanskrit-text {
   font-family: 'Sanskrit Text', 'Noto Sans Devanagari', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  direction: rtl;
-  text-align: right;
   border-right: 1px solid var(--border-light);
 }
 
@@ -539,15 +564,14 @@ body {
   gap: var(--text-column-gap);
 }
 
-.dropdown-sanskrit, .dropdown-english {
+.dropdown-sanskrit,
+.dropdown-english {
   flex: 1;
   padding: 10px;
 }
 
 .dropdown-sanskrit {
   font-family: 'Sanskrit Text', 'Noto Sans Devanagari', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  direction: rtl;
-  text-align: right;
   border-right: 1px solid var(--border-light);
 }
 
@@ -615,6 +639,15 @@ body {
 
 .dark-mode .kebab-menu:hover {
   background: var(--dark-mode-button-bg);
+}
+
+.dark-mode .font-controls button {
+  background-color: var(--highlight);
+  color: var(--text-light);
+}
+
+.dark-mode .font-controls button:hover {
+  background-color: var(--dark-mode-button-bg);
 }
 
 .dark-mode .side-panel {
@@ -687,7 +720,6 @@ body {
   color: var(--light-accent);
 }
 
-/* Dark mode adjustments */
 .dark-mode .connect-chapter .dropdown-content {
   letter-spacing: 0.02em;
   background-color: var(--card-bg-dark);
@@ -750,186 +782,6 @@ body.search-active .footer {
   background-color: var(--highlight);
 }
 
-
-/* DarkMode Style*/
-
-/* Dark Mode Styles for Developers Page */
-.dark-mode {
-  background-color: var(--bg-dark);
-  color: var(--text-light);
-}
-
-.dark-mode .header-controls {
-  background-color: var(--card-bg-dark);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
-
-.dark-mode .dark-mode-toggle {
-  background-color: var(--highlight);
-  color: var(--text-light);
-}
-
-.dark-mode .dark-mode-toggle:hover {
-  background-color: var(--dark-mode-button-hover-bg);
-}
-
-.dark-mode .kebab-menu {
-  color: var(--text-light);
-  background: var(--highlight);
-}
-
-.dark-mode .kebab-menu:hover {
-  background: var(--dark-mode-button-hover-bg);
-}
-
-.dark-mode .side-panel {
-  background-color: var(--card-bg-dark);
-  box-shadow: 2px 0 15px rgba(127, 85, 177, 0.15);
-  border-right: 1px solid var(--highlight);
-}
-
-.dark-mode .side-panel-header {
-  border-bottom: 1px solid var(--border-dark);
-}
-
-.dark-mode .side-panel-header h3 {
-  color: var(--highlight);
-}
-
-.dark-mode .panel-logo {
-  filter: brightness(0.8) contrast(1.2);
-}
-
-/* Card Back in Dark Mode */
-.dark-mode .card-back {
-  background-color: var(--card-bg-dark);
-  color: var(--text-light);
-}
-
-.dark-mode .card-back h3 {
-  color: var(--light-accent);
-}
-
-/* Profile Image Overlay in Dark Mode */
-.dark-mode .image-overlay {
-  background: rgba(127, 85, 177, 0.3);
-  /* Using --highlight with opacity */
-}
-
-/* Divider in Dark Mode */
-.dark-mode .divider {
-  background: var(--light-accent);
-}
-
-/* Social Links in Dark Mode */
-.dark-mode .social-links a {
-  color: var(--light-accent);
-}
-
-.dark-mode .social-links a:hover {
-  color: var(--accent);
-}
-
-/* Tech Stack Items in Dark Mode */
-.dark-mode .tech-item {
-  background: rgba(127, 85, 177, 0.15);
-  border: 1px solid var(--border-dark);
-}
-
-.dark-mode .tech-item:hover {
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.dark-mode .tech-item i {
-  color: var(--light-accent);
-}
-
-/* Project Info in Dark Mode */
-.dark-mode .project-info {
-  background: rgba(127, 85, 177, 0.15);
-  border: 1px solid var(--border-dark);
-}
-
-/* GitHub Link in Dark Mode */
-.dark-mode .github-link {
-  background: var(--highlight);
-  color: var(--text-light);
-}
-
-.dark-mode .github-link:hover {
-  background: var(--light-accent);
-  color: var(--text-dark);
-}
-
-/* Add these missing dark mode styles */
-.dark-mode .profile-image {
-  border-color: var(--highlight);
-}
-
-.dark-mode .developer-card h2 {
-  color: var(--highlight);
-}
-
-.dark-mode .role {
-  color: var(--light-accent);
-}
-
-.dark-mode .expertise {
-  color: var(--text-light);
-}
-
-.dark-mode .card-back p {
-  color: var(--text-light);
-}
-
-.dark-mode .tech-stack-section h2 {
-  color: var(--highlight);
-}
-
-.dark-mode .project-info h2 {
-  color: var(--highlight);
-}
-
-.dark-mode .project-info p {
-  color: var(--text-light);
-}
-
-/* Fix side panel content in dark mode */
-.dark-mode .side-panel-content a {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.dark-mode .side-panel-content a:hover {
-  background-color: rgba(127, 85, 177, 0.15);
-}
-
-.dark-mode .side-panel-content a.active {
-  background: linear-gradient(90deg, rgba(127, 85, 177, 0.3), transparent);
-  border-left: 3px solid var(--highlight);
-  color: white;
-}
-
-/* Fix side panel footer in dark mode */
-.dark-mode .side-panel-footer {
-  background-color: var(--card-bg-dark);
-  border-top: 1px solid var(--border-dark);
-}
-
-.dark-mode .side-panel-footer a {
-  color: rgba(255, 255, 255, 0.85);
-}
-
-.dark-mode .side-panel-footer a:hover {
-  background-color: rgba(127, 85, 177, 0.15);
-}
-
-.dark-mode .side-panel-footer a.active {
-  background: linear-gradient(90deg, rgba(127, 85, 177, 0.3), transparent);
-  border-left: 3px solid var(--highlight);
-  color: white;
-}
-
-
 /* Responsive Design */
 @media (max-width: 992px) {
   .header-controls {
@@ -949,13 +801,12 @@ body.search-active .footer {
     gap: 8px;
   }
 
-.chapter-container {
-  max-width: 1200px;
-  width: 90%;
-  margin: calc(var(--header-height) + 40px) auto var(--footer-height);
-  padding: 40px;
-}
-
+  .chapter-container {
+    max-width: 1200px;
+    width: 90%;
+    margin: calc(var(--header-height) + 40px) auto var(--footer-height);
+    padding: 40px;
+  }
 
   .dark-mode-toggle {
     top: 15px;
@@ -1033,6 +884,45 @@ body.search-active .footer {
     min-width: 0;
     font-size: 1em;
   }
+
+  .bilingual-text {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .text-column {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .sanskrit-text {
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 20px;
+  }
+
+  .dark-mode .sanskrit-text {
+    border-bottom-color: var(--border-dark);
+  }
+
+  /* Dropdown bilingual content - mobile view */
+  .dropdown-bilingual {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .dropdown-sanskrit {
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 15px;
+    direction: ltr;
+    text-align: left;
+  }
+
+  .dark-mode .dropdown-sanskrit {
+    border-bottom-color: var(--border-dark);
+  }
+
 }
 
 /* Responsive styles for small screens */
@@ -1298,5 +1188,16 @@ body.search-active .footer {
   .footer a {
     padding: 0.1rem 0.3rem;
     font-size: 0.75rem;
+  }
+  .bilingual-text {
+    gap: 15px;
+  }
+  
+  .text-column {
+    padding: 8px;
+  }
+  
+  .sanskrit-text {
+    padding-bottom: 15px;
   }
 }
