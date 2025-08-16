@@ -783,6 +783,55 @@ body.search-active .footer {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .header-controls {
+    flex-wrap: wrap;
+    padding-bottom: 70px;
+  }
+
+  .controls-container {
+    order: 3;
+    width: 80%;
+    margin-top: 60px;
+  }
+
+  .controls {
+    max-width: 80%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chapter-container {
+    max-width: 1200px;
+    width: 90%;
+    margin: calc(var(--header-height) + 100px) auto var(--footer-height);
+    padding: 40px;
+  }
+
+  .dark-mode-toggle {
+    right: 15px;
+    padding: 6px 12px;
+    font-size: 0.9em;
+  }
+
+  .kebab-menu {
+    left: 15px;
+    width: 35px;
+    height: 35px;
+    font-size: 20px;
+  }
+
+  .paragraph,
+  .connect-chapter .dropdown-content {
+    margin-left: 10px;
+    margin-right: 10px;
+    max-width: 100%;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+}
+
+
 @media (max-width: 992px) {
   .header-controls {
     flex-wrap: wrap;
@@ -1113,6 +1162,7 @@ body.search-active .footer {
     border-radius: 6px;
     box-sizing: border-box;
     margin-top: 130px;
+    margin-bottom: 80px;
   }
 
   .chapter-name {
@@ -1200,4 +1250,27 @@ body.search-active .footer {
   .sanskrit-text {
     padding-bottom: 15px;
   }
+  .font-controls {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    gap: 5px;
+  }
+  .font-controls button {
+    width: 16px;
+    height: 16px;
+    font-size: 0.8rem;
+    display: flex;
+  }
+
+  initial-message {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+  .initial-message-container {
+    width: 80%;
+    text-align: center;
+    padding: 20px;
+  }
+
 }

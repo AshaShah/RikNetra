@@ -136,7 +136,9 @@ class RigvedaSearch {
   showLoading() {
     document.body.classList.add("search-active");
     this.welcomeSection.classList.add("hidden");
+
     document.getElementById("search-guide-card").classList.add("hidden");
+    document.querySelector(".quick-guide-link").classList.add("hidden");
     this.searchSummary.innerHTML = `<h2>Searching for "${this.currentSearchTerm}"</h2><p>Loading results...</p>`;
     this.ragSummary.querySelector(
       ".summary-content"
@@ -502,6 +504,7 @@ showSearchError(error) {
     document.body.classList.remove("search-active");
     this.welcomeSection.classList.remove("hidden");
     document.getElementById("search-guide-card").classList.remove("hidden");
+    document.querySelector(".quick-guide-link").classList.remove("hidden");
     this.resultsContainer.style.display = "none";
     this.searchSummary.innerHTML = ""; // Clear the search summary
     this.ragSummary.querySelector(".summary-content").innerHTML = 
@@ -1017,4 +1020,5 @@ showSearchError(error) {
       this.recentHymnsList.appendChild(item);
     });
   }
+  
 }
