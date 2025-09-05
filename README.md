@@ -93,8 +93,7 @@ RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hi
 
 ### Project Structure
 ```
-RikNetra-D3Visualization/
-RIKNETRA-D3VISUALIZATION/
+RikNetra/
 ├── .vscode/
 ├── database/
 │   ├── k3database.json

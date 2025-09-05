@@ -1684,7 +1684,7 @@ body.dark-mode {
 /* Quick Guide Link Styles */
 .quick-guide-link {
   margin: 1.5rem auto;
-  max-width: 550px;
+  max-width: 260px;
   text-align: center;
   padding: 0.2rem;
   background-color: #f8f5f0;
