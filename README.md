@@ -47,7 +47,7 @@ RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hi
 ### Steps
 
 1. **Clone the Repository**:
-   git clone https://github.com/AshaShah/RikNetra-D3Visualization.git
+   git clone https://github.com/egul2000/RikNetra.git
    cd RikNetra-D3Visualization
 
 2. **Install Python Dependencies**:
@@ -87,7 +87,7 @@ RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hi
    - Zoom in/out or reset the view using dedicated buttons.
 
 3. **Read Suktas (`chapter.html`)**:
-   - View full sukta text with related suktas listed in a dropdown format.
+   - View full sukta text (Both in English and Sanskrit) with related suktas listed in a dropdown format.
    - Search for specific suktas (e.g., "RV 1.1") to load their content.
    - Select different databases to view connections in the new context.
 

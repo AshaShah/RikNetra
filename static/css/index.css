@@ -541,6 +541,95 @@ body.search-active .search-section {
   border-bottom: 1px dashed #d4a76a;
   font-size: 0.95rem;
   color: #5a4a42;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.rv-explanation-content {
+  flex: 1;
+}
+
+.read-image-container {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  padding: 6px;
+  border-radius: 8px;
+  background: rgba(244, 231, 225, 0.5);
+  transition: all 0.2s ease;
+}
+
+.read-image-container:hover {
+  background: rgba(244, 231, 225, 0.8);
+  transform: translateY(-2px);
+}
+
+.read-image-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  gap: 3px;
+}
+
+.read-image {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.read-image-container:hover .read-image {
+  transform: scale(1.05);
+}
+
+.read-image-text {
+  font-size: 0.8rem;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.read-image-container:hover .read-image-text {
+  color: var(--secondary);
+}
+
+/* Dark mode adjustments */
+.dark-mode .read-image-container {
+  background: rgba(30, 30, 30, 0.5);
+}
+
+.dark-mode .read-image-container:hover {
+  background: rgba(30, 30, 30, 0.7);
+}
+
+.dark-mode .read-image-text {
+  color: var(--light-accent);
+}
+
+.dark-mode .read-image-container:hover .read-image-text {
+  color: var(--accent);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .read-image-container {
+    padding: 10px;
+    gap: 6px;
+  }
+  
+  .read-image {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .read-image-text {
+    font-size: 0.75rem;
+  }
 }
 
 .rv-badge {
@@ -564,6 +653,8 @@ body.search-active .search-section {
   padding: 0.2rem 0.4rem;
   border-radius: 3px;
 }
+
+
 
 .search-methods h3 {
   color: #3a2e22;
@@ -895,7 +986,7 @@ body.search-active .results-container {
   line-height: 1.15;
   color: var(--text-dark);
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1593,7 +1684,7 @@ body.dark-mode {
 /* Quick Guide Link Styles */
 .quick-guide-link {
   margin: 1.5rem auto;
-  max-width: 900px;
+  max-width: 550px;
   text-align: center;
   padding: 0.2rem;
   background-color: #f8f5f0;
@@ -1614,6 +1705,15 @@ body.dark-mode {
   padding: 0;
 }
 
+.quick-guide-link .separator {
+  color: rgba(82, 28, 13, 0.3);
+  font-weight: 300;
+  padding: 0 0.2rem;
+}
+
+.dark-mode .quick-guide-link .separator {
+  color: rgba(255, 255, 255, 0.3);
+}
 
 .quick-guide-link a {
   color: var(--primary);

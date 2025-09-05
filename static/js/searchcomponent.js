@@ -372,7 +372,7 @@ showSearchError(error) {
                 <button class="view-connections" data-node-id="${
                   result.id || result.index
                 }">
-                    <i class="fas fa-link"></i> Hymns Net.
+                    <i class="fa-solid fa-circle-nodes"></i> Hymns Net.
                 </button>
                 <button class="read-full" data-node-id="${
                   result.id || result.index
