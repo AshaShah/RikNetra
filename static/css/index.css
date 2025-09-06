@@ -316,7 +316,7 @@ body {
 }
 
 .welcome-section p {
-  font-size: 1rem;
+  font-size: larger;
   color: var(--text-dark);
   opacity: 0.8;
   transition: color 0.3s ease;
@@ -362,7 +362,7 @@ body.search-active .search-section {
   flex-grow: 1;
   padding: 12px 15px;
   padding-right: 50px;
-  font-size: 16px;
+  font-size: large;
   border: none;
   border-radius: 25px;
   outline: none;
@@ -659,7 +659,7 @@ body.search-active .search-section {
 .search-methods h3 {
   color: #3a2e22;
   margin: 0.5rem 0 0.5rem 0;
-  font-size: 1.1rem;
+  font-size: larger;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -674,7 +674,7 @@ body.search-active .search-section {
 .tag {
   padding: 0.3rem 0.8rem;
   border-radius: 15px;
-  font-size: 0.85rem;
+  font-size: medium;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -790,7 +790,7 @@ body.search-active .search-section {
 .styled-select {
   width: 100%;
   padding: 12px 20px;
-  font-size: 14px;
+  font-size: 18px;
   border: none;
   border-radius: 25px;
   outline: none;
@@ -1684,7 +1684,7 @@ body.dark-mode {
 /* Quick Guide Link Styles */
 .quick-guide-link {
   margin: 1.5rem auto;
-  max-width: 260px;
+  max-width: 513px;
   text-align: center;
   padding: 0.2rem;
   background-color: #f8f5f0;
