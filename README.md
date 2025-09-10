@@ -4,6 +4,10 @@ RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hi
 
 <img src="static/Images/riknetra.png" alt="RikNetra Screenshot" width="300">
 
+[![Watch the video](https://img.youtube.com/vi/<VIDEO_ID>/0.jpg)](https://www.youtube.com/watch?v=<VIDEO_ID>) 
+Need to add youtube video link
+
+
 ## Features
 
 - **Semantic Search**: Search Rigveda suktas using keywords, queries, or specific hymn references (e.g., "RV 1.1", "hymns to Agni"). Powered by SentenceTransformer embeddings and TF-IDF for enhanced query understanding.
@@ -48,7 +52,7 @@ RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hi
 
 1. **Clone the Repository**:
    git clone https://github.com/egul2000/RikNetra.git
-   cd RikNetra-D3Visualization
+   cd RikNetra
 
 2. **Install Python Dependencies**:
     `pip install -r requirements.txt`
