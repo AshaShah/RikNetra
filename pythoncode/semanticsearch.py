@@ -165,7 +165,7 @@ def api_semantic_search():
         
         \n{collected_text}"""
 
-        co = cohere.Client(api_key="cjsgL5O9U4MfBmBT1j8lYmNa9eRtmM02CzVTxR9m")
+        co = cohere.Client(api_key="xyz")
         response = co.chat(
             model="command-a-03-2025",
             message=message,
