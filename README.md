@@ -57,7 +57,7 @@ The following are expanded results of hymn retrievals presented in the paper and
 ### Steps
 
 1. **Clone the Repository**:
-   git clone https://github.com/egul2000/RikNetra.git
+   git clone https://github.com/AshaShah/RikNetra.git
    cd RikNetra
 
 2. **Install Python Dependencies**:
@@ -165,6 +165,7 @@ For questions, contact Dr. Eren Gultepe egultep@siue.edu, Asha Shah ashashah228@
 
 
 © 2025 RikNetra. All rights reserved.
+
 
 
 
