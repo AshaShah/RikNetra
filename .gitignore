@@ -1,0 +1,56 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+MANIFEST
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Apache
+*.conf
+*.wsgi
+
+# Node modules (if you add any JS build tools)
+node_modules/
+
+# Logs
+*.log
+
+# Ignore the entire venv/ directory (Python virtual environment)
+venv/
+
+# Ignore all .log files
+*.log
+
+# Ignore a specific file
+__pycache__/
+
+*.env.env
+venv/

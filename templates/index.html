@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RikNetra</title>
+  <link rel="stylesheet" href="/static/css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="icon" href="/static/Images/riknetra.png" type="image/png">
+</head>
+
+<body>
+  <div class="header-controls">
+    <button id="dark-mode-toggle" class="dark-mode-toggle">
+      <i class="fas fa-moon"></i> Dark Mode
+    </button>
+
+    <div class="kebab-menu" id="kebab-menu">
+      <i class="fas fa-bars"></i>
+    </div>
+
+    <a href="/templates/index.html" class="home-logo" id="home-logo">
+      <img src="/static/Images/riknetra.png" alt="Home" class="logo-img">
+    </a>
+
+    <div class="side-panel" id="side-panel">
+      <div class="side-panel-header">
+
+        <h3>RikNetra</h3>
+      </div>
+      <div class="side-panel-content">
+        <a href="/templates/index.html" class="active"><i class="fas fa-home"></i> Home</a>
+        <a href="/templates/suktasconnection.html"><i class="fas fa-project-diagram"></i> Hymn Connections</a>
+        <a href="/templates/chapter.html"><i class="fas fa-book"></i> Read Hymns</a>
+        <div class="side-panel-footer">
+          <a href="/templates/developers.html"><i class="fas fa-code"></i> Development Team</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-container" id="main-container">
+    <header class="welcome-section" id="welcome-section">
+      <img src="/static/Images/riknetra.png" alt="RiKNetra Logo" class="welcome-logo">
+      <h1>Welcome to RikNetra</h1>
+      <p>Explore the wisdom of the Rigveda through interconnected verses</p>
+    </header>
+
+    <section class="search-section" id="search-section">
+      <div class="search-controls-wrapper">
+        <div class="search-input-group">
+          <input type="text" id="search-box" placeholder="Search hymn, keywords or query..." aria-label="Search">
+          <!-- <span class="clear-search" id="clear-search">×</span> -->
+          <button id="search-button"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="styled-select-container">
+          <select id="database-select" class="styled-select">
+            <option value="/database/k3database.json">with 2 neighbors</option>
+            <option value="/database/k4database.json">with 3 neighbors</option>
+            <option value="/database/k5database.json" selected>with 4 neighbors</option>
+            <option value="/database/k6database.json">with 5 neighbors</option>
+            <option value="/database/k7database.json">with 6 neighbors</option>
+            <option value="/database/k8database.json">with 7 neighbors</option>
+            <option value="/database/k9database.json">with 8 neighbors</option>
+            <option value="/database/k10database.json">with 9 neighbors</option>
+            <option value="/database/k11database.json">with 10 neighbors</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-guide-card" id="search-guide-card">
+        <div class="search-guide-content">
+          <div class="rv-explanation">
+            <div class="rv-explanation-content">
+              <span class="rv-badge">RV</span> = Rigveda (Ancient Hindu Scripture)
+              <div class="verse-example">
+                <span class="verse-format">Book.Hymn</span> format:
+                <strong>10.129</strong> = Book 10, Hymn 129 (Creation Hymn)
+              </div>
+            </div>
+            <div class="read-image-container">
+              <a href="/templates/chapter.html" class="read-image-link">
+                <img src="/static/Images/read.png" alt="Read Hymns" class="read-image">
+                <span class="read-image-text">Read Rigveda</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="search-guide-columns">
+            <div class="search-methods">
+              <h3><i class="fas fa-search"></i> Different ways of searching Hymns</h3>
+
+              <div class="search-tags" id="search-tags">
+                <!-- Query Section -->
+                <div class="search-section">
+                  <span class="search-label">Query:</span>
+                  <div class="tag-list">
+                    <!-- <span class="tag question-tag" data-search-term="What is creation">What is creation</span>
+                    <span class="tag question-tag" data-search-term="What is the prominence of Water">What is the
+                      prominence
+                      of Water</span> -->
+                    <span class="tag question-tag"
+                      data-search-term="What is the role of Heaven & Earth in the Rigveda">What's the role of Heaven & Earth in the Rigveda?</span>
+                  </div>
+                </div>
+
+                <!-- Hymn Name / Keywords Section -->
+                <div class="search-section">
+                  <span class="search-label">Keyword:</span>
+                  <div class="tag-list">
+                    <span class="tag keyword-tag" data-search-term="Agni">Agni</span>
+                    <span class="tag keyword-tag" data-search-term="Indra">Indra</span>
+                    <span class="tag keyword-tag" data-search-term="Soma">Soma</span>
+                    <!-- <span class="tag keyword-tag" data-search-term="Varuna">Varuna</span> -->
+                    <span class="tag keyword-tag" data-search-term="Visnu">Visnu</span>
+                    <!-- <span class="tag keyword-tag" data-search-term="Rudra">Rudra</span>
+                    <span class="tag keyword-tag" data-search-term="Maruts">Maruts</span>
+                    <span class="tag keyword-tag" data-search-term="Asvin">Asvin</span>
+                    <span class="tag keyword-tag" data-search-term="Brihaspati">Brihaspati</span>
+                    <span class="tag keyword-tag" data-search-term="Pusan">Pusan</span> -->
+                  </div>
+                </div>
+
+
+
+                <!-- Exact Verse Section -->
+                <div class="search-section">
+                  <span class="search-label">Hymn Number:</span>
+                  <div class="tag-list">
+                    <span class="tag verse-tag" data-search-term="RV 1.1">RV 1.1</span>
+                    <span class="tag verse-tag" data-search-term="RV 6.28">RV 6.28</span>
+                    <!-- <span class="tag verse-tag" data-search-term="RV 10.121">RV 10.121</span> -->
+                    <!-- <span class="tag verse-tag" data-search-term="RV 10.125">RV 10.125</span> -->
+                    <span class="tag verse-tag" data-search-term="RV 10.129">RV 10.129</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="network-image-container">
+              <a href="/templates/suktasconnection.html" class="network-image-link">
+                <img id="network-image" src="/static/Images/network.png" alt="Hymn Connections Network"
+                  class="network-image">
+                <div class="image-overlay">
+                  <span>Explore Hymn Connections</span>
+                  <i class="fas fa-arrow-right"></i>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="quick-guide-link">
+      <a href="/static/Images/RikNetra_Quick_Guide.pdf" target="_blank" rel="noopener noreferrer">
+        <i class="fas fa-info-circle"></i> Quick Start Guide
+      </a>
+      <span class="separator">|</span>
+      <a href="https://vimeo.com/1118529324" target="_blank"
+        rel="noopener noreferrer" class="video-link">
+        <i class="fas fa-play-circle"></i> Watch Video Guide
+      </a>
+      <!-- <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/lW5WByctPsw?list=PLsVY2zzTFgG8tzU0ToA_l8m78AoUSp9_d"
+        title="YouTube video player" frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe> -->
+
+    </div>
+
+    <div class="search-summary" id="search-summary"></div>
+    <div class="results-container" id="results-container">
+
+      <div class="results-layout">
+        <div class="results-left">
+          <div class="top-results" id="top-results">
+            <h2>Top Results</h2>
+            <div class="top-results-content">
+              <div class="result-cards" id="result-cards"></div>
+            </div>
+          </div>
+        </div>
+        <div class="graph-section" id="graph-section">
+          <h2>Related Hymns</h2>
+          <div class="graph-content-container">
+            <div class="graph-visualization-container" id="graph-visualization">
+              <svg id="graph-svg" class="graph-svg-container"></svg>
+              <div class="recent-hymns-container">
+                <h3>Recently Clicked Hymns</h3>
+                <div class="recent-hymns-list" id="recent-hymns-list"></div>
+              </div>
+              <div class="graph-legend">
+                <div class="legend-title">Level of Connections</div>
+                <div class="legend-item"><span class="legend-color selected"></span> Selected Hymn</div>
+                <div class="legend-item"><span class="legend-color level1"></span> Direct Connections</div>
+                <div class="legend-item"><span class="legend-color level2"></span> Secondary Connections</div>
+                <div class="legend-item"><span class="legend-color level3"></span> Tertiary Connections</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="results-right">
+          <div class="rag-summary" id="rag-summary">
+            <h2>Summary</h2>
+            <div class="rag-summary-content">
+              <div class="summary-content">
+                <p>Summary of search results will appear here.</p>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="/static/js/darkmode/darkMode.js"></script>
+    <script src="/static/js/searchcomponent.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Initialize components
+        const search = new RigvedaSearch({
+          searchBox: document.getElementById('search-box'),
+          searchButton: document.getElementById('search-button'),
+          clearSearch: document.getElementById('clear-search'),
+          databaseSelect: document.getElementById('database-select'),
+          resultsContainer: document.getElementById('results-container'),
+          welcomeSection: document.getElementById('welcome-section'),
+          searchSection: document.getElementById('search-section'),
+          topResults: document.getElementById('top-results'),
+          graphSection: document.getElementById('graph-section'),
+          searchSummary: document.getElementById('search-summary'),
+          ragSummary: document.getElementById('rag-summary'),
+          resultCards: document.getElementById('result-cards'),
+          graphSvg: document.getElementById('graph-svg')
+        });
+
+        // Side panel toggle
+        const kebabMenu = document.getElementById('kebab-menu');
+        const sidePanel = document.getElementById('side-panel');
+        const mainContainer = document.getElementById('main-container');
+        const homeLogo = document.getElementById('home-logo');
+
+        kebabMenu.addEventListener('click', (e) => {
+          e.stopPropagation();
+          sidePanel.classList.toggle('open');
+          mainContainer.classList.toggle('panel-open');
+          homeLogo.style.display = sidePanel.classList.contains('open') ? 'none' : 'flex';
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
+            sidePanel.classList.remove('open');
+            mainContainer.classList.remove('panel-open');
+            homeLogo.style.display = 'flex';
+          }
+        });
+      });
+    </script>
+
+    <footer class="footer">
+      <p>&copy; 2025 RikNetra. All rights reserved. </p>
+      <!--Website developed by<a href="ashashah228@gmail.com">Asha Shah</a></p> -->
+    </footer>
+
+</body>
+
+</html>

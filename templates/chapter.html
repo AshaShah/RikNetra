@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RikNetra</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/chapter.css">
+  <link rel="icon" href="/static/Images/riknetra.png" type="image/png">
+</head>
+
+<body>
+  <!-- Header Controls -->
+  <div class="header-controls">
+    <!-- Dark Mode Toggle -->
+    <button id="dark-mode-toggle" class="dark-mode-toggle">
+      <i class="fas fa-moon"></i> Dark Mode
+    </button>
+
+    <!-- Kebab Menu -->
+    <div class="kebab-menu" id="kebab-menu">
+      <i class="fas fa-bars"></i>
+    </div>
+
+    <!-- Side Panel -->
+    <div class="side-panel" id="side-panel">
+      <div class="side-panel-header">
+        <h3>RikNetra</h3>
+      </div>
+      <div class="side-panel-content">
+        <a href="/templates/index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="/templates/suktasconnection.html"><i class="fas fa-project-diagram"></i> Hymn Connections</a>
+        <a href="/templates/chapter.html" class="active"><i class="fas fa-book"></i> Read Hymns</a>
+        <div class="side-panel-footer">
+          <a href="/templates/developers.html"><i class="fas fa-code"></i> Development Team</a>
+        </div>
+      </div>
+    </div>
+
+    <a href="/templates/index.html" class="home-logo" id="home-logo">
+      <img src="/static/Images/riknetra.png" alt="Home" class="logo-img">
+    </a>
+
+    <!-- Database and Search Controls -->
+    <div class="controls-container">
+      <div class="controls">
+        <div class="select-group">
+          <!-- Label for database selection -->
+          <label for="database-select">Choose Connection:</label>
+          <select id="database-select">
+            <option value="/database/k3database.json">2 connections</option>
+            <option value="/database/k4database.json">3 connections</option>
+            <option value="/database/k5database.json" selected>4 connections</option>
+            <option value="/database/k6database.json">5 connections</option>
+            <option value="/database/k7database.json">6 connections</option>
+            <option value="/database/k8database.json">7 connections</option>
+            <option value="/database/k9database.json">8 connections</option>
+            <option value="/database/k10database.json">9 connections</option>
+            <option value="/database/k11database.json">10 connections</option>
+          </select>
+        </div>
+        <input type="text" id="search-input" placeholder="Search hymn rv 1.1...">
+        <button id="search-button">Search</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chapter Details Container -->
+  <div class="chapter-container">
+    <!-- Chapter Name -->
+    <div class="chapter-name" id="chapter-name">Read Hymns</div>
+
+    <!-- Font Size Controls -->
+    <div class="font-controls">
+      <button id="decrease-font" title="Decrease Font Size"><i class="fas fa-font"></i> -</button>
+      <button id="reset-font" title="Reset Font Size"><i class="fa fa-refresh"></i></button>
+      <button id="increase-font" title="Increase Font Size"><i class="fas fa-font"></i> +</button>
+    </div>
+
+    <!-- Bilingual Text Section -->
+    <div class="bilingual-text">
+      <div class="initial-message-container">
+        <div class="initial-message">Please enter a Hymn number in the search bar</div>
+      </div>
+      <div class="text-column sanskrit-text" id="sanskrit-text" style="display:none"></div>
+      <div class="text-column english-text" id="english-text" style="display:none"></div>
+    </div>
+
+    <!-- Connect Chapter Section - Initially hidden -->
+    <div class="connect-chapter" id="connect-chapter" style="display: none;">
+      <h3>Related Hymns</h3>
+      <ul id="connect-list"></ul>
+    </div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Get the chapter ID, name, and database from the URL query parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    let chapterId = urlParams.get('chapterId');
+    let chapterName = urlParams.get('chapterName');
+    let database = urlParams.get('database') || '/database/k5database.json'; // Default database
+    let currentFontSize = 16; // Default font size in pixels
+
+    // Initialize the page with the current chapter
+    function initializePage() {
+      const chapterNameElement = document.getElementById("chapter-name");
+      const connectChapter = document.getElementById("connect-chapter");
+      const bilingualText = document.querySelector('.bilingual-text');
+
+      // Handle initial state (no search performed)
+      if (!chapterId || !chapterName) {
+        chapterNameElement.textContent = "Read Hymns";
+        connectChapter.style.display = "none";
+        bilingualText.classList.remove('content-loaded');
+        return;
+      }
+
+      // Display the chapter name
+      chapterNameElement.textContent = chapterName;
+      bilingualText.classList.add('content-loaded');
+      loadChapterData();
+    }
+
+    // Function to format text with newlines
+    function formatTextWithNewlines(text) {
+      if (!text) return '';
+      return text.replace(/\n/g, '<br>');
+    }
+
+    // Function to load chapter data
+    function loadChapterData() {
+      if (!chapterId || !database) return;
+
+      d3.json(database).then(data => {
+        const nodes = data.nodes;
+        const edges = data.edges;
+
+        // Show the text columns
+        document.getElementById('sanskrit-text').style.display = 'block';
+        document.getElementById('english-text').style.display = 'block';
+
+        // Find the selected chapter (node) by ID
+        const selectedChapter = nodes.find(node => node.id === chapterId);
+
+        if (!selectedChapter) {
+          throw new Error("Chapter not found in database");
+        }
+
+        // Display the texts
+        const sanskritTextElement = document.getElementById("sanskrit-text");
+        const englishTextElement = document.getElementById("english-text");
+
+        // Format the texts with newlines
+        const sanskritText = selectedChapter.text_sanskrit || `No Sanskrit text available for ${selectedChapter.name}.`;
+        const englishText = selectedChapter.text_english || `No English text available for ${selectedChapter.name}.`;
+
+        sanskritTextElement.innerHTML = formatTextWithNewlines(sanskritText);
+        englishTextElement.innerHTML = formatTextWithNewlines(englishText);
+
+        // Apply current font size
+        applyFontSize();
+
+        // Find connected chapters based on edges where the selected node is the SOURCE
+        const connectedChapters = edges
+          .filter(edge => edge.source === chapterId)
+          .map(edge => {
+            const connectedNodeId = edge.target;
+            const connectedNode = nodes.find(node => node.id === connectedNodeId);
+            return { ...connectedNode, weight: edge.weight };
+          })
+          .sort((a, b) => a.weight - b.weight);
+
+        // Display connected chapters only if there are any
+        const connectChapter = document.getElementById("connect-chapter");
+        const connectList = document.getElementById("connect-list");
+        connectList.innerHTML = '';
+
+        if (connectedChapters.length > 0) {
+          connectChapter.style.display = 'block';
+
+          connectedChapters.forEach(chapter => {
+            const li = document.createElement("li");
+            li.classList.add("chapter-item");
+
+            // Create chapter name container (clickable)
+            const chapterNameContainer = document.createElement("div");
+            chapterNameContainer.classList.add("chapter-name-container");
+
+            // Create chapter name span
+            const chapterNameSpan = document.createElement("span");
+            chapterNameSpan.textContent = chapter.name;
+            chapterNameContainer.appendChild(chapterNameSpan);
+
+            // Create dropdown toggle
+            const dropdownToggle = document.createElement("button");
+            dropdownToggle.classList.add("dropdown-toggle");
+            dropdownToggle.innerHTML = '▼';
+            chapterNameContainer.appendChild(dropdownToggle);
+
+            li.appendChild(chapterNameContainer);
+
+            // Create dropdown content
+            const dropdownContent = document.createElement("div");
+            dropdownContent.classList.add("dropdown-content");
+
+            // Create bilingual content for dropdown
+            const dropdownBilingual = document.createElement("div");
+            dropdownBilingual.classList.add("dropdown-bilingual");
+
+            const dropdownSanskrit = document.createElement("div");
+            dropdownSanskrit.classList.add("dropdown-sanskrit");
+            dropdownSanskrit.innerHTML = formatTextWithNewlines(chapter.text_sanskrit || 'No Sanskrit text available');
+
+            const dropdownEnglish = document.createElement("div");
+            dropdownEnglish.classList.add("dropdown-english");
+            dropdownEnglish.innerHTML = formatTextWithNewlines(chapter.text_english || 'No English text available');
+
+            dropdownBilingual.appendChild(dropdownSanskrit);
+            dropdownBilingual.appendChild(dropdownEnglish);
+            dropdownContent.appendChild(dropdownBilingual);
+
+            li.appendChild(dropdownContent);
+
+            // Event listener for toggle
+            chapterNameContainer.addEventListener("click", (event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              dropdownContent.classList.toggle("active");
+              dropdownToggle.innerHTML = dropdownContent.classList.contains("active") ? '▲' : '▼';
+            });
+
+            connectList.appendChild(li);
+          });
+        } else {
+          connectChapter.style.display = 'none';
+        }
+      }).catch(error => {
+        console.error("Error loading JSON data:", error);
+        const sanskritTextElement = document.getElementById("sanskrit-text");
+        const englishTextElement = document.getElementById("english-text");
+        sanskritTextElement.innerHTML = "<p>Error loading hymn data. Please try again.</p>";
+        englishTextElement.innerHTML = "<p>Error loading hymn data. Please try again.</p>";
+      });
+    }
+
+    // Function to apply current font size
+    function applyFontSize() {
+      document.querySelectorAll('.text-column, .dropdown-sanskrit, .dropdown-english').forEach(el => {
+        el.style.fontSize = `${currentFontSize}px`;
+      });
+    }
+
+    // Function to change font size
+    function changeFontSize(delta) {
+      currentFontSize += delta;
+      if (currentFontSize < 10) currentFontSize = 10;
+      if (currentFontSize > 32) currentFontSize = 32;
+      applyFontSize();
+
+      // Store in localStorage
+      localStorage.setItem('fontSize', currentFontSize);
+    }
+
+    // Function to reset font size
+    function resetFontSize() {
+      currentFontSize = 20;
+      applyFontSize();
+      localStorage.setItem('fontSize', currentFontSize);
+    }
+
+    // Function to perform search
+    function performSearch() {
+      const searchTerm = document.getElementById('search-input').value.trim();
+      const selectedDatabase = document.getElementById('database-select').value;
+
+      if (searchTerm === '') {
+        alert('Please enter a search term');
+        return;
+      }
+
+      // Normalize the search term (remove RV/SV/YV prefix, handle different formats)
+      const normalizedSearch = searchTerm
+        .toUpperCase() // convert to uppercase
+        .replace(/^(RV|SV|YV)[\s\.]*/i, '') // remove RV/SV/YV prefix
+        .replace(/\s+/g, ' ') // normalize spaces
+        .trim();
+
+      // Load the database and search for the term
+      d3.json(selectedDatabase).then(data => {
+        // Match nodes that match the normalized search term
+        const matchingNodes = data.nodes.filter(node => {
+          // Normalize the node name for comparison
+          const normalizedName = node.name
+            .toUpperCase()
+            .replace(/^(RV|SV|YV)[\s\.]*/i, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+          return normalizedName === normalizedSearch;
+        });
+
+        if (matchingNodes.length === 0) {
+          alert('No matching Hymns found');
+        } else if (matchingNodes.length === 1) {
+          // If only one match, load it directly
+          chapterId = matchingNodes[0].id;
+          chapterName = matchingNodes[0].name;
+          database = selectedDatabase;
+          initializePage();
+        } else {
+          // If multiple matches (like RV 1.1 and SV 1.1), let the user choose
+          const choice = prompt(`Multiple versions found. Please select one:\n\n${matchingNodes.map((node, i) => `${i + 1}. ${node.name}`).join('\n')
+            }`);
+
+          const selectedIndex = parseInt(choice) - 1;
+          if (selectedIndex >= 0 && selectedIndex < matchingNodes.length) {
+            chapterId = matchingNodes[selectedIndex].id;
+            chapterName = matchingNodes[selectedIndex].name;
+            database = selectedDatabase;
+            initializePage();
+          }
+        }
+      });
+    }
+
+    // Search button click handler
+    document.getElementById('search-button').addEventListener('click', performSearch);
+
+    // Enter key handler for search input
+    document.getElementById('search-input').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        performSearch();
+      }
+    });
+
+    // Database selection change handler
+    document.getElementById('database-select').addEventListener('change', function () {
+      database = this.value;
+      // Reset the search when database changes
+      document.getElementById('search-input').value = '';
+      // Reload the current chapter if it exists in the new database
+      if (chapterId && chapterName) {
+        d3.json(database).then(data => {
+          const nodeExists = data.nodes.some(node => node.id === chapterId);
+          if (!nodeExists) {
+            // If current chapter doesn't exist in new database, clear the display
+            document.getElementById("chapter-name").textContent = 'Read Hymns';
+            document.querySelector('.bilingual-text').classList.remove('content-loaded');
+            document.getElementById("sanskrit-text").style.display = 'none';
+            document.getElementById("english-text").style.display = 'none';
+            document.getElementById("sanskrit-text").innerHTML = '';
+            document.getElementById("english-text").innerHTML = '';
+            document.getElementById("connect-list").innerHTML = '';
+            document.getElementById("connect-chapter").style.display = 'none';
+            alert('Current Hymn not found in selected database. Please search for a new one.');
+          } else {
+            // Reload the data
+            loadChapterData();
+          }
+        });
+      }
+    });
+
+    // Set initial database selection if coming from URL
+    if (database) {
+      document.getElementById('database-select').value = database;
+    }
+
+    // Kebab menu functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      const kebabMenu = document.getElementById('kebab-menu');
+      const sidePanel = document.getElementById('side-panel');
+      const chapterContainer = document.querySelector('.chapter-container');
+      const homeLogo = document.getElementById('home-logo');
+
+      kebabMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidePanel.classList.toggle('open');
+        chapterContainer.classList.toggle('panel-open');
+        homeLogo.style.display = sidePanel.classList.contains('open') ? 'none' : 'flex';
+      });
+
+      // Close panel when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!sidePanel.contains(e.target) && !kebabMenu.contains(e.target)) {
+          sidePanel.classList.remove('open');
+          chapterContainer.classList.remove('panel-open');
+          homeLogo.style.display = 'flex';
+        }
+      });
+
+      // Font size controls
+      document.getElementById('increase-font').addEventListener('click', () => changeFontSize(2));
+      document.getElementById('decrease-font').addEventListener('click', () => changeFontSize(-2));
+      document.getElementById('reset-font').addEventListener('click', resetFontSize);
+
+      // Load font size from localStorage if available
+      const savedFontSize = localStorage.getItem('fontSize');
+      if (savedFontSize) {
+        currentFontSize = parseInt(savedFontSize);
+        applyFontSize();
+      }
+    });
+
+    // Initialize the page
+    initializePage();
+  </script>
+  <script src="/static/js/darkmode/darkMode.js"></script>
+
+  <footer class="footer">
+    Griffith, R. T. H. (1896). <i>The Hymns of the Rigveda</i>, 2nd edition. Kotagiri (Nilgiri).
+  </footer>
+</body>
+
+</html>
