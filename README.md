@@ -33,7 +33,7 @@ RikNetra is an interactive web platform for exploring the Rigveda, an ancient Hi
   - Font Awesome: Provides icons for UI elements.
   
 - **Data**:
-   - Griffith’s and Jamison’s Rigveda Translations: Text sources for suktas.
+   - Griffith’s and Jamison’s Rigveda Translations: Text sources for sukta viewing and RAG summarization.
    - Precomputed Embeddings: Stored in `sbert_queryembeddings.tsv` for efficient similarity search.
    - JSON Databases: Graph data (nodes and edges) for suktas with varying connections (k3 to k11) computed using the Leiden method from data processed in,
      - *Venkatesh Bollineni, Igor Crk, and Eren Gultepe. 2025. Mapping Hymns and Organizing Concepts in the Rigveda: Quantitatively Connecting the Vedic Suktas. In Proceedings of the 5th International Conference on Natural Language Processing for Digital Humanities at NAACL 2025, pages 514–523, Albuquerque, USA. Association for Computational Linguistics.* [https://doi.org/10.18653/v1/2025.nlp4dh-1.44](https://aclanthology.org/2025.nlp4dh-1.44/)
@@ -165,6 +165,7 @@ For questions, contact Dr. Eren Gultepe egultep@siue.edu, Asha Shah ashashah228@
 
 
 © 2025 RikNetra. All rights reserved.
+
 
 
 
