@@ -23,7 +23,7 @@ except LookupError:
     nltk.download('stopwords')
 
 # Initialize Cohere
-co = cohere.ClientV2(api_key="cjsgL5O9U4MfBmBT1j8lYmNa9eRtmM02CzVTxR9m")  # Replace with your actual API key
+co = cohere.ClientV2(api_key="")  # Replace with your actual API key
 
 # Load data
 grif_text = "pythoncode/Griffith_Translation_Rigveda.txt"
