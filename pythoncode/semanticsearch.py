@@ -142,7 +142,7 @@ def process_query(queries: str, k=5, include_rag=True):
 
 def generate_rag_summary(query, context):
     # Initialize Cohere client
-    co = cohere.Client(api_key='cjsgL5O9U4MfBmBT1j8lYmNa9eRtmM02CzVTxR9m')  # Make sure to set API_KEY
+    co = cohere.Client(api_key='xyz')  # Make sure to set API_KEY
     
     message = f"""{query}.
     Instructions:
